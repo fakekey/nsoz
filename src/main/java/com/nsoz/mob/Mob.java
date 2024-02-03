@@ -679,7 +679,7 @@ public class Mob {
                 return;
             }
 
-            if (originChar.hieuChien >= 15 && !(originChar instanceof Bot)) {
+            if (originChar.hieuChien >= 15 && !originChar.isBot()) {
                 owner.serverDialog("Điểm hiếu chiến quá cao, không thể tiếp tục thi triển thuật này lên người.");
                 mobMeFocus = null;
                 return;
@@ -795,7 +795,7 @@ public class Mob {
                 }
 
                 if (pl.isTiThi && pl.hp - Math.abs(dameHp) <= 0) {
-                    Char pl2 = pl.zone.findCharById(pl.testCharId);
+                    Char pl2 = pl.zone.findCharById(pl.playerTiThiId);
                     int num2 = pl.hp;
                     pl.testEnd(num2, pl2);
                 } else {

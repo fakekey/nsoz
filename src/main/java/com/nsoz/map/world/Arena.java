@@ -155,8 +155,7 @@ public class Arena extends World {
             this.moneyTeamTwo = money;
             name = leaderTeamTwoName;
         }
-        String text =
-                name + " thay đổi tiền dặt cược là: " + NinjaUtils.getCurrency(money) + " xu.";
+        String text = name + " thay đổi tiền dặt cược là: " + NinjaUtils.getCurrency(money) + " xu.";
         service.serverMessage(text);
         if (moneyTeamOne == moneyTeamTwo) {
             service.serverMessage("Trận đấu bắt đầu.");
@@ -214,10 +213,8 @@ public class Arena extends World {
         leaderTeamOne.addCoin(-moneyTeamOne);
         leaderTeamTwo.addCoin(-moneyTeamTwo);
         if (moneyTeamOne >= 1000000) {
-            GlobalService.getInstance().chat("Hệ thống",
-                    String.format("%s (%d) đang thách đấu với %s (%d) %s xu ở lôi đài.",
-                            leaderTeamOneName, leaderTeamOne.level, leaderTeamTwoName,
-                            leaderTeamTwo.level, NinjaUtils.getCurrency(moneyTeamOne)));
+            GlobalService.getInstance().chat("Hệ thống", String.format("%s (%d) đang thách đấu với %s (%d) %s xu ở lôi đài.", leaderTeamOneName,
+                    leaderTeamOne.level, leaderTeamTwoName, leaderTeamTwo.level, NinjaUtils.getCurrency(moneyTeamOne)));
         }
         for (Char _char : teamOne) {
             _char.setTypePk(Char.PK_PHE1);
@@ -295,8 +292,7 @@ public class Arena extends World {
                 leaderTeamTwo.addCoin(coin / 2);
                 Char leaderTeamOne = teamOne.get(0);
                 leaderTeamOne.addCoin(coin / 2);
-                String result =
-                        "Phe " + leaderTeamOneName + " với phe " + leaderTeamTwoName + " hòa";
+                String result = "Phe " + leaderTeamOneName + " với phe " + leaderTeamTwoName + " hòa";
                 Arena.results.add(0, result);
             }
             close();
@@ -320,8 +316,7 @@ public class Arena extends World {
                                 leaderTeamTwo.gloryTask.updateProgress(1);
                             }
                         }
-                        String result =
-                                "Phe " + leaderTeamTwoName + " thắng phe " + leaderTeamOneName;
+                        String result = "Phe " + leaderTeamTwoName + " thắng phe " + leaderTeamOneName;
                         Arena.results.add(0, result);
                     } else if (isTeamTwoAllDead) {
                         Char leaderTeamOne = teamOne.get(0);
@@ -332,8 +327,7 @@ public class Arena extends World {
                                 leaderTeamOne.gloryTask.updateProgress(1);
                             }
                         }
-                        String result =
-                                "Phe " + leaderTeamOneName + " thắng phe " + leaderTeamTwoName;
+                        String result = "Phe " + leaderTeamOneName + " thắng phe " + leaderTeamTwoName;
                         Arena.results.add(0, result);
                     }
                     if (Arena.results.size() >= 21) {
@@ -341,13 +335,11 @@ public class Arena extends World {
                     }
                     countDown = 10;
                     service.sendTimeInMap(countDown);
-                    String text = "Phe " + nameTeamWin + " đã dành chiến thắng nhận được "
-                            + NinjaUtils.getCurrency(coin) + " xu.";
+                    String text = "Phe " + nameTeamWin + " đã dành chiến thắng nhận được " + NinjaUtils.getCurrency(coin) + " xu.";
                     zone.getService().serverMessage(text);
                 } else {
                     if (isTeamOneAllDead || isTeamTwoAllDead) {
-                        getService().serverMessage(
-                                "Trận đấu đã bị hủy vì phe đối phương đã khiếp sợ và bỏ chạy.");
+                        getService().serverMessage("Trận đấu đã bị hủy vì phe đối phương đã khiếp sợ và bỏ chạy.");
                     }
                     close();
                     return;

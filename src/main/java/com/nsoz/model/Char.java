@@ -266,7 +266,7 @@ public class Char {
     public boolean isCatchItem = false;
     public boolean isFailure = false;
     public Language language;
-    public int testCharId = 0;
+    public int playerTiThiId = 0;
     public boolean isTiThi = false;
     public int killCharId = 0;
     public boolean isCuuSat = false;
@@ -6087,7 +6087,7 @@ public class Char {
             return;
         }
 
-        if (originChar.hieuChien >= 15 && !(originChar instanceof Bot)) {
+        if (originChar.hieuChien >= 15 && !originChar.isBot()) {
             serverDialog("Điểm hiếu chiến quá cao, không thể tiếp tục thi triển thuật này lên người.");
             return;
         }
@@ -6558,7 +6558,7 @@ public class Char {
                         }
                         zone.getService().attackCharacter(dameHit, dameMp, pl);
                         if (pl.isTiThi && pl.hp - Math.abs(dameHit) <= 0) {
-                            Char pl2 = zone.findCharById(pl.testCharId);
+                            Char pl2 = zone.findCharById(pl.playerTiThiId);
                             int num2 = pl.hp;
                             pl.testEnd(num2, pl2);
                         } else {
@@ -6850,7 +6850,7 @@ public class Char {
                 || (this.typePk == PK_PHE2 && (cAtt.typePk == PK_PHE1 || cAtt.typePk == PK_PHE3))) && !isTeam(cAtt) && !isLang())
                 || (cAtt.typePk == PK_DOSAT && !isTeam(cAtt) && !isLang()) || (this.typePk == PK_DOSAT && !this.isTeam(cAtt) && !isLang())
                 || (this.typePk == PK_NHOM && cAtt.typePk == PK_NHOM && !this.isTeam(cAtt) && !isLang())
-                || (this.testCharId >= 0 && this.testCharId == cAtt.id) || (this.killCharId >= 0 && this.killCharId == cAtt.id && !isLang())
+                || (this.playerTiThiId >= 0 && this.playerTiThiId == cAtt.id) || (this.killCharId >= 0 && this.killCharId == cAtt.id && !isLang())
                 || (cAtt.killCharId >= 0 && cAtt.killCharId == this.id && !isLang())) && !cAtt.isDead;
     }
 
@@ -7046,11 +7046,11 @@ public class Char {
         if (num > 0) {
             this.hp = num;
         }
-        pl.testCharId = 0;
+        pl.playerTiThiId = 0;
         pl.isTiThi = false;
         zone.getService().testEnd(this.id, pl.id, num);
         this.isTiThi = false;
-        this.testCharId = 0;
+        this.playerTiThiId = 0;
     }
 
     public void testAccept(Message msg) {
@@ -7069,8 +7069,8 @@ public class Char {
             }
             PlayerInvite p = invite.findCharInvite(Invite.TY_THI, player.id);
             if (p != null) {
-                player.testCharId = this.id;
-                this.testCharId = player.id;
+                player.playerTiThiId = this.id;
+                this.playerTiThiId = player.id;
                 this.isTiThi = true;
                 player.isTiThi = true;
                 zone.getService().testAccept(this.id, player.id);
@@ -7417,8 +7417,8 @@ public class Char {
             if (escortedEvent != null) {
                 escortEventFailed();
             }
-            if (this.isTiThi && this.testCharId != 0) {
-                Char player = this.zone.findCharById(this.testCharId);
+            if (this.isTiThi && this.playerTiThiId != 0) {
+                Char player = this.zone.findCharById(this.playerTiThiId);
                 if (player != null) {
                     this.testEnd(1, player);
                 }
@@ -17477,8 +17477,8 @@ public class Char {
             escortFailed();
         }
         if (!isNhanBan) {
-            if (isTiThi && testCharId != 0) {
-                Char player = zone.findCharById(testCharId);
+            if (isTiThi && playerTiThiId != 0) {
+                Char player = zone.findCharById(playerTiThiId);
                 if (player != null) {
                     testEnd(0, player);
                 }

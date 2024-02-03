@@ -143,7 +143,7 @@ public class AttackTarget implements IAttack {
                     Skill skill35 = Skill.findSkillByIdFrom(me, SkillName.CHIEU_HOSHITAMA);
                     Skill skill40 = Skill.findSkillByIdFrom(me, SkillName.CHIEU_HINOTAMA);
                     if (!useHideOnce) {
-                        if ((float) me.hp <= ((float) me.maxHP * 2f / 3f)) {
+                        if ((float) me.hp <= ((float) me.maxHP * 3f / 4f)) {
                             if (useSkillBuff(me, skill35)) {
                                 me.isDontMove = true;
                                 isComboing = true;
@@ -197,8 +197,7 @@ public class AttackTarget implements IAttack {
                             long l1 = System.currentTimeMillis() + 2000;
                             while (true) {
                                 int distance = NinjaUtils.getDistance(me.x, me.y, target.x, target.y);
-                                if (distance<= 48 || System.currentTimeMillis() >= l1) {
-                                    Log.info(distance);
+                                if (distance <= 48 || System.currentTimeMillis() >= l1) {
                                     useSkillAttack(me, skill40);
                                     break;
                                 }
@@ -213,6 +212,27 @@ public class AttackTarget implements IAttack {
                     break;
                 }
                 case 4: { // Cung
+                    Skill skill25 = Skill.findSkillByIdFrom(me, SkillName.CHIEU_SOGEKIHEI);
+                    Skill skill35 = Skill.findSkillByIdFrom(me, SkillName.CHIEU_JOUTENHITOMI);
+                    Skill skill40 = Skill.findSkillByIdFrom(me, SkillName.CHIEU_KOGOSA);
+                    Skill skill60 = Skill.findSkillByIdFrom(me, SkillName.CHIEU_TOTAAIGO);
+                    if ((float) me.hp >= (float) me.maxHP * 90f / 100f) {
+                        if (useSkillBuff(me, skill35)) {
+                            isComboing = true;
+                            Thread.sleep(500L);
+                        }
+                    }
+                    if (useSkillBuff(me, skill25)) {
+                        isComboing = true;
+                        Thread.sleep(500L);
+                    } else if (useSkillAttack(me, skill40)) {
+                        isComboing = true;
+                        Thread.sleep(500L);
+                    } else if (useSkillBuff(me, skill60)) {
+                        isComboing = true;
+                        Thread.sleep(500L);
+                    }
+                    isComboing = false;
                     break;
                 }
                 case 5: { // Đao
@@ -233,12 +253,30 @@ public class AttackTarget implements IAttack {
                     break;
                 }
                 case 6: { // Quạt
+                    Skill skill15 = Skill.findSkillByIdFrom(me, SkillName.CHIEU_SUISHOU);
+                    Skill skill35 = Skill.findSkillByIdFrom(me, SkillName.CHIEU_HAYATEMI);
+                    Skill skill40 = Skill.findSkillByIdFrom(me, SkillName.CHIEU_BOUSOUHAYATE);
+                    if ((float) me.hp <= (float) me.maxHP * 90f / 100f) {
+                        if (useSkillBuff(me, skill15)) {
+                            isComboing = true;
+                            Thread.sleep(500L);
+                        }
+                    }
+                    if (useSkillBuff(me, skill35)) {
+                        isComboing = true;
+                        Thread.sleep(500L);
+                    } else if (useSkillBuff(me, skill40)) {
+                        isComboing = true;
+                        Thread.sleep(500L);
+                    }
+                    isComboing = false;
                     break;
                 }
                 default:
                     break;
             }
         } catch (Exception e) {
+            isComboing = false;
             close();
         }
     }
@@ -259,16 +297,16 @@ public class AttackTarget implements IAttack {
                             lock.readLock().unlock();
                         }
                         long l2 = System.currentTimeMillis() - l1;
-                        if (l2 >= 25L) {
+                        if (l2 >= 20L) {
                             continue;
                         }
                         try {
-                            Thread.sleep(25L - l2);
+                            Thread.sleep(20L - l2);
                         } catch (InterruptedException e) {
-                            Thread.currentThread().interrupt();
+                            close();
                         }
                     } catch (Exception e2) {
-                        e2.printStackTrace();
+                        close();
                     }
                 }
             }
@@ -305,6 +343,9 @@ public class AttackTarget implements IAttack {
     }
 
     public void doAttack(Bot me) {
+        if (cmd == null) {
+            return;
+        }
         Message ms = new Message(CMD.PLAYER_ATTACK_PLAYER, cmd.getData());
         try {
             me.attackCharacter(ms);

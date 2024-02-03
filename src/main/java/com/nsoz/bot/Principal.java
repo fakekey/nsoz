@@ -16,11 +16,11 @@ public class Principal extends Bot {
     private int head;
     private int body;
     private int leg;
-    private long lastTime, lastTimeDropItem, lastTimeChat;
+    private long lastTime, lastTimeDropItem, lastTimeChat, initTime;
 
     public Principal(int id, String name, int head, int body, int leg) {
         super(id, name, 150, Char.PK_NORMAL, (byte) 0);
-        this.lastTime = this.lastTimeDropItem = System.currentTimeMillis();
+        this.lastTime = this.lastTimeDropItem = this.initTime = System.currentTimeMillis();
         this.head = head;
         this.body = body;
         this.leg = leg;
@@ -41,6 +41,11 @@ public class Principal extends Bot {
     public void updateEveryHalfSecond() {
         super.updateEveryHalfSecond();
         long now = System.currentTimeMillis();
+        if (now >= initTime + 60 * 60 * 1000) {
+            zone.getService().chat(this.id, "Hôm nay đến đây thôi, tạm biệt các con, hẹn các con ngày mai");
+            outZone();
+            return;
+        }
         if (TimeUtils.canDoWithTime(lastTime, 60000)) {
             lastTime = now;
             zone.getService().chat(this.id, "Ta đi khu khác phát tiếp đây, tạm biệt các con");
