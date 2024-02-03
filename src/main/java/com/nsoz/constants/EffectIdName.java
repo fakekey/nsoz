@@ -1,0 +1,51 @@
+package com.nsoz.constants;
+
+public interface EffectIdName {
+
+    public static byte HIEU_QUA_THUC_AN_COM_NAM = 0;
+    public static byte HIEU_QUA_THUC_AN_TEMPURA = 1;
+    public static byte HIEU_QUA_THUC_AN_KATSUDON = 2;
+    public static byte HIEU_QUA_THUC_AN_SASHIMI = 3;
+    public static byte HIEU_QUA_THUC_AN_GA_QUAY = 4;
+    public static byte HIEU_UNG_BONG = 5;
+    public static byte HIEU_UNG_DONG_BANG = 6;
+    public static byte HIEU_UNG_CHOANG = 7;
+    public static byte MOI_NUA_GIAY_PHUC_HOI_HP = 8;
+    public static byte LUA_VO_HINH = 9;
+    public static byte HIEU_UNG_MANA_SHIELD = 10;
+    public static byte HIEU_UNG_TANG_NE_TRANH = 11;
+    public static byte HIEU_UNG_TANG_KINH_NGHIEM = 12;
+    public static byte TANG_TI_LE_HP_TU_DONG_DOI = 13;
+    public static byte TRANG_THAI_PHI_CHIEN_DAU = 14;
+    public static byte TRANG_THAI_TANG_HINH = 15;
+    public static byte TRANG_THAI_AN_THAN = 16;
+    public static byte GIAM_TRU_MAU_VA_TANG_TAN_CONG = 17;
+    public static byte TRANG_THAI_BI_TROI = 18;
+    public static byte TANG_KHANG_CHO_MINH_VA_DONG_DOI = 19;
+    public static byte GIAM_TRU_THOI_GIAN_CHO_MINH_VA_DONG_DOI = 20;
+    public static byte HIEU_UNG_BOM_MAU = 21;
+    public static byte HIEU_UNG_NHAN_2_KINH_NGHIEM = 22;
+    public static byte HIEU_UNG_BI_DUOC = 23;
+    public static byte HIEU_UNG_TANG_CHINH_XAC = 24;
+    public static byte HIEU_UNG_TANG_SUC_MANH = 25;
+    public static byte HIEU_UNG_TANG_KHANG = 26;
+    public static byte HIEU_UNG_TANG_MAU = 27;
+    public static byte HIEU_UNG_THUC_AN_5X = 28;
+    public static byte HIEU_UNG_SINH_MENH_DAN = 29;
+    public static byte HIEU_UNG_THUC_AN_6X = 30;
+    public static byte HIEU_UNG_THUC_AN_7X = 31;
+    public static byte HIEU_UNG_NHAN_3_KINH_NGHIEM = 32;
+    public static byte HIEU_UNG_NHAN_4_KINH_NGHIEM = 33;
+    public static byte THI_LUYEN = 34;
+    public static byte HIEU_UNG_THUC_AN_9X = 35;
+    public static byte HIEU_UNG_LONG_DEN_CA_CHEP_NUA_GIAY_HOI_PHUC_300_HP_MP = 36;
+    public static byte HIEU_UNG_LONG_DEN_NGOI_SAO_MIEN_GIAM_SAT_THUONG_20_PERCENT = 37;
+    public static byte HIEU_UNG_LONG_DEN_TRON_THEM_30_PERCENT_KINH_NGHIEM_KHI_DANH_QUAI = 38;
+    public static byte HIEU_UNG_LONG_DEN_ONG_TRANG_20_PERCENT_BO_QUA_KHANG_CUA_DOI_PHUONG = 39;
+    public static byte THIEN_NHAN_PHU = 40;
+    public static byte KHAI_NHAN_PHU = 41;
+    public static byte HIEU_UNG_PET_BI_RE_HANH_NUA_GIAY_HOI_PHUC_400_HP_MP = 42;
+    public static byte HIEU_UNG_BI_MA = 43;
+    public static byte HIEU_UNG_LANH_GIA = 44;
+    public static byte HIEU_UNG_LANH_DUOC = 45;
+}
