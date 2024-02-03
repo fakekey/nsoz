@@ -1,0 +1,61 @@
+services:
+  mysql:
+    image: mariadb:10.4.28
+    container_name: mysql
+    restart: always
+    environment:
+      MARIADB_ROOT_PASSWORD: 123456
+    command: [ "--wait_timeout=1800" ]
+    ports:
+      - "3306:3306"
+    volumes:
+      - game_data:/var/lib/mysql
+    networks:
+      mysql_phpmyadmin:
+        aliases:
+          - mysql
+
+  phpmyadmin:
+    image: phpmyadmin:5.2.1
+    container_name: phpmyadmin
+    restart: always
+    depends_on:
+      - mysql
+    links:
+      - mysql
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+      UPLOAD_LIMIT: 300M
+      PMA_USER: root
+      PMA_PASSWORD: 123456
+    ports:
+      - "80:80"
+    networks:
+      mysql_phpmyadmin:
+        aliases:
+          - phpmyadmin
+
+  mongo:
+    image: mongo:4.4.24
+    container_name: mongo
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: 123456
+    ports:
+      - "27017:27017"
+    volumes:
+      - game_data:/data/db
+      - game_data:/data/configdb
+    networks:
+      mysql_phpmyadmin:
+        aliases:
+          - mongo
+
+networks:
+  mysql_phpmyadmin:
+    driver: bridge
+
+volumes:
+  game_data:
