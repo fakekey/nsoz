@@ -27,7 +27,7 @@ public class TrungThu extends Event {
     private static final int DOI_BACH_HO = 0;
     private static final int VU_KHI_THOI_TRANG_7_NGAY = 1;
     private static final int VU_KHI_THOI_TRANG_30_NGAY = 2;
-    private static final int QUA_DAC_BIET = 9;
+    // private static final int QUA_DAC_BIET = 9;
     private static final int BANH_THAP_CAM = 3;
     private static final int BANH_DEO = 4;
     private static final int BANH_DAU_XANH = 5;
@@ -63,7 +63,7 @@ public class TrungThu extends Event {
                 return;
             }
             RandomCollection<Integer> rc = item.id == ItemName.HOP_BANH_THUONG ? itemsRecFromCoinItem : itemsRecFromGoldItem;
-            boolean isDone = useEventItem(_char, item.id, rc);
+            useEventItem(_char, item.id, rc);
         } else if (item.id == ItemName.LONG_DEN) {
             if (_char.getSlotNull() == 0) {
                 _char.warningBagFull();

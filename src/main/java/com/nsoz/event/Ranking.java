@@ -25,9 +25,8 @@ public class Ranking {
             for (int i = 0; i < 3; i++) {
                 ListLeaderBoard newList = new ListLeaderBoard(i);
                 Connection conn = DbManager.getInstance().getConnection(DbManager.SERVER);
-                PreparedStatement stmt = conn
-                        .prepareStatement("SELECT `name`, CAST(JSON_EXTRACT(event_point, \"$[" + i
-                                + "]\") AS INT) AS `eventPoint` FROM players where `server_id` = ? ORDER BY `eventPoint` DESC LIMIT ?;");
+                PreparedStatement stmt = conn.prepareStatement("SELECT `name`, CAST(JSON_EXTRACT(event_point, \"$[" + i
+                        + "]\") AS INT) AS `eventPoint` FROM players where `server_id` = ? ORDER BY `eventPoint` DESC LIMIT ?;");
                 stmt.setInt(1, Config.getInstance().getServerId());
                 stmt.setInt(2, newList.max);
                 ResultSet res = stmt.executeQuery();
@@ -91,28 +90,28 @@ class ListLeaderBoard {
     }
 
     public void updateLeaderBoard(Char _char) {
-        // int charEventPoint = _char.eventPoints[type];
-        // if (charEventPoint > 0) {
-        // int index = getIndexByChar(_char);
-        // try {
-        // lock.writeLock().lock();
-        // if (index == -1) {
-        // if (leaders.size() < max) {
-        // leaders.add(new LeaderBoard(_char.name, charEventPoint));
-        // } else {
-        // if (charEventPoint > lowestScore) {
-        // leaders.remove(max - 1);
-        // leaders.add(new LeaderBoard(_char.name, charEventPoint));
-        // }
-        // }
-        // } else {
-        // leaders.get(index).point = charEventPoint;
-        // }
-        // } finally {
-        // lock.writeLock().unlock();
-        // }
-        // sortAndGetLowestScore();
-        // }
+        int charEventPoint = _char.getOtherEventPoint()[type];
+        if (charEventPoint > 0) {
+            int index = getIndexByChar(_char);
+            try {
+                lock.writeLock().lock();
+                if (index == -1) {
+                    if (leaders.size() < max) {
+                        leaders.add(new LeaderBoard(_char.name, charEventPoint));
+                    } else {
+                        if (charEventPoint > lowestScore) {
+                            leaders.remove(max - 1);
+                            leaders.add(new LeaderBoard(_char.name, charEventPoint));
+                        }
+                    }
+                } else {
+                    leaders.get(index).point = charEventPoint;
+                }
+            } finally {
+                lock.writeLock().unlock();
+            }
+            sortAndGetLowestScore();
+        }
     }
 
     public void sortAndGetLowestScore() {
@@ -145,8 +144,7 @@ class ListLeaderBoard {
             StringBuilder sb = new StringBuilder();
             int n = 1;
             for (LeaderBoard leader : leaders) {
-                sb.append(n).append(". ").append(leader.name).append(" ")
-                        .append(String.format(format, leader.point)).append("\n");
+                sb.append(n).append(". ").append(leader.name).append(" ").append(String.format(format, leader.point)).append("\n");
                 n++;
             }
             _char.getService().showAlert("TOP SỰ KIỆN", sb.toString());

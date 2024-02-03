@@ -5,6 +5,7 @@ import com.nsoz.skill.Skill;
 import java.util.ArrayList;
 import java.util.List;
 
+@SuppressWarnings("unused")
 public class Bijuu {
 
     private List<Skill> skills;

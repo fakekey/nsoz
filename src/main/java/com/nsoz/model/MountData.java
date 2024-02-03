@@ -50,6 +50,10 @@ public class MountData {
         behind.add(icon);
     }
 
+    public void removeFrameBehind(short icon) {
+        behind.remove(icon);
+    }
+
     public short[][] getData() {
         short[][] frames = new short[6][];
         frames[0] = stand.toArray();

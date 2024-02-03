@@ -214,6 +214,12 @@ public class War {
                 item.isLock = false;
                 _char.addItemToBag(item);
             }
+            if (quantityPhao > 0 && Event.isLunarNewYear()) {
+                Item item = ItemFactory.getInstance().newItem(ItemName.MANH_PHAO_HOA);
+                item.setQuantity(quantity);
+                item.isLock = false;
+                _char.addItemToBag(item);
+            }
             int size = this.members.size();
             if (size > 3) {
                 size = 3;

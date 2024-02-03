@@ -48,7 +48,7 @@ public class SumMer extends Event {
     private static final int MAKE_VAI_CAKE = 0;
     private static final int MAKE_GIAY_CAKE = 1;
     private static final int MAKE_KEM_CAKE = 2;
-    private static final int MAKE_FIREWORK = 3;
+    // private static final int MAKE_FIREWORK = 3;
     public RandomCollection<Integer> vipItems = new RandomCollection<>();
     private ZonedDateTime start, end;
 
@@ -150,32 +150,25 @@ public class SumMer extends Event {
     @Override
     public void initStore() {
         StoreManager.getInstance().addItem((byte) StoreManager.TYPE_MISCELLANEOUS,
-                ItemStore.builder().id(432).itemID(ItemName.MAU_VE_THO_SO).coin(20000)
-                        .expire(ConstTime.FOREVER).build());
+                ItemStore.builder().id(432).itemID(ItemName.MAU_VE_THO_SO).coin(20000).expire(ConstTime.FOREVER).build());
         StoreManager.getInstance().addItem((byte) StoreManager.TYPE_MISCELLANEOUS,
-                ItemStore.builder().id(433).itemID(ItemName.MAU_VE_CAO_CAP).gold(20)
-                        .expire(ConstTime.FOREVER).build());
-        StoreManager.getInstance().addItem((byte) StoreManager.TYPE_MISCELLANEOUS, ItemStore
-                .builder().id(428).itemID(ItemName.TRE).coin(10).expire(ConstTime.FOREVER).build());
-        StoreManager.getInstance().addItem((byte) StoreManager.TYPE_MISCELLANEOUS, ItemStore
-                .builder().id(429).itemID(ItemName.DAY).coin(20).expire(ConstTime.FOREVER).build());
+                ItemStore.builder().id(433).itemID(ItemName.MAU_VE_CAO_CAP).gold(20).expire(ConstTime.FOREVER).build());
         StoreManager.getInstance().addItem((byte) StoreManager.TYPE_MISCELLANEOUS,
-                ItemStore.builder().id(430).itemID(ItemName.GIAY2).coin(20)
-                        .expire(ConstTime.FOREVER).build());
-        StoreManager.getInstance().addItem((byte) StoreManager.TYPE_MISCELLANEOUS, ItemStore
-                .builder().id(431).itemID(ItemName.VAI).coin(20).expire(ConstTime.FOREVER).build());
+                ItemStore.builder().id(428).itemID(ItemName.TRE).coin(10).expire(ConstTime.FOREVER).build());
         StoreManager.getInstance().addItem((byte) StoreManager.TYPE_MISCELLANEOUS,
-                ItemStore.builder().id(902).itemID(ItemName.KEM_OC_QUE).coin(10)
-                        .expire(ConstTime.FOREVER).build());
+                ItemStore.builder().id(429).itemID(ItemName.DAY).coin(20).expire(ConstTime.FOREVER).build());
         StoreManager.getInstance().addItem((byte) StoreManager.TYPE_MISCELLANEOUS,
-                ItemStore.builder().id(903).itemID(ItemName.KEM_CHOCOLATE).coin(20)
-                        .expire(ConstTime.FOREVER).build());
+                ItemStore.builder().id(430).itemID(ItemName.GIAY2).coin(20).expire(ConstTime.FOREVER).build());
         StoreManager.getInstance().addItem((byte) StoreManager.TYPE_MISCELLANEOUS,
-                ItemStore.builder().id(904).itemID(ItemName.KEM_DAU).coin(20)
-                        .expire(ConstTime.FOREVER).build());
+                ItemStore.builder().id(431).itemID(ItemName.VAI).coin(20).expire(ConstTime.FOREVER).build());
         StoreManager.getInstance().addItem((byte) StoreManager.TYPE_MISCELLANEOUS,
-                ItemStore.builder().id(905).itemID(ItemName.KEM_SUA).coin(20)
-                        .expire(ConstTime.FOREVER).build());
+                ItemStore.builder().id(902).itemID(ItemName.KEM_OC_QUE).coin(10).expire(ConstTime.FOREVER).build());
+        StoreManager.getInstance().addItem((byte) StoreManager.TYPE_MISCELLANEOUS,
+                ItemStore.builder().id(903).itemID(ItemName.KEM_CHOCOLATE).coin(20).expire(ConstTime.FOREVER).build());
+        StoreManager.getInstance().addItem((byte) StoreManager.TYPE_MISCELLANEOUS,
+                ItemStore.builder().id(904).itemID(ItemName.KEM_DAU).coin(20).expire(ConstTime.FOREVER).build());
+        StoreManager.getInstance().addItem((byte) StoreManager.TYPE_MISCELLANEOUS,
+                ItemStore.builder().id(905).itemID(ItemName.KEM_SUA).coin(20).expire(ConstTime.FOREVER).build());
     }
 
     @Override
@@ -201,8 +194,7 @@ public class SumMer extends Event {
     }
 
     private void makeVaiCake(Char p, int amount) {
-        int[][] itemRequires = new int[][] {{ItemName.TRE, 3}, {ItemName.DAY, 3}, {ItemName.VAI, 3},
-                {ItemName.MAU_VE_CAO_CAP, 1}};
+        int[][] itemRequires = new int[][] {{ItemName.TRE, 3}, {ItemName.DAY, 3}, {ItemName.VAI, 3}, {ItemName.MAU_VE_CAO_CAP, 1}};
         int itemIdReceive = ItemName.DIEU_VAI;
         boolean isDone = makeEventItem(p, amount, itemRequires, 0, 0, 0, itemIdReceive);
         if (isDone) {
@@ -212,15 +204,13 @@ public class SumMer extends Event {
     }
 
     private void makeGiayCake(Char p, int amount) {
-        int[][] itemRequires = new int[][] {{ItemName.TRE, 3}, {ItemName.DAY, 3},
-                {ItemName.GIAY2, 3}, {ItemName.MAU_VE_THO_SO, 1}};
+        int[][] itemRequires = new int[][] {{ItemName.TRE, 3}, {ItemName.DAY, 3}, {ItemName.GIAY2, 3}, {ItemName.MAU_VE_THO_SO, 1}};
         int itemIdReceive = ItemName.DIEU_GIAY;
         makeEventItem(p, amount, itemRequires, 0, 0, 0, itemIdReceive);
     }
 
     private void makeKemCake(Char p, int amount) {
-        int[][] itemRequires = new int[][] {{ItemName.KEM_OC_QUE, 3}, {ItemName.KEM_CHOCOLATE, 3},
-                {ItemName.KEM_DAU, 3}, {ItemName.KEM_SUA, 3}};
+        int[][] itemRequires = new int[][] {{ItemName.KEM_OC_QUE, 3}, {ItemName.KEM_CHOCOLATE, 3}, {ItemName.KEM_DAU, 3}, {ItemName.KEM_SUA, 3}};
         int itemIdReceive = ItemName.HU_KEM_DAM;
         makeEventItem(p, amount, itemRequires, 0, 100000, 0, itemIdReceive);
     }
@@ -277,24 +267,23 @@ public class SumMer extends Event {
         p.menus.add(new Menu(CMDMenu.EXECUTE, "Đua TOP", () -> {
             p.menus.clear();
             /*
-             * p.menus.add(new Menu(CMDMenu.EXECUTE, "Cho bé ăn", () -> { p.menus.clear();
-             * p.menus.add(new Menu(CMDMenu.EXECUTE, "Bảng xếp hạng", () -> { viewTop(p,
-             * TOP_LUCKY_CHARM, "Cho bé ăn", "%d. %s đã cho ăn %s lần"); })); p.menus.add(new
-             * Menu(CMDMenu.EXECUTE, "Phần thưởng", () -> { StringBuilder sb = new StringBuilder();
-             * sb.append("Top 1:").append("\n"); sb.append("- Hoả Kỳ Lân v.v MCS\n");
-             * sb.append("- Áo dài v.v MCS\n"); sb.append("- 3 Rương huyền bí\n");
-             * sb.append("- 10 Trúc bạch thiên lữ\n\n"); sb.append("Top 2:").append("\n");
-             * sb.append("- Hoả Kỳ Lân v.v\n"); sb.append("- Áo dài v.v\n");
+             * p.menus.add(new Menu(CMDMenu.EXECUTE, "Cho bé ăn", () -> { p.menus.clear(); p.menus.add(new
+             * Menu(CMDMenu.EXECUTE, "Bảng xếp hạng", () -> { viewTop(p, TOP_LUCKY_CHARM, "Cho bé ăn",
+             * "%d. %s đã cho ăn %s lần"); })); p.menus.add(new Menu(CMDMenu.EXECUTE, "Phần thưởng", () -> {
+             * StringBuilder sb = new StringBuilder(); sb.append("Top 1:").append("\n");
+             * sb.append("- Hoả Kỳ Lân v.v MCS\n"); sb.append("- Áo dài v.v MCS\n");
+             * sb.append("- 3 Rương huyền bí\n"); sb.append("- 10 Trúc bạch thiên lữ\n\n");
+             * sb.append("Top 2:").append("\n"); sb.append("- Hoả Kỳ Lân v.v\n"); sb.append("- Áo dài v.v\n");
              * sb.append("- 1 Rương huyền bí\n"); sb.append("- 5 Trúc bạch thiên lữ\n\n");
              * sb.append("Top 3 - 5:").append("\n"); sb.append("- Hoả Kỳ Lân 3 tháng\n");
              * sb.append("- Áo dài 3 tháng\n"); sb.append("- 2 Rương bạch ngân\n");
              * sb.append("- 3 Trúc bạch thiên lữ\n\n"); sb.append("Top 6 - 10:").append("\n");
              * sb.append("- Hoả Kỳ Lân 1 tháng\n"); sb.append("- 1 rương bạch ngân\n");
-             * p.getService().showAlert("Phần thưởng", sb.toString()); })); if (isEnded()) { int
-             * ranking = getRanking(p, TOP_LUCKY_CHARM); if (ranking <= 10 &&
-             * p.getEventPoint().getRewarded(TOP_LUCKY_CHARM) == 0) { p.menus.add(new
-             * Menu(CMDMenu.EXECUTE, String.format("Nhận Thưởng TOP %d", ranking), () -> {
-             * receiveReward(p, TOP_LUCKY_CHARM); })); } } p.getService().openUIMenu(); }));
+             * p.getService().showAlert("Phần thưởng", sb.toString()); })); if (isEnded()) { int ranking =
+             * getRanking(p, TOP_LUCKY_CHARM); if (ranking <= 10 &&
+             * p.getEventPoint().getRewarded(TOP_LUCKY_CHARM) == 0) { p.menus.add(new Menu(CMDMenu.EXECUTE,
+             * String.format("Nhận Thưởng TOP %d", ranking), () -> { receiveReward(p, TOP_LUCKY_CHARM); })); } }
+             * p.getService().openUIMenu(); }));
              */
             p.menus.add(new Menu(CMDMenu.EXECUTE, "Thợ làm Diều", () -> {
                 p.menus.clear();
@@ -326,10 +315,9 @@ public class SumMer extends Event {
                 if (isEnded()) {
                     int ranking = getRanking(p, TOP_MAKE_VAI_CAKE);
                     if (ranking <= 10 && p.getEventPoint().getRewarded(TOP_MAKE_VAI_CAKE) == 0) {
-                        p.menus.add(new Menu(CMDMenu.EXECUTE,
-                                String.format("Nhận Thưởng TOP %d", ranking), () -> {
-                                    receiveReward(p, TOP_MAKE_VAI_CAKE);
-                                }));
+                        p.menus.add(new Menu(CMDMenu.EXECUTE, String.format("Nhận Thưởng TOP %d", ranking), () -> {
+                            receiveReward(p, TOP_MAKE_VAI_CAKE);
+                        }));
                     }
                 }
                 p.getService().openUIMenu();
@@ -341,20 +329,13 @@ public class SumMer extends Event {
             StringBuilder sb = new StringBuilder();
             /*
              * sb.append("- Số lần cho bé ăn: ")
-             * .append(NinjaUtils.getCurrency(p.getEventPoint().getPoint(TOP_LUCKY_CHARM))).
-             * append("\n");
+             * .append(NinjaUtils.getCurrency(p.getEventPoint().getPoint(TOP_LUCKY_CHARM))). append("\n");
              */
-            sb.append("- Số diều đã làm: ")
-                    .append(NinjaUtils.getCurrency(p.getEventPoint().getPoint(TOP_MAKE_VAI_CAKE)))
-                    .append("\n");
+            sb.append("- Số diều đã làm: ").append(NinjaUtils.getCurrency(p.getEventPoint().getPoint(TOP_MAKE_VAI_CAKE))).append("\n");
             sb.append("===CÔNG THỨC===").append("\n");
-            sb.append("- Diều Vải: 3 Tre + 3 Dây + 3 Vải + 1 Màu vẽ cao cấp = 1 Diều Vải.")
-                    .append("\n");
-            sb.append("- Diều Giấy: 3 Tre + 3 Dây + 3 Giấy +  Màu vẽ thô sơ = 1 Diều Giấy.")
-                    .append("\n");
-            sb.append(
-                    "- Hũ Kem Dầm: 3 Kem ốc quế + 3 Kem chocolate + 3 Kem dâu + 3 Kem sữa + 100k xu = 1 Hũ kem dầm.")
-                    .append("\n");
+            sb.append("- Diều Vải: 3 Tre + 3 Dây + 3 Vải + 1 Màu vẽ cao cấp = 1 Diều Vải.").append("\n");
+            sb.append("- Diều Giấy: 3 Tre + 3 Dây + 3 Giấy +  Màu vẽ thô sơ = 1 Diều Giấy.").append("\n");
+            sb.append("- Hũ Kem Dầm: 3 Kem ốc quế + 3 Kem chocolate + 3 Kem dâu + 3 Kem sữa + 100k xu = 1 Hũ kem dầm.").append("\n");
             p.getService().showAlert("Hướng Dẫn", sb.toString());
         }));
 
@@ -363,8 +344,8 @@ public class SumMer extends Event {
     public void makePreciousTree(Char p, int type) {
         int point = type == 1 ? 5000 : 20000;
         if (p.getEventPoint().getPoint(EventPoint.DIEM_TIEU_XAI) < point) {
-            p.getService().npcChat(NpcName.TIEN_NU, "Ngươi cần tối thiểu "
-                    + NinjaUtils.getCurrency(point) + " điểm sự kiện mới có thể đổi được vật này.");
+            p.getService().npcChat(NpcName.TIEN_NU,
+                    "Ngươi cần tối thiểu " + NinjaUtils.getCurrency(point) + " điểm sự kiện mới có thể đổi được vật này.");
             return;
         }
 
@@ -373,8 +354,7 @@ public class SumMer extends Event {
             return;
         }
 
-        Item item = ItemFactory.getInstance()
-                .newItem(type == 1 ? ItemName.LAM_SON_DA : ItemName.TRUC_BACH_THIEN_LU);
+        Item item = ItemFactory.getInstance().newItem(type == 1 ? ItemName.LAM_SON_DA : ItemName.TRUC_BACH_THIEN_LU);
         p.addItemToBag(item);
         p.getEventPoint().subPoint(EventPoint.DIEM_TIEU_XAI, point);
     }
@@ -387,51 +367,48 @@ public class SumMer extends Event {
             case MapName.KHU_LUYEN_TAP:
                 break;
             /*
-             * case MapName.TRUONG_OOKAZA: zone.addNpc(NpcFactory.getInstance().newNpc(99,
-             * NpcName.EM_BE, 1426, 552, 0)); break; case MapName.TRUONG_HARUNA:
-             * zone.addNpc(NpcFactory.getInstance().newNpc(99, NpcName.EM_BE, 502, 408, 0)); break;
-             * case MapName.TRUONG_HIROSAKI: zone.addNpc(NpcFactory.getInstance().newNpc(99,
-             * NpcName.EM_BE, 1207, 168, 0)); break;
+             * case MapName.TRUONG_OOKAZA: zone.addNpc(NpcFactory.getInstance().newNpc(99, NpcName.EM_BE, 1426,
+             * 552, 0)); break; case MapName.TRUONG_HARUNA: zone.addNpc(NpcFactory.getInstance().newNpc(99,
+             * NpcName.EM_BE, 502, 408, 0)); break; case MapName.TRUONG_HIROSAKI:
+             * zone.addNpc(NpcFactory.getInstance().newNpc(99, NpcName.EM_BE, 1207, 168, 0)); break;
              * 
-             * case MapName.LANG_TONE: zone.addNpc(NpcFactory.getInstance().newNpc(99,
-             * NpcName.EM_BE, 1427, 264, 0)); break;
+             * case MapName.LANG_TONE: zone.addNpc(NpcFactory.getInstance().newNpc(99, NpcName.EM_BE, 1427, 264,
+             * 0)); break;
              * 
-             * case MapName.LANG_KOJIN: zone.addNpc(NpcFactory.getInstance().newNpc(99,
-             * NpcName.EM_BE, 621, 288, 0)); break;
+             * case MapName.LANG_KOJIN: zone.addNpc(NpcFactory.getInstance().newNpc(99, NpcName.EM_BE, 621, 288,
+             * 0)); break;
              * 
-             * case MapName.LANG_CHAI: zone.addNpc(NpcFactory.getInstance().newNpc(99,
-             * NpcName.EM_BE, 1804, 384, 0)); break;
+             * case MapName.LANG_CHAI: zone.addNpc(NpcFactory.getInstance().newNpc(99, NpcName.EM_BE, 1804, 384,
+             * 0)); break;
              * 
-             * case MapName.LANG_SANZU: zone.addNpc(NpcFactory.getInstance().newNpc(99,
-             * NpcName.EM_BE, 320, 288, 0)); break;
+             * case MapName.LANG_SANZU: zone.addNpc(NpcFactory.getInstance().newNpc(99, NpcName.EM_BE, 320, 288,
+             * 0)); break;
              * 
-             * case MapName.LANG_CHAKUMI: zone.addNpc(NpcFactory.getInstance().newNpc(99,
-             * NpcName.EM_BE, 626, 312, 0)); break;
+             * case MapName.LANG_CHAKUMI: zone.addNpc(NpcFactory.getInstance().newNpc(99, NpcName.EM_BE, 626,
+             * 312, 0)); break;
              * 
-             * case MapName.LANG_ECHIGO: zone.addNpc(NpcFactory.getInstance().newNpc(99,
-             * NpcName.EM_BE, 360, 360, 0)); break;
+             * case MapName.LANG_ECHIGO: zone.addNpc(NpcFactory.getInstance().newNpc(99, NpcName.EM_BE, 360,
+             * 360, 0)); break;
              * 
-             * case MapName.LANG_OSHIN: zone.addNpc(NpcFactory.getInstance().newNpc(99,
-             * NpcName.EM_BE, 921, 408, 0)); break;
+             * case MapName.LANG_OSHIN: zone.addNpc(NpcFactory.getInstance().newNpc(99, NpcName.EM_BE, 921, 408,
+             * 0)); break;
              * 
-             * case MapName.LANG_SHIIBA: zone.addNpc(NpcFactory.getInstance().newNpc(99,
-             * NpcName.EM_BE, 583, 408, 0)); break;
+             * case MapName.LANG_SHIIBA: zone.addNpc(NpcFactory.getInstance().newNpc(99, NpcName.EM_BE, 583,
+             * 408, 0)); break;
              * 
-             * case MapName.LANG_FEARRI: zone.addNpc(NpcFactory.getInstance().newNpc(99,
-             * NpcName.EM_BE, 611, 312, 0)); break;
+             * case MapName.LANG_FEARRI: zone.addNpc(NpcFactory.getInstance().newNpc(99, NpcName.EM_BE, 611,
+             * 312, 0)); break;
              */
             case MapName.CANH_DONG_FUKI:
-                Mob monster = new Mob(zone.getMonsters().size(),
-                        (short) MobName.TU_LOI_DIEU_THIEN_LONG, 1000000000, (byte) 10, (short) 3355,
+                Mob monster = new Mob(zone.getMonsters().size(), (short) MobName.TU_LOI_DIEU_THIEN_LONG, 1000000000, (byte) 10, (short) 3355,
                         (short) 240, false, true, zone);
                 zone.addMob(monster);
                 break;
 
             case MapName.RUNG_DAO_SAKURA:
                 if (zone.id == 15) {
-                    monster = new Mob(zone.getMonsters().size(),
-                            (short) MobName.TU_LOI_DIEU_THIEN_LONG, 1000000000, (byte) 100,
-                            (short) 1928, (short) 240, false, true, zone);
+                    monster = new Mob(zone.getMonsters().size(), (short) MobName.TU_LOI_DIEU_THIEN_LONG, 1000000000, (byte) 100, (short) 1928,
+                            (short) 240, false, true, zone);
                     zone.addMob(monster);
                 }
                 break;
@@ -469,8 +446,7 @@ public class SumMer extends Event {
         if (ranking == 1) {
             mount.options.add(new ItemOption(ItemOptionName.NE_DON_ADD_POINT_TYPE_1, 200));
             mount.options.add(new ItemOption(ItemOptionName.CHINH_XAC_ADD_POINT_TYPE_1, 100));
-            mount.options.add(new ItemOption(
-                    ItemOptionName.TAN_CONG_KHI_DANH_CHI_MANG_POINT_PERCENT_TYPE_1, 100));
+            mount.options.add(new ItemOption(ItemOptionName.TAN_CONG_KHI_DANH_CHI_MANG_POINT_PERCENT_TYPE_1, 100));
             mount.options.add(new ItemOption(ItemOptionName.CHI_MANG_ADD_POINT_TYPE_1, 100));
             mount.options.add(new ItemOption(58, 10));
             mount.options.add(new ItemOption(128, 10));
@@ -528,10 +504,8 @@ public class SumMer extends Event {
             pet.options.add(new ItemOption(ItemOptionName.MP_TOI_DA_ADD_POINT_TYPE_1, 3000));
             pet.options.add(new ItemOption(ItemOptionName.CHI_MANG_POINT_TYPE_1, 100)); // chi mang
             pet.options.add(new ItemOption(ItemOptionName.TAN_CONG_ADD_POINT_PERCENT_TYPE_8, 10));
-            pet.options
-                    .add(new ItemOption(ItemOptionName.MOI_5_GIAY_PHUC_HOI_MP_POINT_TYPE_1, 200));
-            pet.options
-                    .add(new ItemOption(ItemOptionName.MOI_5_GIAY_PHUC_HOI_HP_POINT_TYPE_1, 200));
+            pet.options.add(new ItemOption(ItemOptionName.MOI_5_GIAY_PHUC_HOI_MP_POINT_TYPE_1, 200));
+            pet.options.add(new ItemOption(ItemOptionName.MOI_5_GIAY_PHUC_HOI_HP_POINT_TYPE_1, 200));
             pet.options.add(new ItemOption(ItemOptionName.KHONG_NHAN_EXP_TYPE_0, 1));
 
             tree.setQuantity(10);

@@ -1473,28 +1473,28 @@ class ListLeaderBoard {
     }
 
     public void updateLeaderBoard(Char _char) {
-        // int charEventPoint = _char.eventPoints[type];
-        // if (charEventPoint > 0) {
-        // int index = getIndexByChar(_char);
-        // try {
-        // lock.writeLock().lock();
-        // if (index == -1) {
-        // if (leaders.size() < 20) {
-        // leaders.add(new LeaderBoard(_char.name, charEventPoint));
-        // } else {
-        // if (charEventPoint > lowestScore) {
-        // leaders.remove(19);
-        // leaders.add(new LeaderBoard(_char.name, charEventPoint));
-        // }
-        // }
-        // } else {
-        // leaders.get(index).point = charEventPoint;
-        // }
-        // } finally {
-        // lock.writeLock().unlock();
-        // }
-        // sortAndGetLowestScore();
-        // }
+        int charEventPoint = _char.getOtherEventPoint()[type];
+        if (charEventPoint > 0) {
+            int index = getIndexByChar(_char);
+            try {
+                lock.writeLock().lock();
+                if (index == -1) {
+                    if (leaders.size() < 20) {
+                        leaders.add(new LeaderBoard(_char.name, charEventPoint));
+                    } else {
+                        if (charEventPoint > lowestScore) {
+                            leaders.remove(19);
+                            leaders.add(new LeaderBoard(_char.name, charEventPoint));
+                        }
+                    }
+                } else {
+                    leaders.get(index).point = charEventPoint;
+                }
+            } finally {
+                lock.writeLock().unlock();
+            }
+            sortAndGetLowestScore();
+        }
     }
 
     public void sortAndGetLowestScore() {

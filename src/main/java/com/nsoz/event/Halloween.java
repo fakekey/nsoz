@@ -152,7 +152,7 @@ public class Halloween extends Event {
                 return;
             }
             int[][] itemRequires = new int[][] {{ItemName.HOP_MA_QUY, 1}, {ItemName.CHIA_KHOA, 1}};
-            boolean isDone = useEventItem(_char, 1, itemRequires, 0, 0, 0, itemsRecFromGoldItem);
+            useEventItem(_char, 1, itemRequires, 0, 0, 0, itemsRecFromGoldItem);
             _char.getEventPoint().addPoint(TOP_DEVIL_BOX, 1);
         } else if (item.id == ItemName.GAY_PHEP || item.id == ItemName.CHOI_BAY) {
             if (_char.getSlotNull() == 0) {

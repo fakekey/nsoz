@@ -58,10 +58,8 @@ public class WarMember {
         dcm.append("month", month);
         dcm.append("year", year);
         MongoCollection<Document> collection = MongoDbConnection.getCollection("top_war");
-        Bson filter = Filters.and(Filters.eq("type", type), Filters.eq("player_id", id),
-                Filters.eq("server_id", Config.getInstance().getServerId()),
-                Filters.eq("week", weekOfYear), Filters.eq("month", month),
-                Filters.eq("year", year));
+        Bson filter = Filters.and(Filters.eq("type", type), Filters.eq("player_id", id), Filters.eq("server_id", Config.getInstance().getServerId()),
+                Filters.eq("week", weekOfYear), Filters.eq("month", month), Filters.eq("year", year));
         Document update = new Document("$set", dcm);
         UpdateOptions options = new UpdateOptions().upsert(true);
         collection.updateOne(filter, update, options);

@@ -34,8 +34,8 @@ public class KoroKing extends Event {
 
     @Override
     public void useItem(Char _char, Item item) {
-        if (item.id == ItemName.TINH_DAU_TO_DIEP || item.id == ItemName.TINH_DAU_NGU_THAO
-                || item.id == ItemName.NGOI_SAO_NHO || item.id == ItemName.NGOI_SAO_MAY_MAN) {
+        if (item.id == ItemName.TINH_DAU_TO_DIEP || item.id == ItemName.TINH_DAU_NGU_THAO || item.id == ItemName.NGOI_SAO_NHO
+                || item.id == ItemName.NGOI_SAO_MAY_MAN) {
             if (_char.getSlotNull() == 0) {
                 _char.warningBagFull();
                 return;
@@ -65,7 +65,7 @@ public class KoroKing extends Event {
                 rc = itemsRecFromCoinItem;
             }
 
-            boolean isDone = useEventItem(_char, item.id, rc);
+            useEventItem(_char, item.id, rc);
         }
     }
 
@@ -93,8 +93,7 @@ public class KoroKing extends Event {
                 _char.getService().showInputDialog();
             }));
             _char.menus.add(new Menu(CMDMenu.EXECUTE, "Ngôi sao may mắn", () -> {
-                InputDialog input =
-                        new InputDialog(CMDInputDialog.NGOI_SAO_MAY_MAN, "Ngôi sao may mắn");
+                InputDialog input = new InputDialog(CMDInputDialog.NGOI_SAO_MAY_MAN, "Ngôi sao may mắn");
                 _char.setInput(input);
                 _char.getService().showInputDialog();
             }));
@@ -118,10 +117,9 @@ public class KoroKing extends Event {
                 doiHoaPhucSinh(_char, 2);
             }));
             _char.menus.add(new Menu(CMDMenu.EXECUTE, "Điểm sự kiện", () -> {
-                _char.getService().showAlert("Hướng dẫn", "- Điểm sự kiện: "
-                        + NinjaUtils.getCurrency(
-                                _char.getEventPoint().getPoint(EventPoint.DIEM_TIEU_XAI))
-                        + "\n\nBạn có thể quy đổi điểm sự kiện như sau\n- Hoa thiên diệu: 5.000 điểm\n- Hoa dạ yến: 20.000 điểm\n");
+                _char.getService().showAlert("Hướng dẫn",
+                        "- Điểm sự kiện: " + NinjaUtils.getCurrency(_char.getEventPoint().getPoint(EventPoint.DIEM_TIEU_XAI))
+                                + "\n\nBạn có thể quy đổi điểm sự kiện như sau\n- Hoa thiên diệu: 5.000 điểm\n- Hoa dạ yến: 20.000 điểm\n");
             }));
             _char.getService().openUIMenu();
         }));
@@ -160,15 +158,15 @@ public class KoroKing extends Event {
     }
 
     public void ngoiSaoNho(Char _char, int amount) {
-        int[][] itemRequires = new int[][] {{ItemName.HUY_HIEU, 1}, {ItemName.CAY_KEO_MUT, 1},
-                {ItemName.HOP_BANH_NGOT, 1}, {ItemName.QUA_BONG_BONG, 1}};
+        int[][] itemRequires =
+                new int[][] {{ItemName.HUY_HIEU, 1}, {ItemName.CAY_KEO_MUT, 1}, {ItemName.HOP_BANH_NGOT, 1}, {ItemName.QUA_BONG_BONG, 1}};
         int itemIdReceive = ItemName.NGOI_SAO_NHO;
         makeEventItem(_char, amount, itemRequires, 0, 100000, 0, itemIdReceive);
     }
 
     public void ngoiSaoMayMan(Char _char, int amount) {
-        int[][] itemRequires = new int[][] {{ItemName.HUY_HIEU, 1}, {ItemName.CAY_KEO_MUT, 1},
-                {ItemName.HOP_BANH_NGOT, 1}, {ItemName.QUA_BONG_BONG, 1}};
+        int[][] itemRequires =
+                new int[][] {{ItemName.HUY_HIEU, 1}, {ItemName.CAY_KEO_MUT, 1}, {ItemName.HOP_BANH_NGOT, 1}, {ItemName.QUA_BONG_BONG, 1}};
         int itemIdReceive = ItemName.NGOI_SAO_MAY_MAN;
         makeEventItem(_char, amount, itemRequires, 20, 0, 0, itemIdReceive);
     }
@@ -186,16 +184,15 @@ public class KoroKing extends Event {
             useVipEventItem(_char, 2, rc);
             _char.removeItem(itemIndex, 1, true);
         } else {
-            _char.getService().npcChat((short) NpcName.KIRIKO,
-                    "Hãy tìm đúng loài hoa rồi đến gặp ta");
+            _char.getService().npcChat((short) NpcName.KIRIKO, "Hãy tìm đúng loài hoa rồi đến gặp ta");
         }
     }
 
     public void doiHoaPhucSinh(Char p, int type) {
         int point = type == 1 ? 5000 : 20000;
         if (p.getEventPoint().getPoint(EventPoint.DIEM_TIEU_XAI) < point) {
-            p.getService().npcChat(NpcName.TIEN_NU, "Ngươi cần tối thiểu "
-                    + NinjaUtils.getCurrency(point) + " điểm sự kiện mới có thể đổi được vật này.");
+            p.getService().npcChat(NpcName.TIEN_NU,
+                    "Ngươi cần tối thiểu " + NinjaUtils.getCurrency(point) + " điểm sự kiện mới có thể đổi được vật này.");
             return;
         }
 
@@ -204,8 +201,7 @@ public class KoroKing extends Event {
             return;
         }
 
-        Item item = ItemFactory.getInstance()
-                .newItem(type == 1 ? ItemName.HOA_THIEN_DIEU : ItemName.HOA_DA_YEN);
+        Item item = ItemFactory.getInstance().newItem(type == 1 ? ItemName.HOA_THIEN_DIEU : ItemName.HOA_DA_YEN);
         p.addItemToBag(item);
         p.getEventPoint().subPoint(EventPoint.DIEM_TIEU_XAI, point);
     }
@@ -223,8 +219,7 @@ public class KoroKing extends Event {
     public void bornKoroKing(Mob mob) {
         int incrementId = mob.zone.getMonsters().size();
         MobTemplate template = MobManager.getInstance().find(232);
-        Mob monster = new Mob(incrementId++, (short) template.id, mob.maxHP, mob.level, mob.x,
-                mob.y, false, template.isBoss(), mob.zone);
+        Mob monster = new Mob(incrementId++, (short) template.id, mob.maxHP, mob.level, mob.x, mob.y, false, template.isBoss(), mob.zone);
         mob.zone.addMob(monster);
     }
 

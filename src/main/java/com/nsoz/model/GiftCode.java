@@ -33,9 +33,8 @@ public class GiftCode {
                 return;
             }
 
-            PreparedStatement stmt = DbManager.getInstance().getConnection(DbManager.GIFT_CODE)
-                    .prepareStatement(SQLStatement.GET_GIFT_CODE, ResultSet.TYPE_SCROLL_SENSITIVE,
-                            ResultSet.CONCUR_UPDATABLE);
+            PreparedStatement stmt = DbManager.getInstance().getConnection(DbManager.GIFT_CODE).prepareStatement(SQLStatement.GET_GIFT_CODE,
+                    ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
             stmt.setString(1, code);
             stmt.setInt(2, Config.getInstance().getServerId());
             ResultSet res = stmt.executeQuery();
@@ -45,10 +44,10 @@ public class GiftCode {
                     return;
                 }
 
-                int id = res.getInt("id");
+                // int id = res.getInt("id");
                 byte status = res.getByte("status");
                 byte type = res.getByte("type");
-                byte serverId = res.getByte("server_id");
+                // byte serverId = res.getByte("server_id");
 
                 if (status == 1) {
                     player.getService().serverDialog("Mã quà tặng đã được sử dụng");
@@ -57,8 +56,7 @@ public class GiftCode {
                     player.getService().serverDialog("Mỗi người chỉ được sử dụng 1 lần.");
                     return;
                 } else if (player.user.session.getCountUseGiftCode() >= 10) {
-                    player.getService()
-                            .serverDialog("Mỗi ngày chỉ có thể nhập tối đa 10 mã quà tặng.");
+                    player.getService().serverDialog("Mỗi ngày chỉ có thể nhập tối đa 10 mã quà tặng.");
                     return;
                 }
 
@@ -79,8 +77,7 @@ public class GiftCode {
 
                 if (gold > 0) {
                     player.addGold(gold);
-                    sb.append(String.format("- %s lượng", NinjaUtils.getCurrency(gold)))
-                            .append("\n");
+                    sb.append(String.format("- %s lượng", NinjaUtils.getCurrency(gold))).append("\n");
                 }
 
                 if (yen > 0) {
@@ -102,9 +99,7 @@ public class GiftCode {
                     }
 
                     player.addItemToBag(newItem);
-                    sb.append(String.format("- x%s %s",
-                            NinjaUtils.getCurrency(newItem.getQuantity()), newItem.template.name))
-                            .append("\n");
+                    sb.append(String.format("- x%s %s", NinjaUtils.getCurrency(newItem.getQuantity()), newItem.template.name)).append("\n");
                 }
 
                 player.user.session.addUseGiftCode();
@@ -130,8 +125,7 @@ public class GiftCode {
     public boolean isUsedGiftCode(Char player, String giftCode) {
         try {
             PreparedStatement stmt = DbManager.getInstance().getConnection(DbManager.GIFT_CODE)
-                    .prepareStatement(SQLStatement.CHECK_EXIST_USED_GIFT_CODE,
-                            ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
+                    .prepareStatement(SQLStatement.CHECK_EXIST_USED_GIFT_CODE, ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
             stmt.setString(1, giftCode);
             stmt.setInt(2, player.id);
             stmt.setInt(3, player.user.id);
@@ -153,8 +147,7 @@ public class GiftCode {
     public void addUsedGiftCode(Char player, String giftCode) {
         try {
             Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-            PreparedStatement stmt = DbManager.getInstance().getConnection(DbManager.GIFT_CODE)
-                    .prepareStatement(SQLStatement.INSERT_USED_GIFT_CODE);
+            PreparedStatement stmt = DbManager.getInstance().getConnection(DbManager.GIFT_CODE).prepareStatement(SQLStatement.INSERT_USED_GIFT_CODE);
             stmt.setInt(1, player.id);
             stmt.setInt(2, player.user.id);
             stmt.setString(3, giftCode);

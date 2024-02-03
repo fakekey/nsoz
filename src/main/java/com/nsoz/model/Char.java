@@ -410,6 +410,10 @@ public class Char {
     @Setter
     private EventPoint eventPoint;
 
+    @Getter
+    @Setter
+    private int[] otherEventPoint;
+
     @Setter
     private FashionStrategy fashionStrategy;
 
@@ -12649,16 +12653,6 @@ public class Char {
                 this.setCollectionBox(collectionBox);
                 JSONArray j = (JSONArray) JSONValue.parse(rs.getString("onOSkill"));
                 this.onOSkill = new byte[] {-1, -1, -1, -1, -1};
-                // if (j != null) {
-                // this.onOSkill = new byte[j.size()];
-                // for (int t = 0; t < this.onOSkill.length; t++) {
-                // if (t < j.size()) {
-                // this.onOSkill[t] = Byte.parseByte(j.get(t).toString());
-                // }
-                // }
-                // } else {
-                // this.onOSkill = new byte[0];
-                // }
                 if (j != null) {
                     for (int t = 0; t < this.onOSkill.length; t++) {
                         if (t < j.size()) {
@@ -12719,6 +12713,7 @@ public class Char {
                 initListCanEnterMap();
                 if (Event.getCurrentEvent() != null) {
                     loadEventPoint();
+                    loadOtherEventPoint();
                 }
                 return true;
             } finally {
@@ -12730,6 +12725,35 @@ public class Char {
             ex.printStackTrace();
         }
         return false;
+    }
+
+    public void loadOtherEventPoint() {
+        try {
+            PreparedStatement stmt = DbManager.getInstance().getConnection(DbManager.LOAD_CHAR).prepareStatement(
+                    "SELECT `name`, `event_point` FROM `players` WHERE `id` = ? LIMIT 1", ResultSet.TYPE_SCROLL_SENSITIVE,
+                    ResultSet.CONCUR_READ_ONLY);
+            stmt.setInt(1, this.id);
+            ResultSet rs = stmt.executeQuery();
+            try {
+                rs.beforeFirst();
+                if (rs.next()) {
+                    JSONArray j = (JSONArray) JSONValue.parse(rs.getString("event_point"));
+                    this.otherEventPoint = new int[] {0, 0, 0};
+                    if (j != null) {
+                        for (int i = 0; i < j.size(); i++) {
+                            this.otherEventPoint[i] = ((Long) j.get(i)).intValue();
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                Log.error(e.getMessage(), e);
+            } finally {
+                rs.close();
+                stmt.close();
+            }
+        } catch (Exception e) {
+            Log.error(e.getMessage(), e);
+        }
     }
 
     public void loadEventPoint() {
