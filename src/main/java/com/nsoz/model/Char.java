@@ -17434,7 +17434,7 @@ public class Char {
                         mob.typeTool = 1;
                         break;
                     default:
-                        mob.idSkill_atk = -1;
+                        mob.idSkill_atk = 191;
                         mob.typeTool = 0;
                         break;
                 }

@@ -342,6 +342,27 @@ public class Mob {
         this.isDead = true;
         this.chars.clear();
         this.attackedChars.clear();
+        Vector<Byte> removeEffect = new Vector<>();
+        for (Entry<Byte, Effect> entry : this.effects.entrySet()) {
+            Effect eff = entry.getValue();
+            if (eff != null) {
+                removeEffect.add(entry.getKey());
+            }
+        }
+        for (byte b : removeEffect) {
+            this.effects.remove(b);
+            if (b == 1) {
+                zone.setFire(this, false);
+            } else if (b == 2) {
+                zone.setIce(this, false);
+            } else if (b == 3) {
+                zone.setWind(this, false);
+            } else if (b == 14) {
+                zone.setMove(this, false);
+            } else if (b == 0) {
+                zone.setDisable(this, false);
+            }
+        }
     }
 
     public int randomItemID() {
