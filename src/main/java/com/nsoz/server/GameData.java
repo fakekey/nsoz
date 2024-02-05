@@ -55,6 +55,20 @@ public class GameData extends Thread {
     public static final int[] COIN_GOT_NGOC = {0, 5000, 40000, 135000, 320000, 625000, 1080000, 1715000, 2560000, 3645000, 5000000};
     public static final int[][] NGOC_KHAM_EXP = {{0, 0}, {200, 10}, {500, 20}, {1000, 50}, {2000, 100}, {5000, 200}, {10000, 500}, {20000, 1000},
             {50000, 2000}, {100000, 5000}, {100000, 10000}};
+    public static final long[] UP_EXP_SKILL_CLONE =
+            new long[] {39000000000L, 42000000000L, 45500000000L, 49000000000L, 52500000000L, 56000000000L, 59500000000L, 63000000000L, 67000000000L};
+    public static long UP_EXP_SKILL_CLONE_MAX = 0;
+
+    public static long getUpExpSkillCloneMax() {
+        if (UP_EXP_SKILL_CLONE_MAX == 0) {
+            for (long exp : UP_EXP_SKILL_CLONE) {
+                UP_EXP_SKILL_CLONE_MAX += exp;
+            }
+            return UP_EXP_SKILL_CLONE_MAX;
+        }
+
+        return UP_EXP_SKILL_CLONE_MAX;
+    }
 
     public static final HashMap<Integer, Long> HASH_MAP = new HashMap<>();
 

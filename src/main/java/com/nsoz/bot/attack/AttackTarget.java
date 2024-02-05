@@ -36,9 +36,9 @@ public class AttackTarget implements IAttack {
     public AttackTarget(Char target) {
         this.target = target;
         this.lock = new ReentrantReadWriteLock();
-        cmd = new Message(CMD.PLAYER_ATTACK_PLAYER);
+        this.cmd = new Message(CMD.PLAYER_ATTACK_PLAYER);
         try {
-            cmd.writer().writeInt(target.id);
+            this.cmd.writer().writeInt(target.id);
         } catch (Exception e) {
             Log.error(e.getMessage(), e);
         }

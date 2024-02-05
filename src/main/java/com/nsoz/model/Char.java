@@ -217,7 +217,7 @@ public class Char {
     public int dameDown;
     public int exactly, miss, fatalDame, percentFatalDame;
     public int resFire, resIce, resWind, fatal, reactDame, sysUp, sysDown;
-    public long exp, expDown;
+    public long exp, expDown, expSkillClone;
     public byte hieuChien, typePk;
     public Clan clan;
     public int[] potential;
@@ -5260,6 +5260,8 @@ public class Char {
                 skill.lastTimeUseThisSkill = now;
                 addMp(-skill.manaUse);
                 getService().updateMp();
+                zone.getService().setSkillPaint_1(new ArrayList<>(), this, (byte) skill.template.id);
+                zone.getService().setSkillPaint_2(new ArrayList<>(), this, (byte) skill.template.id);
                 if (skill.template.id == 67 || skill.template.id == 68 || skill.template.id == 69 || skill.template.id == 70
                         || skill.template.id == 71 || skill.template.id == 72) {
 
@@ -5268,7 +5270,26 @@ public class Char {
                         return;
                     }
 
-                    if (timeCountDown == 0 && !(isBot())) {
+                    if (isBot()) {
+                        try {
+                            PreparedStatement stmt = DbManager.getInstance().getConnection(DbManager.GAME).prepareStatement(
+                                    "SELECT * FROM `clone_char` WHERE `id` = ? LIMIT 1", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
+                            stmt.setInt(1, -(10000000 + this.id));
+                            ResultSet res = stmt.executeQuery();
+                            try {
+                                if (!res.first()) {
+                                    return;
+                                }
+                            } finally {
+                                res.close();
+                                stmt.close();
+                            }
+                        } catch (Exception e) {
+                            Log.error(e.getMessage(), e);
+                        }
+                    }
+
+                    if (timeCountDown == 0 && !isBot()) {
                         int index = getIndexItemByIdInBag(545);
                         if (index == -1) {
                             serverMessage("Không đủ " + ItemManager.getInstance().getItemName(545));
@@ -5345,6 +5366,29 @@ public class Char {
         param2 += param2 * this.optionsSupportSkill[SkillOptionName.TANG_POINT_PERCENT_HIEU_CUA_CHIEU_CAP_15_CAP_35_CAP_40] / 100;
         Effect eff = new Effect(EffectIdName.MOI_NUA_GIAY_PHUC_HOI_HP, 5000, param);
         em.setEffect(eff);
+        if (this.isNhanBan && ((CloneChar) this).human != null) {
+            Char _char = ((CloneChar) this).human;
+            int distance = NinjaUtils.getDistance(this.x, this.y, _char.x, _char.y);
+            int d = NinjaUtils.getDistance(skill.dx, skill.dy, 0, 0);
+            if (distance <= d) {
+                Effect eff2 = new Effect(EffectIdName.MOI_NUA_GIAY_PHUC_HOI_HP, 5000, param2);
+                _char.em.setEffect(eff2);
+            }
+        }
+        if (this.isNhanBan && ((CloneChar) this).human != null && ((CloneChar) this).human.group != null) {
+            Char human = ((CloneChar) this).human;
+            List<Char> list = human.group.getCharsInZone(mapId, zone.id);
+            for (Char _char : list) {
+                if (_char != human) {
+                    int distance = NinjaUtils.getDistance(this.x, this.y, _char.x, _char.y);
+                    int d = NinjaUtils.getDistance(skill.dx, skill.dy, 0, 0);
+                    if (distance <= d) {
+                        Effect eff2 = new Effect(EffectIdName.MOI_NUA_GIAY_PHUC_HOI_HP, 5000, param2);
+                        _char.em.setEffect(eff2);
+                    }
+                }
+            }
+        }
         if (this.group != null) {
             List<Char> list = this.group.getCharsInZone(mapId, zone.id);
             for (Char _char : list) {
@@ -5370,6 +5414,35 @@ public class Char {
         eff.param2 = param2;
         em.setEffect(eff);
         setAbility();
+        if (this.isNhanBan && ((CloneChar) this).human != null) {
+            Char _char = ((CloneChar) this).human;
+            int distance = NinjaUtils.getDistance(this.x, this.y, _char.x, _char.y);
+            int d = NinjaUtils.getDistance(skill.dx, skill.dy, 0, 0);
+            if (distance <= d) {
+                Effect eff2 = new Effect(EffectIdName.TANG_KHANG_CHO_MINH_VA_DONG_DOI, 90000, param);
+                eff2.param2 = param2;
+                _char.em.setEffect(eff2);
+                _char.setAbility();
+            }
+        }
+        if (this.isNhanBan && ((CloneChar) this).human != null && ((CloneChar) this).human.group != null) {
+            Char human = ((CloneChar) this).human;
+            List<Char> list = human.group.getCharsInZone(mapId, zone.id);
+            for (Char _char : list) {
+                if (_char != human) {
+                    if (_char != null) {
+                        int distance = NinjaUtils.getDistance(this.x, this.y, _char.x, _char.y);
+                        int d = NinjaUtils.getDistance(skill.dx, skill.dy, 0, 0);
+                        if (distance <= d) {
+                            Effect eff2 = new Effect(EffectIdName.TANG_KHANG_CHO_MINH_VA_DONG_DOI, 90000, param);
+                            eff2.param2 = param2;
+                            _char.em.setEffect(eff2);
+                            _char.setAbility();
+                        }
+                    }
+                }
+            }
+        }
         if (this.group != null) {
             List<Char> list = this.group.getCharsInZone(mapId, zone.id);
             for (Char _char : list) {
@@ -5395,6 +5468,29 @@ public class Char {
         param += param * this.optionsSupportSkill[SkillOptionName.TANG_POINT_PERCENT_HIEU_CUA_CHIEU_CAP_15_CAP_35_CAP_40] / 100;
         Effect eff = new Effect(EffectIdName.GIAM_TRU_THOI_GIAN_CHO_MINH_VA_DONG_DOI, param * 1000, Effect.EFF_ME);
         em.setEffect(eff);
+        if (this.isNhanBan && ((CloneChar) this).human != null) {
+            Char _char = ((CloneChar) this).human;
+            int distance = NinjaUtils.getDistance(this.x, this.y, _char.x, _char.y);
+            int d = NinjaUtils.getDistance(skill.dx, skill.dy, 0, 0);
+            if (distance <= d) {
+                Effect eff2 = new Effect(EffectIdName.GIAM_TRU_THOI_GIAN_CHO_MINH_VA_DONG_DOI, param * 1000, Effect.EFF_FRIEND);
+                _char.em.setEffect(eff2);
+            }
+        }
+        if (this.isNhanBan && ((CloneChar) this).human != null && ((CloneChar) this).human.group != null) {
+            Char human = ((CloneChar) this).human;
+            List<Char> list = human.group.getCharsInZone(mapId, zone.id);
+            for (Char _char : list) {
+                if (_char != human) {
+                    int distance = NinjaUtils.getDistance(this.x, this.y, _char.x, _char.y);
+                    int d = NinjaUtils.getDistance(skill.dx, skill.dy, 0, 0);
+                    if (distance <= d) {
+                        Effect eff2 = new Effect(EffectIdName.GIAM_TRU_THOI_GIAN_CHO_MINH_VA_DONG_DOI, param * 1000, Effect.EFF_FRIEND);
+                        _char.em.setEffect(eff2);
+                    }
+                }
+            }
+        }
         if (this.group != null) {
             List<Char> list = this.group.getCharsInZone(mapId, zone.id);
             for (Char _char : list) {
@@ -9427,9 +9523,13 @@ public class Char {
         }));
         menus.add(new Menu(CMDMenu.EXECUTE, "Hoàn thành nhiệm vụ (1000 lượng)", () -> {
             if (user.gold >= 1000) {
+                if (taskMain == null) {
+                    getService().npcChat(NpcName.ADMIN, "Con phải nhận nhiệm vụ mới thì ta mới giúp con được!");
+                    return;
+                }
                 addGold(-1000);
                 finishTask(true);
-                getService().npcChat(NpcName.TAJIMA, "Ta đã hoàn thành giúp con rồi đó, hãy đi nhận nhiệm vụ tiếp theo đi!");
+                getService().npcChat(NpcName.ADMIN, "Ta đã hoàn thành giúp con rồi đó, hãy đi nhận nhiệm vụ tiếp theo đi!");
             } else {
                 serverDialog("Không đủ lượng!");
             }
@@ -12145,7 +12245,7 @@ public class Char {
     public void loadDisplay() {
         try {
             PreparedStatement ps = DbManager.getInstance().getConnection(DbManager.LOAD_CHAR).prepareStatement(
-                    "SELECT `players`.`name`, `players`.`gender`, `players`.`class`, `players`.`last_logout_time`, `players`.`head`, `players`.`head2`, `players`.`body`, `players`.`weapon`, `players`.`leg`, `players`.`online`, CAST(JSON_EXTRACT(data, \"$.exp\") AS INT) AS `exp` FROM `players` WHERE `players`.`id` = ?");
+                    "SELECT `players`.`name`, `players`.`gender`, `players`.`class`, `players`.`last_logout_time`, `players`.`head`, `players`.`head2`, `players`.`body`, `players`.`weapon`, `players`.`leg`, `players`.`online`, CAST(JSON_EXTRACT(data, \"$.exp\") AS INT) AS `exp`, CAST(JSON_EXTRACT(data, \"$.expSkillClone\") AS INT) AS `expSkillClone` FROM `players` WHERE `players`.`id` = ?");
             ps.setInt(1, this.id);
             ResultSet rs = ps.executeQuery();
             try {
@@ -12186,6 +12286,10 @@ public class Char {
                 this.exp = Server.EXP_MAX;
             }
             this.level = NinjaUtils.getLevel(this.exp);
+            this.expSkillClone = rs.getLong("expSkillClone");
+            if (this.expSkillClone > GameData.getUpExpSkillCloneMax()) {
+                this.expSkillClone = GameData.getUpExpSkillCloneMax();
+            }
         } catch (SQLException ex) {
             Log.error("load display err: " + ex.getMessage(), ex);
         }
@@ -13801,17 +13905,6 @@ public class Char {
     }
 
     public void npcTajima() {
-        /*
-         * if (this.user.isDuplicate) { menus.add(new Menu(CMDMenu.EXECUTE, "Đổi tên đăng nhập", () -> {
-         * changeUsername(); })); } if (taskMain != null && (taskMain.taskId == TaskName.NV_CHIEN_TRUONG ||
-         * taskMain.taskId == TaskName.NV_THU_TAI_MAY_MAN || taskMain.taskId ==
-         * TaskName.NV_HOAT_DONG_HANG_NGAY)) { menus.add(new Menu(CMDMenu.EXECUTE,
-         * "Hoàn thành nhiệm vụ (1000 lượng)", () -> { if (user.gold >= 1000) { addGold(-1000);
-         * finishTask(true); getService().npcChat(NpcName.TAJIMA, "Ta đã hoàn thành giúp con rồi đó!"); }
-         * else { serverDialog("Không đủ lượng!"); } })); } if (this.level < 10 &&
-         * equipment[ItemTemplate.TYPE_VUKHI] == null && getIndexItemByIdInBag(ItemName.KIEM_GO) == -1) {
-         * menus.add(new Menu(CMDMenu.EXECUTE, "Nhận kiếm gỗ", () -> { receiveWoodenSword(); })); }
-         */
         menus.add(new Menu(CMDMenu.EXECUTE, "Hướng dẫn", () -> {
             menus.clear();
             menus.add(new Menu(CMDMenu.EXECUTE, "Cách chơi", () -> {
@@ -13915,6 +14008,7 @@ public class Char {
         getService().onBijuuInfo(id, bijuu);
         em.displayAllEffect(sv, z.getService(), this);
         getService().loadMount(this);
+        getService().loadMobMe();
     }
 
     public void npcUmayaki_2() {
@@ -16419,6 +16513,36 @@ public class Char {
             clone.human.addExp(exp);
             return;
         }
+        if (!isClone() && clone != null && clone.isNhanBan && !clone.isDead) {
+            this.expSkillClone += exp;
+            if (this.expSkillClone > GameData.getUpExpSkillCloneMax()) {
+                this.expSkillClone = GameData.getUpExpSkillCloneMax();
+            }
+            for (int i = 0; i < vSkill.size(); i++) {
+                Skill skill = vSkill.get(i);
+                int templateId = skill.template.id;
+                if (templateId >= 67 && templateId <= 72) {
+                    int preLevel = skill.point;
+                    int nextLevel = (byte) NinjaUtils.get9xSkillLevel(this.expSkillClone);
+                    if (nextLevel - preLevel > 0) {
+                        skill = GameData.getInstance().getSkill(classId, templateId, nextLevel);
+                        vSkill.set(i, skill);
+                        for (int j = 0; j < vSkillFight.size(); j++) {
+                            if (vSkillFight.get(j).template.id == templateId) {
+                                vSkillFight.set(j, skill);
+                            }
+                        }
+                        serverMessage(String.format("%sđã tăng lên cấp %d.", skill.template.name, nextLevel));
+                        setAbility();
+                        getService().loadSkill();
+                        this.hp = this.maxHP;
+                        this.mp = this.maxMP;
+                        getService().updateHp();
+                        getService().updateMp();
+                    }
+                }
+            }
+        }
         if (this.expDown > 0) {
             if (this.expDown - exp >= 0) {
                 this.expDown -= exp;
@@ -16923,6 +17047,7 @@ public class Char {
                 JSONObject data = new JSONObject();
                 data.put("exp", this.exp);
                 data.put("expDown", this.expDown);
+                data.put("expSkillClone", this.expSkillClone);
                 data.put("countPB", this.countPB);
                 if (this.countPB == 0) {
                     Dungeon dungeon = (Dungeon) findWorld(World.DUNGEON);
@@ -17797,9 +17922,9 @@ public class Char {
                     setXY((short) 205, (short) 264);
                     em.setEffect(new Effect(14, 10000, 0));
                     arena.join(this);
-                    if (clone != null && clone.isNhanBan && !clone.isDead) {
-                        arena.join(clone);
-                    }
+                    // if (clone != null && clone.isNhanBan && !clone.isDead) {
+                    // arena.join(clone);
+                    // }
                 }
             }
         } catch (IOException ex) {

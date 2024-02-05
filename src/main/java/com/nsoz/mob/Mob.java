@@ -424,7 +424,7 @@ public class Mob {
                 }
             } else if (type == VDMQ) {
                 itemId = RandomItem.VDMQ.next();
-                if (itemId == ItemName.PHAN_THAN_LENH && this.level < 100) {
+                if (itemId == ItemName.PHAN_THAN_LENH && this.level < 90) {
                     return;
                 }
             } else if (type == LANH_DIA_GIA_TOC) {

@@ -6,6 +6,8 @@ import com.nsoz.effect.Effect;
 import com.nsoz.mob.Mob;
 import com.nsoz.skill.Skill;
 import com.nsoz.ability.AbilityFromEquip;
+import com.nsoz.constants.CMD;
+import com.nsoz.constants.SkillName;
 import com.nsoz.fashion.FashionFromEquip;
 import com.nsoz.item.Mount;
 import com.nsoz.item.Equip;
@@ -26,6 +28,7 @@ import com.nsoz.event.eventpoint.EventPoint;
 import com.nsoz.item.Item;
 import com.nsoz.network.NoService;
 import com.nsoz.network.Controller;
+import com.nsoz.network.Message;
 import com.nsoz.network.Service;
 import com.nsoz.map.zones.Zone;
 import com.nsoz.util.Log;
@@ -42,6 +45,7 @@ public class CloneChar extends Char {
     public int damePercent;
     public short selectSkillId;
     public boolean isUpdate;
+    private Message cmd;
 
     public CloneChar(Char _char, int damePercent) {
         super(-(10000000 + _char.id));
@@ -49,6 +53,12 @@ public class CloneChar extends Char {
         this.isNhanBan = true;
         this.human = _char;
         this.damePercent = damePercent;
+        this.cmd = new Message(CMD.BUFF_LIVE);
+        try {
+            this.cmd.writer().writeInt(human.id);
+        } catch (Exception e) {
+            Log.error(e.getMessage(), e);
+        }
     }
 
     @Override
@@ -83,10 +93,8 @@ public class CloneChar extends Char {
     @Override
     public boolean load() {
         try {
-            PreparedStatement stmt = DbManager.getInstance().getConnection(DbManager.GAME)
-                    .prepareStatement("SELECT * FROM `clone_char` WHERE `id` = ? LIMIT 1",
-                            ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
-
+            PreparedStatement stmt = DbManager.getInstance().getConnection(DbManager.GAME).prepareStatement(
+                    "SELECT * FROM `clone_char` WHERE `id` = ? LIMIT 1", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
             stmt.setInt(1, this.id);
             ResultSet res = stmt.executeQuery();
             try {
@@ -133,12 +141,9 @@ public class CloneChar extends Char {
                         Skill skill = GameData.getInstance().getSkill(this.classId, skillId, point);
                         if (skill.template.type == Skill.SKILL_AUTO_USE) {
                             this.vSupportSkill.add(skill);
-                        } else if ((skill.template.type == Skill.SKILL_CLICK_USE_ATTACK
-                                || skill.template.type == Skill.SKILL_CLICK_LIVE
-                                || skill.template.type == Skill.SKILL_CLICK_USE_BUFF
-                                || skill.template.type == Skill.SKILL_CLICK_NPC)
-                                && (skill.template.maxPoint == 0
-                                        || (skill.template.maxPoint > 0 && skill.point > 0))) {
+                        } else if ((skill.template.type == Skill.SKILL_CLICK_USE_ATTACK || skill.template.type == Skill.SKILL_CLICK_LIVE
+                                || skill.template.type == Skill.SKILL_CLICK_USE_BUFF || skill.template.type == Skill.SKILL_CLICK_NPC)
+                                && (skill.template.maxPoint == 0 || (skill.template.maxPoint > 0 && skill.point > 0))) {
 
                             this.vSkillFight.add(skill);
                         }
@@ -172,8 +177,7 @@ public class CloneChar extends Char {
                         int size = jso.size();
                         for (int i = 0; i < size; i++) {
                             Equip equipe = new Equip((JSONObject) jso.get(i));
-                            if ((equipe.hasExpire()
-                                    && System.currentTimeMillis() > equipe.expire)) {
+                            if ((equipe.hasExpire() && System.currentTimeMillis() > equipe.expire)) {
                                 continue;
                             }
                             this.equipment[equipe.template.type] = equipe;
@@ -193,16 +197,6 @@ public class CloneChar extends Char {
                     }
                     JSONArray j = (JSONArray) JSONValue.parse(res.getString("onOSkill"));
                     this.onOSkill = new byte[] {-1, -1, -1, -1, -1};
-                    // if (j != null) {
-                    // this.onOSkill = new byte[j.size()];
-                    // for (int t = 0; t < this.onOSkill.length; t++) {
-                    // if (t < j.size()) {
-                    // this.onOSkill[t] = ((Long) j.get(t)).byteValue();
-                    // }
-                    // }
-                    // } else {
-                    // this.onOSkill = new byte[0];
-                    // }
                     if (j != null) {
                         this.onOSkill = new byte[j.size()];
                         for (int t = 0; t < this.onOSkill.length; t++) {
@@ -262,8 +256,7 @@ public class CloneChar extends Char {
                     initListCanEnterMap();
                 } else {
                     PreparedStatement stmt2 =
-                            DbManager.getInstance().getConnection(DbManager.SERVER)
-                                    .prepareStatement("INSERT INTO `clone_char`(`id`) VALUES (?);");
+                            DbManager.getInstance().getConnection(DbManager.SERVER).prepareStatement("INSERT INTO `clone_char`(`id`) VALUES (?);");
                     stmt2.setInt(1, this.id);
                     stmt2.executeUpdate();
                     load();
@@ -385,8 +378,7 @@ public class CloneChar extends Char {
                         }
                     }
                     if (!flag) {
-                        MongoCollection<Document> collection =
-                                MongoDbConnection.getCollection("clone_player");
+                        MongoCollection<Document> collection = MongoDbConnection.getCollection("clone_player");
                         Document document = new Document();
                         document.put("player_id", this.id);
                         document.put("equipment", jEquipment);
@@ -401,9 +393,8 @@ public class CloneChar extends Char {
                     e.printStackTrace();
                 }
 
-                PreparedStatement stmt =
-                        DbManager.getInstance().getConnection(DbManager.SAVE_DATA).prepareStatement(
-                                "UPDATE `clone_char` SET `data` = ?, `point` = ?, `potential` = ?, `spoint` = ?, `equiped` = ?, `fashion` = ?, `mount` = ?, `effect` = ?, `onCSkill` = ?, `onKSkill` = ?, `onOSkill` = ?, `class` = ?, `skill` = ?, `select_skill` = ?, `bijuu`= ? WHERE `id` = ? LIMIT 1;");
+                PreparedStatement stmt = DbManager.getInstance().getConnection(DbManager.SAVE_DATA).prepareStatement(
+                        "UPDATE `clone_char` SET `data` = ?, `point` = ?, `potential` = ?, `spoint` = ?, `equiped` = ?, `fashion` = ?, `mount` = ?, `effect` = ?, `onCSkill` = ?, `onKSkill` = ?, `onOSkill` = ?, `class` = ?, `skill` = ?, `select_skill` = ?, `bijuu`= ? WHERE `id` = ? LIMIT 1;");
                 stmt.setString(1, jData);
                 stmt.setInt(2, this.potentialPoint);
                 stmt.setString(3, jPotentials);
@@ -504,11 +495,16 @@ public class CloneChar extends Char {
         getEm().displayAllEffect(sv, zone.getService(), clone);
         getService().loadMount(this);
         isUpdate = true;
+        getService().loadMobMe();
     }
 
     @Override
     public void close() {
         this.isDead = true;
+        if (cmd != null) {
+            cmd.cleanup();
+            cmd = null;
+        }
     }
 
     @Override
@@ -537,9 +533,32 @@ public class CloneChar extends Char {
             if (isNhanBan && classId == 6) {
                 synchronized (vSkillFight) {
                     for (Skill skill : vSkillFight) {
-                        if (!skill.isCooldown()
-                                && skill.template.type == Skill.SKILL_CLICK_USE_BUFF) {
-                            human.useSkillBuff((byte) (human.x > this.x ? 1 : -1), skill);
+                        if (!skill.isCooldown() && (skill.template.type == 2 || skill.template.type == 4)) {
+                            if (skill.template.id == SkillName.CHIEU_SUISHOU) {
+                                if (human.isDead || (float) human.hp >= (float) human.maxHP * 90f / 100f) {
+                                    continue;
+                                }
+                            }
+                            if (skill.template.id == SkillName.CHIEU_KUSENMONO) {
+                                if (!human.isDead) {
+                                    continue;
+                                } else {
+                                    if (cmd == null) {
+                                        continue;
+                                    }
+                                    Message ms = new Message(CMD.BUFF_LIVE, cmd.getData());
+                                    try {
+                                        this.hoiSinh(ms);
+                                        continue;
+                                    } catch (Exception e) {
+                                        Log.error(e.getMessage(), e);
+                                    } finally {
+                                        ms.cleanup();
+                                    }
+                                }
+                            }
+                            this.useSkillBuff((byte) (human.x > this.x ? 1 : -1), skill);
+                            break;
                         }
                     }
                 }

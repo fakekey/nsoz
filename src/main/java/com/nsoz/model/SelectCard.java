@@ -56,7 +56,10 @@ public class SelectCard extends AbsSelectCard {
         add(Card.builder().id(ItemName.YEN).rate(8).quantity(30000).build());
         add(Card.builder().id(ItemName.YEN).rate(8).quantity(50000).build());
         add(Card.builder().id(ItemName.YEN).rate(8).quantity(100000).build());
-        add(Card.builder().id(ItemName.YEN).rate(8).quantity(200000).build());
+        add(Card.builder().id(ItemName.YEN).rate(6).quantity(200000).build());
+        add(Card.builder().id(ItemName.YEN).rate(4).quantity(500000).build());
+        add(Card.builder().id(ItemName.YEN).rate(3).quantity(1000000).build());
+        add(Card.builder().id(ItemName.YEN).rate(3).quantity(5000000).build());
         add(Card.builder().id(ItemName.LANG_BAO).rate(0.1).build());
         add(Card.builder().id(ItemName.KHI_BAO).rate(0.1).build());
         add(Card.builder().id(ItemName.SACH_VO_CONG_IKKAKUJUU).rate(1).build());

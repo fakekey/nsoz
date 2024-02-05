@@ -518,7 +518,7 @@ public class AdminService {
         if (skill != null) {
             if (!p.isHuman) {
                 int skillTemplateID = skill.template.id;
-                if (skillTemplateID >= 68 && skillTemplateID <= 72) {
+                if (skillTemplateID >= 67 && skillTemplateID <= 72) {
                     p.serverMessage("Phân thân không thể học chiêu này.");
                     return;
                 }

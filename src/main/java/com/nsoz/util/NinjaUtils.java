@@ -36,6 +36,7 @@ import com.nsoz.map.MapManager;
 import com.nsoz.map.TileMap;
 import com.nsoz.map.zones.Zone;
 import com.nsoz.server.Config;
+import com.nsoz.server.GameData;
 import com.nsoz.server.Server;
 
 import net.time4j.PlainDate;
@@ -354,6 +355,16 @@ public class NinjaUtils {
             num -= Server.exps[i];
         }
         return 1;
+    }
+
+    public static int get9xSkillLevel(long num) {
+        for (int i = 1; i <= GameData.UP_EXP_SKILL_CLONE.length; i++) {
+            if (num < GameData.UP_EXP_SKILL_CLONE[i - 1]) {
+                return i;
+            }
+            num -= GameData.UP_EXP_SKILL_CLONE[i - 1];
+        }
+        return 10;
     }
 
     public static long getExpFromLevel(int level) {
