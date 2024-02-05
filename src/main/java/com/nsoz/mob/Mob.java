@@ -104,6 +104,7 @@ public class Mob {
     public Lock lock = new ReentrantLock();
 
     public Object mobMeFocus = null;
+    public boolean isCantAttack = false;
 
     public Hashtable<Byte, Effect> effects = new Hashtable<>();
 
@@ -660,7 +661,7 @@ public class Mob {
     }
 
     public void thunuoiAttack(Char owner) {
-        if (this.mobMeFocus == null) {
+        if (this.mobMeFocus == null || this.isCantAttack) {
             return;
         }
         if (this.mobMeFocus instanceof Mob) {

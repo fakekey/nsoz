@@ -1,6 +1,7 @@
 package com.nsoz.item;
 
 import com.nsoz.constants.ItemName;
+import com.nsoz.constants.ItemOptionName;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
@@ -177,6 +178,8 @@ public class Item {
                 this.options.add(new ItemOption(92, 100));
                 this.options.add(new ItemOption(86, 200));
             }
+        } else if (this.template.isTypeBiKip()) {
+            this.options.add(new ItemOption(59, 3));
         } else if (this.template.type == ItemTemplate.TYPE_MON4) {// Thú cưỡi
             this.options.add(new ItemOption(65, 0));// kinh nghiệm
             this.options.add(new ItemOption(66, 1000));// thể lực
@@ -411,6 +414,9 @@ public class Item {
             } else if (this.id == ItemName.TUAN_LOC) {
                 this.options.add(new ItemOption(6, 5000));
                 this.options.add(new ItemOption(87, 5000));
+            } else if (this.id == ItemName.HOA_LONG) {
+                this.options.add(new ItemOption(ItemOptionName.ST_LEN_QUAI_POINT_TYPE_1, 45000));
+                this.options.add(new ItemOption(ItemOptionName.ST_LEN_NGUOI_POINT_TYPE_1, 9000));
             }
         } else if (this.template.type == ItemTemplate.TYPE_NGOC_KHAM) {
             if (this.id == 652) {

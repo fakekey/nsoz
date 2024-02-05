@@ -6008,6 +6008,10 @@ public class Char {
                 }
             }
         } catch (Exception e) {
+            if (e instanceof InterruptedException) {
+                Thread.currentThread().interrupt();
+                return;
+            }
             Log.error("err: " + e.getMessage(), e);
         }
     }
@@ -6636,6 +6640,10 @@ public class Char {
                 }
             }
         } catch (Exception e) {
+            if (e instanceof InterruptedException) {
+                Thread.currentThread().interrupt();
+                return;
+            }
             Log.error(e.getMessage(), e);
         }
     }
@@ -17420,6 +17428,8 @@ public class Char {
                     mob.damageOnPlayer = damageOnPlayer;
                     mob.damageOnPlayer2 = damageOnPlayer - (damageOnPlayer / 10);
                 }
+                mob.idSkill_atk = 191;
+                mob.typeTool = 0;
                 switch (id) {
                     case MobName.HAI_MA_CAP_3:
                         mob.idSkill_atk = 5;
@@ -17433,9 +17443,23 @@ public class Char {
                         mob.idSkill_atk = 1;
                         mob.typeTool = 1;
                         break;
-                    default:
-                        mob.idSkill_atk = 191;
-                        mob.typeTool = 0;
+                    case MobName.DOI_DEN:
+                        mob.damageOnMob = 150;
+                        mob.damageOnMob2 = mob.damageOnMob - (mob.damageOnMob / 10);
+                        mob.damageOnPlayer = 15;
+                        mob.damageOnPlayer2 = mob.damageOnPlayer - (mob.damageOnPlayer / 10);
+                        break;
+                    case MobName.CHIM_TINH_ANH:
+                        mob.damageOnMob = 1000;
+                        mob.damageOnMob2 = mob.damageOnMob - (mob.damageOnMob / 10);
+                        mob.damageOnPlayer = 100;
+                        mob.damageOnPlayer2 = mob.damageOnPlayer - (mob.damageOnPlayer / 10);
+                        break;
+                    case MobName.LONG_DEN_TRON:
+                    case MobName.LONG_DEN_CA_CHEP:
+                    case MobName.LONG_DEN_NGOI_SAO:
+                    case MobName.LONG_DEN_MAT_TRANG:
+                        mob.isCantAttack = true;
                         break;
                 }
                 mobMe = mob;
