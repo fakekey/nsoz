@@ -1,5 +1,9 @@
 package com.nsoz.map;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 import com.nsoz.constants.MapName;
 import com.nsoz.map.zones.AikoRedRockArea;
 import com.nsoz.map.zones.AkaCave;
@@ -10,10 +14,6 @@ import com.nsoz.map.zones.Zone;
 import com.nsoz.model.Char;
 import com.nsoz.util.Log;
 import com.nsoz.util.NinjaUtils;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.locks.ReadWriteLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
 import lombok.Getter;
 
 public class Map {
@@ -23,7 +23,7 @@ public class Map {
     private List<Zone> zones = new ArrayList<>();
     public TileMap tilemap;
     public static boolean running = true;
-    public Thread threadUpdateChar, threadUpdateOther, threadUpdatePet;
+    public Thread threadUpdateChar, threadUpdateOther;
     public War war;
     private ReadWriteLock lock;
 
@@ -98,35 +98,6 @@ public class Map {
             Log.error(String.format("Char: %s, Map: %s, Equiped is null: %b, Cleaned: %b", _char.name, this.id, _char.equipment == null,
                     _char.isCleaned), e);
             e.printStackTrace();
-        }
-    }
-
-    public void updatePet() {
-        while (running) {
-            try {
-                long l1 = System.currentTimeMillis();
-                lock.readLock().lock();
-                try {
-                    for (Zone zone : zones) {
-                        if (!zone.isClosed()) {
-                            zone.updatePet();
-                        }
-                    }
-                } finally {
-                    lock.readLock().unlock();
-                }
-                long l2 = System.currentTimeMillis() - l1;
-                if (l2 >= 500L) {
-                    continue;
-                }
-                try {
-                    Thread.sleep(500L - l2);
-                } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
-                }
-            } catch (Exception e2) {
-                e2.printStackTrace();
-            }
         }
     }
 
@@ -215,13 +186,6 @@ public class Map {
             }
         });
         this.threadUpdateOther.start();
-        this.threadUpdatePet = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                updatePet();
-            }
-        });
-        this.threadUpdatePet.start();
     }
 
     public void close() {
@@ -233,10 +197,6 @@ public class Map {
             this.threadUpdateOther.interrupt();
         }
         this.threadUpdateOther = null;
-        if (this.threadUpdatePet != null && this.threadUpdatePet.isAlive()) {
-            this.threadUpdatePet.interrupt();
-        }
-        this.threadUpdatePet = null;
     }
 
     public Zone rand() {

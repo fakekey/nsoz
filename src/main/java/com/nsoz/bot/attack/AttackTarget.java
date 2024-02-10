@@ -1,19 +1,6 @@
 package com.nsoz.bot.attack;
 
-import com.nsoz.model.Char;
-import com.nsoz.network.Message;
-import com.nsoz.server.Config;
-import com.nsoz.skill.Skill;
-import com.nsoz.util.Log;
-import com.nsoz.util.NinjaUtils;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.EOFException;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
-import java.util.concurrent.locks.ReentrantLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import com.nsoz.bot.Bot;
 import com.nsoz.bot.IAttack;
@@ -21,7 +8,11 @@ import com.nsoz.constants.CMD;
 import com.nsoz.constants.EffectIdName;
 import com.nsoz.constants.SkillName;
 import com.nsoz.effect.Effect;
-import com.nsoz.map.zones.Zone;
+import com.nsoz.model.Char;
+import com.nsoz.network.Message;
+import com.nsoz.skill.Skill;
+import com.nsoz.util.Log;
+import com.nsoz.util.NinjaUtils;
 
 public class AttackTarget implements IAttack {
 
@@ -109,6 +100,21 @@ public class AttackTarget implements IAttack {
         return null;
     }
 
+    public boolean isEnoughDistance(Bot me, Skill skill) {
+        int num = 0;
+        if (me.classId == 0 || me.classId == 1 || me.classId == 3 || me.classId == 5) {
+            num = 40;
+        }
+        int num2 = me.x - skill.dx;
+        int num3 = me.x + skill.dx;
+        int num4 = me.y - skill.dy - num;
+        int num5 = me.y + skill.dy;
+        if (num2 <= target.x && target.x <= num3 && num4 <= target.y && target.y <= num5) {
+            return true;
+        }
+        return false;
+    }
+
     public void combo(Bot me) {
         if (isComboing || target.isInvisible()) {
             return;
@@ -125,16 +131,16 @@ public class AttackTarget implements IAttack {
                         if (skill40 != null) {
                             while (true) {
                                 if (System.currentTimeMillis() > l2) {
-                                    if (useSkillAttack(me, skill40)) {
-                                        Thread.sleep(500L);
+                                    if (isEnoughDistance(me, skill40) && useSkillAttack(me, skill40)) {
+                                        Thread.sleep(1000L);
                                     }
                                     break;
                                 }
                             }
                         }
-                    } else if (useSkillAttack(me, skill40)) {
+                    } else if (isEnoughDistance(me, skill40) && useSkillAttack(me, skill40)) {
                         isComboing = true;
-                        Thread.sleep(500L);
+                        Thread.sleep(1000L);
                     }
                     isComboing = false;
                     break;
@@ -152,8 +158,8 @@ public class AttackTarget implements IAttack {
                                 if (skill40 != null) {
                                     while (true) {
                                         if (System.currentTimeMillis() > l2) {
-                                            if (useSkillAttack(me, skill40)) {
-                                                Thread.sleep(500L);
+                                            if (isEnoughDistance(me, skill40) && useSkillAttack(me, skill40)) {
+                                                Thread.sleep(1000L);
                                             }
                                             useHideOnce = true;
                                             me.isDontMove = false;
@@ -172,17 +178,17 @@ public class AttackTarget implements IAttack {
                             if (skill40 != null) {
                                 while (true) {
                                     if (System.currentTimeMillis() > l2) {
-                                        if (useSkillAttack(me, skill40)) {
-                                            Thread.sleep(500L);
+                                        if (isEnoughDistance(me, skill40) && useSkillAttack(me, skill40)) {
+                                            Thread.sleep(1000L);
                                         }
                                         me.isDontMove = false;
                                         break;
                                     }
                                 }
                             }
-                        } else if (useSkillAttack(me, skill40)) {
+                        } else if (isEnoughDistance(me, skill40) && useSkillAttack(me, skill40)) {
                             isComboing = true;
-                            Thread.sleep(500L);
+                            Thread.sleep(1000L);
                         }
                     }
                     isComboing = false;
@@ -191,22 +197,21 @@ public class AttackTarget implements IAttack {
                 case 3: { // Kunai
                     Skill skill35 = Skill.findSkillByIdFrom(me, SkillName.CHIEU_HIBIKOU);
                     Skill skill40 = Skill.findSkillByIdFrom(me, SkillName.CHIEU_KOGOERU);
-                    if (useSkillAttack(me, skill35)) {
+                    if (isEnoughDistance(me, skill35) && useSkillAttack(me, skill35)) {
                         isComboing = true;
                         if (skill40 != null && !skill40.isCooldown()) {
                             long l1 = System.currentTimeMillis() + 2000;
                             while (true) {
-                                int distance = NinjaUtils.getDistance(me.x, me.y, target.x, target.y);
-                                if (distance <= 48 || System.currentTimeMillis() >= l1) {
+                                if (isEnoughDistance(me, skill40) || System.currentTimeMillis() >= l1) {
                                     useSkillAttack(me, skill40);
                                     break;
                                 }
-                                Thread.sleep(500L);
+                                Thread.sleep(1000L);
                             }
                         }
-                    } else if (useSkillAttack(me, skill40)) {
+                    } else if (isEnoughDistance(me, skill40) && useSkillAttack(me, skill40)) {
                         isComboing = true;
-                        Thread.sleep(500L);
+                        Thread.sleep(1000L);
                     }
                     isComboing = false;
                     break;
@@ -225,9 +230,9 @@ public class AttackTarget implements IAttack {
                     if (useSkillBuff(me, skill25)) {
                         isComboing = true;
                         Thread.sleep(500L);
-                    } else if (useSkillAttack(me, skill40)) {
+                    } else if (isEnoughDistance(me, skill40) && useSkillAttack(me, skill40)) {
                         isComboing = true;
-                        Thread.sleep(500L);
+                        Thread.sleep(1000L);
                     } else if (useSkillBuff(me, skill60)) {
                         isComboing = true;
                         Thread.sleep(500L);
@@ -238,16 +243,16 @@ public class AttackTarget implements IAttack {
                 case 5: { // Đao
                     Skill skill35 = Skill.findSkillByIdFrom(me, SkillName.CHIEU_AISUBAAGU);
                     Skill skill40 = Skill.findSkillByIdFrom(me, SkillName.CHIEU_HAYATETO);
-                    if (useSkillAttack(me, skill35)) {
+                    if (isEnoughDistance(me, skill35) && useSkillAttack(me, skill35)) {
                         isComboing = true;
-                        if (skill40 != null) {
+                        if (skill40 != null && isEnoughDistance(me, skill40)) {
                             Thread.sleep(500L);
                             useSkillAttack(me, skill40);
-                            Thread.sleep(500L);
+                            Thread.sleep(1000L);
                         }
-                    } else if (useSkillAttack(me, skill40)) {
+                    } else if (isEnoughDistance(me, skill40) && useSkillAttack(me, skill40)) {
                         isComboing = true;
-                        Thread.sleep(500L);
+                        Thread.sleep(1000L);
                     }
                     isComboing = false;
                     break;
@@ -289,19 +294,19 @@ public class AttackTarget implements IAttack {
                     try {
                         long l1 = System.currentTimeMillis();
                         lock.readLock().lock();
-                        me.lock.lock();
+                        me.charLock.lock();
                         try {
                             combo(me);
                         } finally {
-                            me.lock.unlock();
+                            me.charLock.unlock();
                             lock.readLock().unlock();
                         }
                         long l2 = System.currentTimeMillis() - l1;
-                        if (l2 >= 20L) {
+                        if (l2 >= 500L) {
                             continue;
                         }
                         try {
-                            Thread.sleep(20L - l2);
+                            Thread.sleep(500L - l2);
                         } catch (InterruptedException e) {
                             close();
                         }

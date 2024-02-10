@@ -1,15 +1,43 @@
 package com.nsoz.model;
 
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Optional;
+import java.util.Vector;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.IntStream;
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.time.DateUtils;
+import org.bson.Document;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.JSONValue;
 import com.google.gson.Gson;
 import com.mongodb.client.MongoCollection;
 import com.nsoz.ability.AbilityCustom;
-import com.nsoz.ability.AbilityFromEquip;
 import com.nsoz.ability.AbilityStrategy;
 import com.nsoz.admin.AdminService;
+import com.nsoz.bot.Bot;
 import com.nsoz.bot.attack.AttackTarget;
 import com.nsoz.bot.move.JaianMove;
 import com.nsoz.bot.move.MoveToTarget;
-import com.nsoz.bot.Bot;
 import com.nsoz.clan.Clan;
 import com.nsoz.clan.ClanDAO;
 import com.nsoz.clan.Member;
@@ -37,29 +65,26 @@ import com.nsoz.event.KoroKing;
 import com.nsoz.event.LunarNewYear;
 import com.nsoz.event.Noel;
 import com.nsoz.event.TrungThu;
-import com.nsoz.event.SumMer;
-import com.nsoz.admin.AdminService;
 import com.nsoz.event.eventpoint.EventPoint;
 import com.nsoz.event.eventpoint.Point;
 import com.nsoz.fashion.FashionCustom;
-import com.nsoz.fashion.FashionFromEquip;
 import com.nsoz.fashion.FashionStrategy;
 import com.nsoz.item.Equip;
 import com.nsoz.item.Item;
-import com.nsoz.item.ItemManager;
 import com.nsoz.item.ItemFactory;
+import com.nsoz.item.ItemManager;
 import com.nsoz.item.ItemTemplate;
 import com.nsoz.item.Mount;
 import com.nsoz.lib.ImageMap;
 import com.nsoz.lib.ParseData;
 import com.nsoz.lib.RandomCollection;
-import com.nsoz.map.item.ItemMap;
 import com.nsoz.map.Map;
 import com.nsoz.map.MapManager;
 import com.nsoz.map.TileMap;
 import com.nsoz.map.War;
 import com.nsoz.map.item.Envelope;
 import com.nsoz.map.item.GiftBox;
+import com.nsoz.map.item.ItemMap;
 import com.nsoz.map.item.ItemMapFactory;
 import com.nsoz.map.world.Arena;
 import com.nsoz.map.world.CandyBattlefield;
@@ -115,41 +140,12 @@ import com.nsoz.task.TaskTemplate;
 import com.nsoz.thiendia.Ranking;
 import com.nsoz.thiendia.ThienDiaData;
 import com.nsoz.thiendia.ThienDiaManager;
+import com.nsoz.util.Callback;
 import com.nsoz.util.Log;
 import com.nsoz.util.NinjaUtils;
 import com.nsoz.util.TimeUtils;
-import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
-import java.util.Vector;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.IntStream;
 import lombok.Getter;
 import lombok.Setter;
-import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.time.DateUtils;
-import org.bson.Document;
-import org.bson.conversions.Bson;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.JSONValue;
 
 public class Char {
     public static HashMap<String, Lock> lockGiftCodes = new HashMap<>();
@@ -211,8 +207,8 @@ public class Char {
     public long yen;
     public long gold;
     public long vnd;
-    public int hp, maxHP;
-    public int mp, maxMP;
+    public volatile int hp, mp;
+    public int maxHP, maxMP;
     public int damage, damage2;
     public int dameDown;
     public int exactly, miss, fatalDame, percentFatalDame;
@@ -297,7 +293,7 @@ public class Char {
     public CloneChar clone;
     public int timeCountDown;
     public int huyHieu;
-    public Lock lock = new ReentrantLock();
+    public Lock charLock = new ReentrantLock();
     public Lock lockItem = new ReentrantLock();
     private boolean isUnpaid;
     private boolean isGiftCodeUnpaid;
@@ -705,6 +701,9 @@ public class Char {
     }
 
     public void updateEveryHalfSecond() {
+        if (mobMe != null) {
+            mobMe.thunuoiAttack(this);
+        }
         if (isInfected() && (isVillage() || isSchool())) {
             cure();
         }
@@ -769,23 +768,28 @@ public class Char {
                 mp /= 2;
             }
             if (hp != 0 || mp != 0) {
-                int preHP = this.hp;
-                int preMP = this.mp;
-                this.hp += hp;
-                this.mp += mp;
-                if (this.hp > this.maxHP) {
-                    this.hp = this.maxHP;
-                }
-                if (this.mp > this.maxMP) {
-                    this.mp = this.maxMP;
-                }
-                if (this.hp != preHP || this.mp != preMP) {
-                    zone.getService().loadHP(this);
-                    getService().updateHp();
-                    getService().updateMp();
-                    if (this.hp <= 0) {
-                        startDie();
+                this.charLock.lock();
+                try {
+                    int preHP = this.hp;
+                    int preMP = this.mp;
+                    this.hp += hp;
+                    this.mp += mp;
+                    if (this.hp > this.maxHP) {
+                        this.hp = this.maxHP;
                     }
+                    if (this.mp > this.maxMP) {
+                        this.mp = this.maxMP;
+                    }
+                    if (this.hp != preHP || this.mp != preMP) {
+                        zone.getService().loadHP(this);
+                        getService().updateHp();
+                        getService().updateMp();
+                        if (this.hp <= 0) {
+                            startDie();
+                        }
+                    }
+                } finally {
+                    this.charLock.unlock();
                 }
             }
 
@@ -810,6 +814,7 @@ public class Char {
                 short[] xy = NinjaUtils.getXY(this.saveCoordinate);
                 setXY(xy[0], xy[1]);
                 changeMap(this.saveCoordinate);
+                serverMessage("Khu vực này không cho phép Pk và điểm hiếu chiến > 0");
             }
 
         }
@@ -824,7 +829,7 @@ public class Char {
                 getService().turnOffAuto();
             }
         }
-        if (!(isBot())) {
+        if (!isBot()) {
             if (this.coin < 0 || this.coinInBox < 0 || this.yen < 0 || (user != null && user.gold < 0)) {
                 user.lock();
                 return;
@@ -840,30 +845,34 @@ public class Char {
             }
 
             if (this.zone.tilemap.id == 167) {
-                this.hp -= this.hp * 20 / 100;
                 addHp(-this.hp * 20 / 100);
                 zone.getService().chat(this.id, "Ngột ngạt quá, chết tiệt");
             }
 
             if (hp != 0 || mp != 0) {
-                int preHP = this.hp;
-                int preMP = this.mp;
-                this.hp += hp;
-                this.mp += mp;
-                if (this.hp > this.maxHP) {
-                    this.hp = this.maxHP;
-                }
-                if (this.mp > this.maxMP) {
-                    this.mp = this.maxMP;
-                }
-                if (this.hp != preHP || this.mp != preMP) {
-                    zone.getService().loadHP(this);
-                    getService().updateHp();
-                    getService().updateMp();
-                    if (this.hp <= 0) {
-                        startDie();
-                        return;
+                this.charLock.lock();
+                try {
+                    int preHP = this.hp;
+                    int preMP = this.mp;
+                    this.hp += hp;
+                    this.mp += mp;
+                    if (this.hp > this.maxHP) {
+                        this.hp = this.maxHP;
                     }
+                    if (this.mp > this.maxMP) {
+                        this.mp = this.maxMP;
+                    }
+                    if (this.hp != preHP || this.mp != preMP) {
+                        zone.getService().loadHP(this);
+                        getService().updateHp();
+                        getService().updateMp();
+                        if (this.hp <= 0) {
+                            startDie();
+                            return;
+                        }
+                    }
+                } finally {
+                    this.charLock.unlock();
                 }
             }
             if (haoQuang > -1) {
@@ -1042,6 +1051,12 @@ public class Char {
                         } else {
                             serverDialog("Hãy triệu hồi phân thân.");
                             return;
+                        }
+                        this.charLock.lock();
+                        try {
+                            this.expSkillClone = GameData.UP_EXP_SKILL_CLONE[skill.point - 2];
+                        } finally {
+                            this.charLock.unlock();
                         }
                     }
                     vSkill.set(i, skill);
@@ -2199,7 +2214,7 @@ public class Char {
                     MobTemplate template = MobManager.getInstance().find(230);
                     Mob monster = new Mob(127, (short) template.id, template.hp, template.level, this.x, this.y, false, template.isBoss(), zone);
                     monster.addAttackedCharId(this.id);
-                    monster.addCharId(this.id);
+                    monster.addAttackableCharId(this.id);
                     this.mob = monster;
                     getService().addMonster(monster);
                     removeItem(item.index, 1, true);
@@ -3826,6 +3841,10 @@ public class Char {
                 serverMessage("Bạn đang trong làng cổ.");
                 return;
             }
+            if (this.hieuChien > 0) {
+                serverMessage("Khu vực này không cho phép Pk và điểm hiếu chiến > 0");
+                return;
+            }
             setXY((short) 109, (short) 408);
             changeMap(138);
             removeItem(item.index, item.getQuantity(), true);
@@ -3838,9 +3857,16 @@ public class Char {
                 serverMessage("Bạn đang trong làng truyền thuyết.");
                 return;
             }
+            if (this.hieuChien > 0) {
+                serverMessage("Khu vực này không cho phép Pk và điểm hiếu chiến > 0");
+                return;
+            }
             setXY((short) 171, (short) 408);
             changeMap(162);
             removeItem(item.index, item.getQuantity(), true);
+        } else if (item.id == ItemName.PHAN_THAN_LENH) {
+            serverMessage("Hãy sử dụng kỹ năng phân thân!");
+            return;
         } else {
             learnSkill(item);
         }
@@ -5506,6 +5532,17 @@ public class Char {
         }
     }
 
+    public void sendAttackMobFast(Message ms) {
+        try {
+            byte idMob = ms.reader().readByte();
+            Mob _mob = this.zone.findMobLiveByID(idMob);
+            if (_mob != null && !_mob.isDead) {
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public void useSkillBuff(Message ms) {
         try {
             byte dir = ms.reader().readByte();
@@ -5699,7 +5736,7 @@ public class Char {
             return false;
         }
         if (mob.template.id == MobName.BOSS_TUAN_LOC || mob.template.id == MobName.QUAI_VAT) {
-            if (mob.chars.get(0) != this.id) {
+            if (mob.attackableChars.get(0) != this.id) {
                 return false;
             }
         }
@@ -5971,7 +6008,7 @@ public class Char {
             }
             getService().updateMp();
             for (Mob mob : mobs) {
-                mob.lock.lock();
+                mob.mobLock.lock();
                 try {
                     if (!isMeCanAtkMonster(mob)) {
                         continue;
@@ -6069,10 +6106,9 @@ public class Char {
                             if (mob.hp < 0) {
                                 mob.hp = 0;
                             }
-                            int nextHP = mob.hp;
-                            int hp = Math.abs(nextHP - preHP);
+                            int exp = Math.abs(mob.hp - preHP);
                             if (mob.template.id != MobName.BOSS_TUAN_LOC && mob.template.id != MobName.QUAI_VAT) {
-                                addExp(mob, hp);
+                                addExp(mob, exp);
                             }
                             if (mob.hp <= 0) {
                                 mob.die();
@@ -6083,7 +6119,7 @@ public class Char {
                             } else {
                                 if (mob.id != 0 && !isNhanBan) {
                                     mob.addAttackedCharId(this.id);
-                                    mob.addCharId(this.id);
+                                    mob.addAttackableCharId(this.id);
                                 }
                             }
 
@@ -6100,7 +6136,7 @@ public class Char {
                         }
                     }
                 } finally {
-                    mob.lock.unlock();
+                    mob.mobLock.unlock();
                 }
             }
         } catch (Exception e) {
@@ -6439,7 +6475,7 @@ public class Char {
                 if (mapId != 138 && !pl.isTiThi && (isVillage() || isSchool())) {
                     continue;
                 }
-                pl.lock.lock();
+                pl.charLock.lock();
                 try {
                     if (!pl.isDead && !pl.isCleaned) {
                         boolean isMiss = missMap.get(pl.id);
@@ -6580,8 +6616,7 @@ public class Char {
                             }
                         }
 
-                        dameHit /= ((float) this.level / (float) pl.level); // (dameHit + (dameFatal / 3)) * (6 - ((pl.level - this.level) / 40)) /
-                                                                            // 100;
+                        dameHit /= ((float) this.level / (float) pl.level);
                         dameHit /= 10;
 
                         if (isInfected()) {
@@ -6594,38 +6629,43 @@ public class Char {
                         dameHit += options[ItemOptionName.SAT_THUONG_CHUAN_ADD_POINT_TYPE_0];
 
                         if (!isNhanBan && !isMiss) { // Phản dmg
-                            int reactDame = pl.reactDame;
+                            this.charLock.lock();
+                            try {
+                                int reactDame = pl.reactDame;
 
-                            if (pl.options[135] > 0) { // Skill phượng hoàng phản dmg 20% máu hiện tại
-                                if (NinjaUtils.nextInt(100) < pl.options[135]) {
-                                    reactDame = hp * 20 / 100;
-                                    zone.getService().addEffect(mob, 64, 5, 5, 0);
+                                if (pl.options[135] > 0) { // Skill phượng hoàng phản dmg 20% máu hiện tại
+                                    if (NinjaUtils.nextInt(100) < pl.options[135]) {
+                                        reactDame = hp * 20 / 100;
+                                        zone.getService().addEffect(pl.mob, 64, 5, 5, 0);
+                                    }
                                 }
-                            }
 
-                            if (reactDame > 0) {
-                                int reactDame2 = reactDame - reactDame / 10;
-                                int dmgReactOrigin = NinjaUtils.nextInt(reactDame2, reactDame);
-                                int dmgReactHit = dmgReactOrigin;
-                                boolean isReactFatal = (pl.fatal > 950 ? 950 : pl.fatal) > NinjaUtils.nextInt(1000);
-                                if (this.isFire) {
-                                    dmgReactHit += dmgReactOrigin;
+                                if (reactDame > 0) {
+                                    int reactDame2 = reactDame - reactDame / 10;
+                                    int dmgReactOrigin = NinjaUtils.nextInt(reactDame2, reactDame);
+                                    int dmgReactHit = dmgReactOrigin;
+                                    boolean isReactFatal = (pl.fatal > 950 ? 950 : pl.fatal) > NinjaUtils.nextInt(1000);
+                                    if (this.isFire) {
+                                        dmgReactHit += dmgReactOrigin;
+                                    }
+                                    if (isReactFatal) {
+                                        dmgReactHit += dmgReactOrigin;
+                                    }
+                                    if (this.hp - dmgReactHit > 1) {
+                                        addHp(-dmgReactHit);
+                                        this.zone.getService().loadHP(this);
+                                        this.getService().updateHp();
+                                    } else {
+                                        this.hp = 1;
+                                        dmgReactHit = 1;
+                                    }
+                                    if (isReactFatal) {
+                                        dmgReactHit *= -1;
+                                    }
+                                    zone.getService().attackCharacter(dmgReactHit, 0, this);
                                 }
-                                if (isReactFatal) {
-                                    dmgReactHit += dmgReactOrigin;
-                                }
-                                if (this.hp - dmgReactHit > 1) {
-                                    addHp(-dmgReactHit);
-                                    this.zone.getService().loadHP(this);
-                                    this.getService().updateHp();
-                                } else {
-                                    this.hp = 1;
-                                    dmgReactHit = 1;
-                                }
-                                if (isReactFatal) {
-                                    dmgReactHit *= -1;
-                                }
-                                zone.getService().attackCharacter(dmgReactHit, 0, this);
+                            } finally {
+                                this.charLock.unlock();
                             }
                         }
 
@@ -6664,9 +6704,7 @@ public class Char {
                         } else {
                             pl.addHp(-Math.abs(dameHit));
                         }
-                        this.zone.getService().loadHP(this);
                         pl.zone.getService().loadHP(pl);
-                        this.getService().updateHp();
                         pl.getService().updateHp();
                         if (pl.hp <= 0) {
                             if (zone.tilemap.isChienTruong()) {
@@ -6732,7 +6770,7 @@ public class Char {
                         }
                     }
                 } finally {
-                    pl.lock.unlock();
+                    pl.charLock.unlock();
                 }
             }
         } catch (Exception e) {
@@ -7096,18 +7134,34 @@ public class Char {
         }
     }
 
-    public void addHp(int add) {
-        if (add < 0 && isCool()) {
-            add *= 2;
+    public void addHp(int add, Callback... callbacks) {
+        this.charLock.lock();
+        try {
+            if (add < 0 && this.isCool()) {
+                add *= 2;
+            }
+            this.hp += add;
+            if (callbacks.length > 0) {
+                callbacks[0].call();
+            }
+        } finally {
+            this.charLock.unlock();
         }
-        this.hp += add;
     }
 
-    public void addMp(int add) {
-        if (add < 0 && isCool()) {
-            add *= 2;
+    public void addMp(int add, Callback... callbacks) {
+        this.charLock.lock();
+        try {
+            if (add < 0 && this.isCool()) {
+                add *= 2;
+            }
+            this.mp += add;
+            if (callbacks.length > 0) {
+                callbacks[0].call();
+            }
+        } finally {
+            this.charLock.unlock();
         }
-        this.mp += add;
     }
 
     public void testInvite(Message msg) {
@@ -7406,6 +7460,7 @@ public class Char {
                 vSkillFight.clear();
                 vSupportSkill.clear();
                 vSkill.clear();
+                this.expSkillClone = 0;
                 for (int i = 0; i < vSkillTemp.size(); i++) {
                     Skill my = vSkillTemp.elementAt(i);
                     Skill skillNew = GameData.getInstance().getSkill(this.classId, my.template.id, 1);
@@ -9301,7 +9356,12 @@ public class Char {
         if (abilityStrategy != null) {
             abilityStrategy.setAbility(this);
             if (zone != null) {
-                zone.getService().refreshHP(this);
+                this.charLock.lock();
+                try {
+                    zone.getService().refreshHP(this);
+                } finally {
+                    this.charLock.unlock();
+                }
             }
         }
     }
@@ -16364,7 +16424,12 @@ public class Char {
             }
 
             if (_char != null) {
-                getService().viewInfo(_char);
+                _char.charLock.lock();
+                try {
+                    getService().viewInfo(_char);
+                } finally {
+                    _char.charLock.unlock();
+                }
             } else {
                 serverMessage("Người này hiện tại không online.");
             }
@@ -16594,11 +16659,9 @@ public class Char {
                 getService().addExp(exp);
                 getService().levelUp();
                 zone.getService().loadLevel(this);
+                this.tangKyNang6x(this.equipment[ItemTemplate.TYPE_BIKIP], false);
             }
             getService().addExp(exp);
-            getService().levelUp();
-            zone.getService().loadLevel(this);
-            this.tangKyNang6x(this.equipment[ItemTemplate.TYPE_BIKIP], false);
         }
     }
 
@@ -17687,6 +17750,9 @@ public class Char {
                 if (this.group != null) {
                     outParty();
                 }
+                if (this.clone != null) {
+                    this.clone.close();
+                }
                 try {
                     History history = new History(this.id, History.OFFLINE);
                     for (Item item : this.bag) {
@@ -17809,7 +17875,7 @@ public class Char {
         monster.damageOnPlayer = this.maxHP;
         monster.damageOnPlayer2 = monster.damageOnPlayer - monster.damageOnPlayer / 10;
         monster.addAttackedCharId(this.id);
-        monster.addCharId(this.id);
+        monster.addAttackableCharId(this.id);
         this.mob = monster;
         getService().addMonster(this.mob);
     }

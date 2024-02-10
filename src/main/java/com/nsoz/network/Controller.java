@@ -358,6 +358,10 @@ public class Controller implements IMessageHandler {
                         _char.lastMessageSentAt = System.currentTimeMillis();
                         break;
 
+                    case CMD.AUTO_ATTACK_MOVE:
+                        _char.sendAttackMobFast(mss);
+                        break;
+
                     default:
                         Log.debug("CMD: " + mss.getCommand());
                         break;

@@ -1,50 +1,48 @@
 package com.nsoz.map.zones;
 
-import com.mongodb.lang.Nullable;
-import com.nsoz.bot.Bot;
-import com.nsoz.bot.SantaClaus;
-import com.nsoz.effect.Effect;
-import com.nsoz.constants.EffectTypeName;
-import com.nsoz.constants.MapName;
-import com.nsoz.map.item.ItemMap;
-import com.nsoz.map.Map;
-import com.nsoz.map.MapManager;
-import com.nsoz.map.MapService;
-import com.nsoz.map.TileMap;
-import com.nsoz.map.Waypoint;
-import com.nsoz.mob.Mob;
-import com.nsoz.model.Figurehead;
-import com.nsoz.model.Char;
-import com.nsoz.npc.Npc;
-import com.nsoz.npc.NpcFactory;
-import com.nsoz.party.Group;
-import com.nsoz.task.Task;
-import com.nsoz.constants.TaskName;
-import com.nsoz.effect.EffectManager;
-import com.nsoz.event.Event;
-import com.nsoz.map.Tree;
-import com.nsoz.map.item.IceCrystal;
-import com.nsoz.map.item.Mushroom;
-import com.nsoz.map.item.Ore;
-import com.nsoz.mob.MobFactory;
-import com.nsoz.mob.MobPosition;
-import com.nsoz.mob.TerritoryMobFactory;
-import com.nsoz.mob.WarMobFactory;
-import com.nsoz.server.GameData;
-import com.nsoz.task.MobInfo;
-import com.nsoz.task.TaskFactory;
-import com.nsoz.util.Log;
-import com.nsoz.util.NinjaUtils;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.jetbrains.annotations.NotNull;
+import com.mongodb.lang.Nullable;
+import com.nsoz.bot.Bot;
+import com.nsoz.constants.EffectTypeName;
+import com.nsoz.constants.MapName;
+import com.nsoz.constants.TaskName;
+import com.nsoz.effect.Effect;
+import com.nsoz.effect.EffectManager;
+import com.nsoz.event.Event;
+import com.nsoz.map.Map;
+import com.nsoz.map.MapManager;
+import com.nsoz.map.MapService;
+import com.nsoz.map.TileMap;
+import com.nsoz.map.Tree;
+import com.nsoz.map.Waypoint;
+import com.nsoz.map.item.IceCrystal;
+import com.nsoz.map.item.ItemMap;
+import com.nsoz.map.item.Mushroom;
+import com.nsoz.map.item.Ore;
+import com.nsoz.mob.Mob;
+import com.nsoz.mob.MobFactory;
+import com.nsoz.mob.MobPosition;
+import com.nsoz.mob.TerritoryMobFactory;
+import com.nsoz.mob.WarMobFactory;
+import com.nsoz.model.Char;
+import com.nsoz.model.Figurehead;
+import com.nsoz.npc.Npc;
+import com.nsoz.npc.NpcFactory;
+import com.nsoz.party.Group;
+import com.nsoz.server.GameData;
+import com.nsoz.task.MobInfo;
+import com.nsoz.task.Task;
+import com.nsoz.task.TaskFactory;
+import com.nsoz.util.Log;
+import com.nsoz.util.NinjaUtils;
 import lombok.Builder;
 import lombok.Getter;
-import org.jetbrains.annotations.NotNull;
 
 public class Zone {
 
@@ -366,6 +364,9 @@ public class Zone {
     }
 
     public Char findCharById(int id) {
+        if (this.players == null) {
+            return null;
+        }
         lockChar.readLock().lock();
         try {
             for (Char c : players) {
@@ -713,25 +714,6 @@ public class Zone {
                     recoveryMonster();
                 }
             }
-        }
-    }
-
-    public void updatePet() {
-        try {
-            if (this.players.size() > 0) {
-                List<Char> mChars = getChars();
-                for (Char _char : mChars) {
-                    try {
-                        if (_char.mobMe != null) {
-                            _char.mobMe.thunuoiAttack(_char);
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        } catch (Exception e) {
-            Log.error(e.getMessage(), e);
         }
     }
 

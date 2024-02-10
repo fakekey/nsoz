@@ -9,7 +9,7 @@ import com.nsoz.model.Char;
 import com.nsoz.network.NoService;
 import com.nsoz.network.Service;
 import com.nsoz.server.ServerManager;
-import com.nsoz.skill.Skill;
+import com.nsoz.util.Callback;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -74,9 +74,7 @@ public class Bot extends Char {
     }
 
     @Override
-    public void addMp(int add) {
-
-    }
+    public void addMp(int add, Callback... callbacks) {}
 
     @Override
     public void updateEveryHalfSecond() {
@@ -91,5 +89,4 @@ public class Bot extends Char {
             }
         }
     }
-
 }

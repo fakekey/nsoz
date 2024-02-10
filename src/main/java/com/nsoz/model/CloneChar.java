@@ -1,43 +1,40 @@
 package com.nsoz.model;
 
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.model.Filters;
-import com.nsoz.effect.Effect;
-import com.nsoz.mob.Mob;
-import com.nsoz.skill.Skill;
-import com.nsoz.ability.AbilityFromEquip;
-import com.nsoz.constants.CMD;
-import com.nsoz.constants.SkillName;
-import com.nsoz.fashion.FashionFromEquip;
-import com.nsoz.item.Mount;
-import com.nsoz.item.Equip;
-
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Arrays;
+import java.util.Vector;
+import org.bson.Document;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
-
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.util.Arrays;
-import java.util.Vector;
-
+import com.mongodb.client.MongoCollection;
+import com.nsoz.ability.AbilityFromEquip;
+import com.nsoz.constants.CMD;
+import com.nsoz.constants.SkillName;
 import com.nsoz.db.jdbc.DbManager;
 import com.nsoz.db.mongodb.MongoDbConnection;
+import com.nsoz.effect.Effect;
 import com.nsoz.effect.EffectManager;
 import com.nsoz.event.eventpoint.EventPoint;
+import com.nsoz.fashion.FashionFromEquip;
+import com.nsoz.item.Equip;
 import com.nsoz.item.Item;
-import com.nsoz.network.NoService;
-import com.nsoz.network.Controller;
-import com.nsoz.network.Message;
-import com.nsoz.network.Service;
-import com.nsoz.map.zones.Zone;
-import com.nsoz.util.Log;
-import com.nsoz.util.NinjaUtils;
+import com.nsoz.item.Mount;
 import com.nsoz.lib.ParseData;
 import com.nsoz.map.world.World;
+import com.nsoz.map.zones.Zone;
+import com.nsoz.mob.Mob;
+import com.nsoz.network.Controller;
+import com.nsoz.network.Message;
+import com.nsoz.network.NoService;
+import com.nsoz.network.Service;
 import com.nsoz.server.GameData;
-import java.sql.SQLException;
-import org.bson.Document;
+import com.nsoz.skill.Skill;
+import com.nsoz.util.Callback;
+import com.nsoz.util.Log;
+import com.nsoz.util.NinjaUtils;
 
 public class CloneChar extends Char {
 
@@ -45,7 +42,7 @@ public class CloneChar extends Char {
     public int damePercent;
     public short selectSkillId;
     public boolean isUpdate;
-    private Message cmd;
+    private Message hoiSinh;
 
     public CloneChar(Char _char, int damePercent) {
         super(-(10000000 + _char.id));
@@ -53,9 +50,9 @@ public class CloneChar extends Char {
         this.isNhanBan = true;
         this.human = _char;
         this.damePercent = damePercent;
-        this.cmd = new Message(CMD.BUFF_LIVE);
+        this.hoiSinh = new Message(CMD.BUFF_LIVE);
         try {
-            this.cmd.writer().writeInt(human.id);
+            this.hoiSinh.writer().writeInt(human.id);
         } catch (Exception e) {
             Log.error(e.getMessage(), e);
         }
@@ -273,7 +270,7 @@ public class CloneChar extends Char {
     }
 
     @Override
-    public void addMp(int add) {
+    public void addMp(int add, Callback... callbacks) {
         if (!isNhanBan) {
             this.mp += add;
         }
@@ -501,9 +498,9 @@ public class CloneChar extends Char {
     @Override
     public void close() {
         this.isDead = true;
-        if (cmd != null) {
-            cmd.cleanup();
-            cmd = null;
+        if (hoiSinh != null) {
+            hoiSinh.cleanup();
+            hoiSinh = null;
         }
     }
 
@@ -543,10 +540,10 @@ public class CloneChar extends Char {
                                 if (!human.isDead) {
                                     continue;
                                 } else {
-                                    if (cmd == null) {
+                                    if (hoiSinh == null) {
                                         continue;
                                     }
-                                    Message ms = new Message(CMD.BUFF_LIVE, cmd.getData());
+                                    Message ms = new Message(CMD.BUFF_LIVE, hoiSinh.getData());
                                     try {
                                         this.hoiSinh(ms);
                                         continue;

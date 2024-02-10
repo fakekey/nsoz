@@ -1,48 +1,44 @@
 package com.nsoz.mob;
 
-import com.nsoz.constants.MobName;
-import com.nsoz.bot.Bot;
-import com.nsoz.constants.EffectIdName;
-import com.nsoz.constants.EffectTypeName;
-import com.nsoz.constants.ItemName;
-import com.nsoz.constants.ItemOptionName;
-import com.nsoz.item.Item;
-import com.nsoz.map.zones.Zone;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.Vector;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-
-import com.nsoz.event.Event;
-import com.nsoz.event.KoroKing;
-import com.nsoz.event.LunarNewYear;
-import com.nsoz.model.Figurehead;
-import com.nsoz.model.Friend;
-import com.nsoz.model.Char;
-import com.nsoz.effect.Effect;
-import com.nsoz.task.GloryTask;
-import com.nsoz.map.item.ItemMap;
+import com.nsoz.constants.EffectIdName;
+import com.nsoz.constants.EffectTypeName;
+import com.nsoz.constants.ItemName;
 import com.nsoz.constants.MapName;
-import com.nsoz.store.ItemStore;
-import com.nsoz.model.RandomItem;
-import com.nsoz.option.SkillOptionName;
-import com.nsoz.task.TaskOrder;
-import com.nsoz.map.world.Territory;
+import com.nsoz.constants.MobName;
 import com.nsoz.constants.TaskName;
 import com.nsoz.convert.Converter;
+import com.nsoz.effect.Effect;
+import com.nsoz.event.Event;
 import com.nsoz.event.Halloween;
+import com.nsoz.event.KoroKing;
+import com.nsoz.event.LunarNewYear;
 import com.nsoz.event.Noel;
+import com.nsoz.item.Item;
 import com.nsoz.item.ItemFactory;
-import com.nsoz.util.NinjaUtils;
 import com.nsoz.lib.RandomCollection;
+import com.nsoz.map.item.ItemMap;
 import com.nsoz.map.item.ItemMapFactory;
+import com.nsoz.map.world.Territory;
+import com.nsoz.map.zones.Zone;
+import com.nsoz.model.Char;
+import com.nsoz.model.Figurehead;
+import com.nsoz.model.Friend;
+import com.nsoz.model.RandomItem;
+import com.nsoz.option.SkillOptionName;
 import com.nsoz.party.Group;
 import com.nsoz.server.Server;
+import com.nsoz.store.ItemStore;
 import com.nsoz.store.StoreManager;
+import com.nsoz.task.GloryTask;
+import com.nsoz.task.TaskOrder;
 import com.nsoz.util.Log;
-
-import java.util.Vector;
+import com.nsoz.util.NinjaUtils;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -72,7 +68,7 @@ public class Mob {
     public boolean isIce;
     public boolean isWind;
     public byte sys;
-    public int hp;
+    public volatile int hp;
     public int maxHP;
     public int originalHp;
     public short level;
@@ -86,7 +82,7 @@ public class Mob {
     public long lastTimeAttack;
     public long attackDelay = 2000;
     public int recoveryTimeCount;
-    public Vector<Integer> chars;
+    public Vector<Integer> attackableChars;
     public Vector<Integer> attackedChars;
     public boolean isDead;
     public int damageOnPlayer, damageOnPlayer2;
@@ -101,7 +97,7 @@ public class Mob {
     @Setter
     @Getter
     private boolean isBeast;
-    public Lock lock = new ReentrantLock();
+    public Lock mobLock = new ReentrantLock();
 
     public Object mobMeFocus = null;
     public boolean isCantAttack = false;
@@ -139,7 +135,7 @@ public class Mob {
         this.levelBoss = 0;
         this.isFire = this.isIce = this.isWind = false;
         this.isDead = false;
-        this.chars = new Vector<>();
+        this.attackableChars = new Vector<>();
         this.attackedChars = new Vector<>();
         setBeast(isBeast);
         setClass();
@@ -166,7 +162,7 @@ public class Mob {
         this.levelBoss = 0;
         this.isFire = this.isIce = this.isWind = false;
         this.isDead = false;
-        this.chars = new Vector<>();
+        this.attackableChars = new Vector<>();
         this.attackedChars = new Vector<>();
         setZone(zone);
         setBeast(isBeast);
@@ -341,7 +337,7 @@ public class Mob {
             this.recoveryTimeCount = 900;
         }
         this.isDead = true;
-        this.chars.clear();
+        this.attackableChars.clear();
         this.attackedChars.clear();
         Vector<Byte> removeEffect = new Vector<>();
         for (Entry<Byte, Effect> entry : this.effects.entrySet()) {
@@ -369,8 +365,28 @@ public class Mob {
     public int randomItemID() {
         int itemID = RandomItem.ITEM.next();
         if (!isBoss && itemID == ItemName.DA_CAP_1) {
-            itemID = this.level / 15;
-            itemID = itemID > ItemName.DA_CAP_5 ? ItemName.DA_CAP_5 : itemID;
+            if (this.level <= 40) {
+                itemID = this.level / 11;
+                if (itemID == 1) {
+                    itemID = NinjaUtils.nextInt(1);
+                } else if (itemID == 2) {
+                    itemID = NinjaUtils.nextInt(1, 2);
+                } else {
+                    itemID = NinjaUtils.nextInt(2, 3);
+                }
+            } else if (this.level > 40 && this.level <= 50) {
+                int[] itId = {2, 3};
+                itemID = itId[NinjaUtils.randomWithRate(new int[] {15, 85})];
+            } else if (this.level > 50 && this.level <= 60) {
+                int[] itId = {3, 4};
+                itemID = itId[NinjaUtils.randomWithRate(new int[] {5, 95})];
+            } else if (this.level > 60 && this.level <= 70) {
+                int[] itId = {4, 5};
+                itemID = itId[NinjaUtils.randomWithRate(new int[] {75, 25})];
+            } else if (this.level > 70) {
+                itemID = (this.level / 10) - 2;
+                itemID = itemID > 10 ? 10 : itemID;
+            }
         } else if (itemID == ItemName.BINH_HP_CUC_TIEU) {
             if (this.level < 10) {
                 itemID = ItemName.BINH_HP_CUC_TIEU;
@@ -583,85 +599,78 @@ public class Mob {
     }
 
     private void attack() {
-        try {
-            lock.lock();
-            Figurehead[] buNhins = zone.getBuNhins();
-            for (int j = 0; j < buNhins.length; j++) {
-                Figurehead buNhin = buNhins[j];
-                int distance = NinjaUtils.getDistance(this.x, this.y, buNhin.x, buNhin.y);
-                if ((this.isBoss && distance > 300) || (!this.isBoss && distance > 300)) {
-                    continue;
-                }
-                zone.getService().npcAttackBuNhin(this, j);
-                return;
+        Figurehead[] buNhins = this.zone.getBuNhins();
+        for (int j = 0; j < buNhins.length; j++) {
+            Figurehead buNhin = buNhins[j];
+            int distance = NinjaUtils.getDistance(this.x, this.y, buNhin.x, buNhin.y);
+            if ((this.isBoss && distance > 300) || (!this.isBoss && distance > 300)) {
+                continue;
             }
-            Vector<Char> list = new Vector<Char>();
-            Vector<Char> attackedChars = getAttackedChars();
-            Vector<Char> chars = getChars();
-            for (Char _char : attackedChars) {
+            this.zone.getService().npcAttackBuNhin(this, j);
+            return;
+        }
+        Vector<Char> charsToAttack = new Vector<Char>();
+        Vector<Char> attackedChars = this.getAttackedChars();
+        Vector<Char> attackableChars = this.getAttackableChars();
+        for (Char _char : attackedChars) {
+            if (_char.isCleaned) {
+                continue;
+            }
+            if (_char.isInvisible()) {
+                continue;
+            }
+            if (_char.isNhanBan) {
+                continue;
+            }
+            if (_char.isModeCreate) {
+                continue;
+            }
+            int distance = NinjaUtils.getDistance(this.x, this.y, _char.x, _char.y);
+            if ((this.isBoss && distance > 600) || (!this.isBoss && distance > 300)) {
+                continue;
+            }
+            charsToAttack.add(_char);
+        }
+        if (charsToAttack.isEmpty()) {
+            for (Char _char : attackableChars) {
                 if (_char.isCleaned) {
+                    this.removeCharIfExist(_char.id);
                     continue;
                 }
                 if (_char.isInvisible()) {
+                    this.removeCharIfExist(_char.id);
                     continue;
                 }
                 if (_char.isNhanBan) {
+                    this.removeCharIfExist(_char.id);
                     continue;
                 }
                 if (_char.isModeCreate) {
+                    this.removeCharIfExist(_char.id);
                     continue;
                 }
                 int distance = NinjaUtils.getDistance(this.x, this.y, _char.x, _char.y);
                 if ((this.isBoss && distance > 600) || (!this.isBoss && distance > 300)) {
+                    this.removeCharIfExist(_char.id);
                     continue;
                 }
-                list.add(_char);
+                charsToAttack.add(_char);
             }
-            if (list.isEmpty()) {
-                for (Char _char : chars) {
-                    if (_char.isCleaned) {
-                        removeCharIfExist(_char.id);
-                        continue;
-                    }
-                    if (_char.isInvisible()) {
-                        removeCharIfExist(_char.id);
-                        continue;
-                    }
-                    if (_char.isNhanBan) {
-                        removeCharIfExist(_char.id);
-                        continue;
-                    }
-                    if (_char.isModeCreate) {
-                        removeCharIfExist(_char.id);
-                        continue;
-                    }
-                    int distance = NinjaUtils.getDistance(this.x, this.y, _char.x, _char.y);
-                    if ((this.isBoss && distance > 600) || (!this.isBoss && distance > 300)) {
-                        removeCharIfExist(_char.id);
-                        continue;
-                    }
-                    list.add(_char);
-                }
-                if (!list.isEmpty()) {
-                    int rand = NinjaUtils.nextInt(list.size());
-                    Char pl = list.get(rand);
-                    attack(pl);
-                    removeCharIfExist(pl.id);
-                }
-                return;
+            if (!charsToAttack.isEmpty()) {
+                int rand = NinjaUtils.nextInt(charsToAttack.size());
+                Char pl = charsToAttack.get(rand);
+                this.removeCharIfExist(pl.id);
+                this.attack(pl);
             }
-            int rand = NinjaUtils.nextInt(list.size());
-            Char pl = list.get(rand);
-            attack(pl);
-        } catch (Exception e) {
-            Log.error(e.getMessage(), e);
-        } finally {
-            lock.unlock();
+            return;
         }
+        int rand = NinjaUtils.nextInt(charsToAttack.size());
+        Char pl = charsToAttack.get(rand);
+        this.attack(pl);
     }
 
     public void thunuoiAttack(Char owner) {
-        if (this.mobMeFocus == null || this.isCantAttack) {
+        if (this.isCantAttack) {
             return;
         }
         if (this.mobMeFocus instanceof Mob) {
@@ -686,513 +695,485 @@ public class Mob {
     }
 
     public void mobMeAttack(Char pl, Char owner) {
-        if (pl != null && !pl.isDead) {
-            if (System.currentTimeMillis() - this.lastTimeAttack < this.attackDelay) {
+        if (pl.isDead) {
+            return;
+        }
+        if (owner.isNonCombatState()) {
+            return;
+        }
+        if (System.currentTimeMillis() - this.lastTimeAttack < this.attackDelay) {
+            return;
+        }
+        Char originChar = owner.getOriginChar();
+        if (originChar.mapId != 138) {
+            if (!originChar.isTiThi && (owner.isVillage() || owner.isSchool())) {
                 return;
             }
-            Char originChar = owner.getOriginChar();
-            if (originChar.mapId != 138) {
-                if (!originChar.isTiThi && (owner.isVillage() || owner.isSchool())) {
-                    return;
-                }
+        }
+        if (originChar.hieuChien >= 15 && !originChar.isBot()) {
+            mobMeFocus = null;
+            return;
+        }
+
+        pl.charLock.lock();
+        try {
+            int dmgOrigin = NinjaUtils.nextInt(this.damageOnPlayer2, this.damageOnPlayer);
+            int dameHp = dmgOrigin;
+            int dameFatal = 0;
+            boolean isFatal = (owner.fatal > 950 ? 950 : owner.fatal) > NinjaUtils.nextInt(1000);
+            if (isFatal) {
+                dameFatal += dmgOrigin;
+            }
+            int kstcm = pl.options[79] + pl.options[121]; // Kháng st chí mạng
+            kstcm = kstcm > 100 ? 100 : kstcm;
+            dameFatal -= dameFatal * kstcm / 100;
+            dameHp += dameFatal;
+
+            if (pl.isFire) {
+                dameHp += dmgOrigin;
             }
 
-            if (owner.isNonCombatState()) {
-                return;
+            dameHp -= pl.dameDown;
+            switch (sys) {
+                case 1:
+                    dameHp -= pl.options[48];
+                    dameHp -= pl.resFire;
+                    break;
+
+                case 2:
+                    dameHp -= pl.options[49];
+                    dameHp -= pl.resIce;
+                    break;
+
+                case 3:
+                    dameHp -= pl.options[50];
+                    dameHp -= pl.resWind;
+                    break;
+            }
+            switch (sys) {
+                case 1:
+                    dameHp -= dameHp * pl.options[127] / 100; // Kháng st hệ hoả %
+                    break;
+
+                case 2:
+                    dameHp -= dameHp * pl.options[130] / 100; // Kháng st hệ băng %
+                    break;
+
+                case 3:
+                    dameHp -= dameHp * pl.options[131] / 100; // Kháng st hệ phong %
+                    break;
+            }
+            if (isFatal && kstcm <= 90) {
+                dameHp -= dameHp * pl.options[46] / 100; // Chịu st khi bị cm -#%
+            }
+            dameHp -= dameHp * (pl.options[63] + pl.options[98]) / 100; // Miễn giảm sát thương trang bị
+            if (pl.isReductionDame) { // Skill phượng hoàng, miễn giảm sát thương 5s
+                dameHp -= dameHp * pl.options[136] / 100;
+            }
+            Effect eff2 = pl.getEm().findByID(EffectIdName.HIEU_UNG_LONG_DEN_NGOI_SAO_MIEN_GIAM_SAT_THUONG_20_PERCENT);
+            if (eff2 != null) {
+                dameHp -= dameHp * eff2.param / 100;
+            }
+            int exactly = NinjaUtils.nextInt(owner.exactly + 100);
+            int miss = NinjaUtils.nextInt(pl.miss + 100);
+            boolean isMiss = miss > exactly;
+
+            if (pl.isMiss) {
+                isMiss = true;
             }
 
-            if (originChar.hieuChien >= 15 && !originChar.isBot()) {
-                owner.serverDialog("Điểm hiếu chiến quá cao, không thể tiếp tục thi triển thuật này lên người.");
-                mobMeFocus = null;
-                return;
-            }
-
-            try {
-                pl.lock.lock();
-                int dmgOrigin = NinjaUtils.nextInt(this.damageOnPlayer2, this.damageOnPlayer);
-                int dameHp = dmgOrigin;
-                int dameFatal = 0;
-                boolean isFatal = (owner.fatal > 950 ? 950 : owner.fatal) > NinjaUtils.nextInt(1000);
-                if (isFatal) {
-                    dameFatal += dmgOrigin;
-                }
-                int kstcm = pl.options[79] + pl.options[121]; // Kháng st chí mạng
-                kstcm = kstcm > 100 ? 100 : kstcm;
-                dameFatal -= dameFatal * kstcm / 100;
-                dameHp += dameFatal;
-
-                if (pl.isFire) {
-                    dameHp += dmgOrigin;
-                }
-
-                dameHp -= pl.dameDown;
-                switch (sys) {
-                    case 1:
-                        dameHp -= pl.options[48];
-                        dameHp -= pl.resFire;
-                        break;
-
-                    case 2:
-                        dameHp -= pl.options[49];
-                        dameHp -= pl.resIce;
-                        break;
-
-                    case 3:
-                        dameHp -= pl.options[50];
-                        dameHp -= pl.resWind;
-                        break;
-                }
-                switch (sys) {
-                    case 1:
-                        dameHp -= dameHp * pl.options[127] / 100; // Kháng st hệ hoả %
-                        break;
-
-                    case 2:
-                        dameHp -= dameHp * pl.options[130] / 100; // Kháng st hệ băng %
-                        break;
-
-                    case 3:
-                        dameHp -= dameHp * pl.options[131] / 100; // Kháng st hệ phong %
-                        break;
-                }
-                if (isFatal && kstcm <= 90) {
-                    dameHp -= dameHp * pl.options[46] / 100; // Chịu st khi bị cm -#%
-                }
-                dameHp -= dameHp * (pl.options[63] + pl.options[98]) / 100; // Miễn giảm sát thương trang bị
-                if (pl.isReductionDame) { // Skill phượng hoàng, miễn giảm sát thương 5s
-                    dameHp -= dameHp * pl.options[136] / 100;
-                }
-                Effect eff2 = pl.getEm().findByID(EffectIdName.HIEU_UNG_LONG_DEN_NGOI_SAO_MIEN_GIAM_SAT_THUONG_20_PERCENT);
-                if (eff2 != null) {
-                    dameHp -= dameHp * eff2.param / 100;
-                }
-                int exactly = NinjaUtils.nextInt(owner.exactly + 100);
-                int miss = NinjaUtils.nextInt(pl.miss + 100);
-                boolean isMiss = miss > exactly;
-
-                if (pl.isMiss) {
+            if (pl.optionsSupportSkill[31] > 0) { // Quạt 60
+                int rand = NinjaUtils.nextInt(100);
+                if (rand <= pl.optionsSupportSkill[31]) {
                     isMiss = true;
                 }
-
-                if (pl.optionsSupportSkill[SkillOptionName.NE_TRANH_HOAN_TOAN_TAN_CONG_ADD_POINT_PERCENT] > 0) {
-                    int rand = NinjaUtils.nextInt(100);
-                    if (rand <= pl.optionsSupportSkill[SkillOptionName.NE_TRANH_HOAN_TOAN_TAN_CONG_ADD_POINT_PERCENT]) {
-                        isMiss = true;
-                    }
-                }
-
-                if (isMiss) {
-                    dameHp = 0;
-                } else {
-                    if (dameHp <= 0) {
-                        dameHp = 1;
-                    }
-                }
-                int dameMp = 0;
-                if (pl.isShieldMana) {
-                    Effect eff = pl.getEm().findByType(EffectTypeName.HIEU_UNG_MANA_SHIELD);
-                    if (eff != null) {
-                        if ((float) (pl.mp / (float) pl.maxMP * 100f) >= 10) {
-                            dameMp = dameHp * eff.param / 100;
-                            if (dameMp >= pl.mp) {
-                                dameMp = pl.mp;
-                            }
-                            dameHp -= dameMp;
-                            pl.addMp(-dameMp);
-                            pl.getService().updateMp();
-                        }
-                    }
-                }
-                if (isFatal) {
-                    dameHp *= -1;
-                    dameMp *= -1;
-                }
-                this.lastTimeAttack = System.currentTimeMillis();
-                owner.zone.getService().mobMeAttack(owner, pl, this);
-                owner.zone.getService().attackCharacter(dameHp, dameMp, pl);
-
-                if ((pl.taskId == TaskName.NV_LAY_NUOC_HANG_SAU || pl.taskId == TaskName.NV_LAY_NUOC_HANG_SAU || pl.taskId == TaskName.NV_HAI_NAM)
-                        && pl.isCatchItem) {
-                    pl.isFailure = true;
-                }
-
-                if (pl.isTiThi && pl.hp - Math.abs(dameHp) <= 0) {
-                    Char pl2 = pl.zone.findCharById(pl.playerTiThiId);
-                    int num2 = pl.hp;
-                    pl.testEnd(num2, pl2);
-                } else {
-                    pl.addHp(-Math.abs(dameHp));
-                }
-
-                owner.zone.getService().loadHP(owner);
-                pl.zone.getService().loadHP(pl);
-                owner.getService().updateHp();
-                pl.getService().updateHp();
-
-                if (pl.hp <= 0) {
-                    if (owner.zone.tilemap.isChienTruong()) {
-                        short pointAdd = 5;
-                        int range = pl.nDead - pl.nKill;
-                        if (range > 50) {
-                            pointAdd -= 1;
-                        }
-                        if (range > 100) {
-                            pointAdd -= 1;
-                        }
-                        if (range > 150) {
-                            pointAdd -= 1;
-                        }
-                        if (range > 200) {
-                            pointAdd -= 1;
-                        }
-                        if (range > 250) {
-                            pointAdd -= 1;
-                        }
-                        owner.nKill += 1;
-                        pl.nDead += 1;
-                        owner.addWarPoint(pointAdd);
-                    }
-                    if ((owner.getOriginChar().typePk == 2 || owner.getOriginChar().typePk == 3) && owner.getOriginChar().gloryTask != null) {
-                        if (owner.getOriginChar().gloryTask.type == GloryTask.CUU_SAT_NGUOI_KHAC && Math.abs(this.level - pl.level) <= 10
-                                && !owner.getOriginChar().gloryTask.isExistCharacterId(pl.id)) {
-                            owner.getOriginChar().gloryTask.updateProgress(1);
-                            owner.getOriginChar().gloryTask.addCharacterId(pl.id);
-                        }
-                    }
-                    if (pl.enemies != null) {
-                        if (owner.getOriginChar().typePk == 3) {
-                            owner.getOriginChar().addPointPk(1);
-                        } else if (owner.getOriginChar().typePk == 2 || owner.getOriginChar().killCharId == pl.id) {
-                            owner.getOriginChar().addPointPk(2);
-                        }
-                        if (!owner.isBot()) {
-                            pl.enemies.put(owner.name, new Friend(owner.name, (byte) 0));
-                        }
-                    }
-                    if (pl.hieuChien > 0) {
-                        long expLevel = NinjaUtils.getExp(pl.level);
-                        long expNext = Server.exps[pl.level];
-                        long expD = (expNext * ((pl.hieuChien > 5) ? 5 : pl.hieuChien) / 50);
-                        if (pl.exp - expD >= expLevel) {
-                            pl.exp -= expD;
-                            pl.expDown = 0;
-                        } else {
-                            expD -= (pl.exp - expLevel);
-                            pl.exp = expLevel;
-                            pl.expDown += expD;
-                            long fiftyPercent = (expNext / 2);
-                            if (pl.expDown > fiftyPercent) {
-                                pl.expDown = fiftyPercent;
-                            }
-                        }
-                        pl.addPointPk(-1);
-                    }
-                    owner.getService().serverMessage("Bạn vừa đánh trọng thương " + pl.name);
-                    pl.getService().serverMessage("Bạn bị " + owner.name + " đánh trọng thương");
-                    pl.startDie();
-                }
-            } catch (Exception e) {
-                Log.error(e.getMessage(), e);
-            } finally {
-                pl.lock.unlock();
             }
+
+            if (isMiss) {
+                dameHp = 0;
+            } else {
+                if (dameHp <= 0) {
+                    dameHp = 1;
+                }
+            }
+            int dameMp = 0;
+            if (pl.isShieldMana) {
+                Effect eff = pl.getEm().findByType(EffectTypeName.HIEU_UNG_MANA_SHIELD);
+                if (eff != null) {
+                    if ((float) (pl.mp / (float) pl.maxMP * 100f) >= 10) {
+                        dameMp = dameHp * eff.param / 100;
+                        if (dameMp >= pl.mp) {
+                            dameMp = pl.mp;
+                        }
+                        dameHp -= dameMp;
+                        pl.addMp(-dameMp);
+                        pl.getService().updateMp();
+                    }
+                }
+            }
+            if (isFatal) {
+                dameHp *= -1;
+                dameMp *= -1;
+            }
+            this.lastTimeAttack = System.currentTimeMillis();
+            owner.zone.getService().mobMeAttack(owner, pl, this);
+            owner.zone.getService().attackCharacter(dameHp, dameMp, pl);
+            pl.getService().addEffectAuto((byte) this.idSkill_atk, pl.x, pl.y, (byte) 0, (short) 0);
+
+            if ((pl.taskId == TaskName.NV_LAY_NUOC_HANG_SAU || pl.taskId == TaskName.NV_LAY_NUOC_HANG_SAU || pl.taskId == TaskName.NV_HAI_NAM)
+                    && pl.isCatchItem) {
+                pl.isFailure = true;
+            }
+
+            if (pl.isTiThi && pl.hp - Math.abs(dameHp) <= 0) {
+                Char pl2 = pl.zone.findCharById(pl.playerTiThiId);
+                int num2 = pl.hp;
+                pl.testEnd(num2, pl2);
+            } else {
+                pl.addHp(-Math.abs(dameHp));
+            }
+
+            pl.getService().updateHp();
+            pl.zone.getService().loadHP(pl);
+
+            if (pl.hp <= 0) {
+                if (owner.zone.tilemap.isChienTruong()) {
+                    short pointAdd = 5;
+                    int range = pl.nDead - pl.nKill;
+                    if (range > 50) {
+                        pointAdd -= 1;
+                    }
+                    if (range > 100) {
+                        pointAdd -= 1;
+                    }
+                    if (range > 150) {
+                        pointAdd -= 1;
+                    }
+                    if (range > 200) {
+                        pointAdd -= 1;
+                    }
+                    if (range > 250) {
+                        pointAdd -= 1;
+                    }
+                    owner.nKill += 1;
+                    pl.nDead += 1;
+                    owner.addWarPoint(pointAdd);
+                }
+                if ((owner.getOriginChar().typePk == 2 || owner.getOriginChar().typePk == 3) && owner.getOriginChar().gloryTask != null) {
+                    if (owner.getOriginChar().gloryTask.type == GloryTask.CUU_SAT_NGUOI_KHAC && Math.abs(this.level - pl.level) <= 10
+                            && !owner.getOriginChar().gloryTask.isExistCharacterId(pl.id)) {
+                        owner.getOriginChar().gloryTask.updateProgress(1);
+                        owner.getOriginChar().gloryTask.addCharacterId(pl.id);
+                    }
+                }
+                if (pl.enemies != null) {
+                    if (owner.getOriginChar().typePk == 3) {
+                        owner.getOriginChar().addPointPk(1);
+                    } else if (owner.getOriginChar().typePk == 2 || owner.getOriginChar().killCharId == pl.id) {
+                        owner.getOriginChar().addPointPk(2);
+                    }
+                    if (!owner.isBot()) {
+                        pl.enemies.put(owner.name, new Friend(owner.name, (byte) 0));
+                    }
+                }
+                if (pl.hieuChien > 0) {
+                    long expLevel = NinjaUtils.getExp(pl.level);
+                    long expNext = Server.exps[pl.level];
+                    long expD = (expNext * ((pl.hieuChien > 5) ? 5 : pl.hieuChien) / 50);
+                    if (pl.exp - expD >= expLevel) {
+                        pl.exp -= expD;
+                        pl.expDown = 0;
+                    } else {
+                        expD -= (pl.exp - expLevel);
+                        pl.exp = expLevel;
+                        pl.expDown += expD;
+                        long fiftyPercent = (expNext / 2);
+                        if (pl.expDown > fiftyPercent) {
+                            pl.expDown = fiftyPercent;
+                        }
+                    }
+                    pl.addPointPk(-1);
+                }
+                owner.getService().serverMessage("Bạn vừa đánh trọng thương " + pl.name);
+                pl.getService().serverMessage("Bạn bị " + owner.name + " đánh trọng thương");
+                pl.startDie();
+            }
+        } finally {
+            pl.charLock.unlock();
         }
     }
 
-    public void mobMeAttack(Mob m, Char owner) {
-        if (m != null && !m.isDead) {
-            if (System.currentTimeMillis() - this.lastTimeAttack < this.attackDelay) {
+    public void mobMeAttack(Mob monster, Char owner) {
+        if (monster.isDead) {
+            return;
+        }
+        if (System.currentTimeMillis() - this.lastTimeAttack < this.attackDelay) {
+            return;
+        }
+        if (owner.isMobSameParty(monster)) {
+            return;
+        }
+        if (monster.template.id == MobName.BOSS_TUAN_LOC || monster.template.id == MobName.QUAI_VAT) {
+            if (monster.attackableChars.get(0) != this.id) {
                 return;
             }
-            try {
-                m.lock.lock();
-                if (owner.isMobSameParty(m)) {
-                    return;
-                }
-                if (m.template.id == MobName.BOSS_TUAN_LOC || m.template.id == MobName.QUAI_VAT) {
-                    if (m.chars.get(0) != this.id) {
-                        return;
-                    }
-                }
-                if (Event.isEvent() && (owner.getEventPoint().getPoint(LunarNewYear.MYSTERY_BOX_LEFT) <= 0 && m.template.id == MobName.HOP_BI_AN
-                        && owner.mob == null)) {
-                    return;
-                }
-                if (owner.clan == null && m.template.id == MobName.NGUOI_TUYET) {
-                    return;
-                }
-
-                if (m.template.id == MobName.BAO_QUAN && owner.getEm().findByID((byte) 23) == null) {
-                    return;
-                }
-
-                if (m.template.id == MobName.KORO_KING && owner.getIndexItemByIdInBag(ItemName.VIEN_THUOC_THAN_KY) == -1) {
-                    return;
-                }
-
-                if (m.template.id == MobName.CHUOT_CANH_TY) {
-                    if (owner.fashion[2] == null || (owner.fashion[2] != null && owner.fashion[2].template.id != ItemName.AO_NGU_THAN
-                            && owner.fashion[2].template.id != ItemName.AO_TAN_THOI)) {
-                        return;
-                    }
-                }
-
-                int miss = NinjaUtils.nextInt(m.level + 10);
-                int exactly = NinjaUtils.nextInt(owner.exactly + 100);
-                boolean isMiss = miss > exactly;
-
-                if (isMiss) {
-                    this.lastTimeAttack = System.currentTimeMillis();
-                    owner.zone.getService().mobMeAttack(owner, m, this);
-                    owner.zone.getService().attackMonster(-1, false, m);
-                } else {
-                    int dmgOrigin = NinjaUtils.nextInt(this.damageOnMob2, this.damageOnMob);
-                    int dameHit = dmgOrigin;
-
-                    if (m.effects != null) {
-                        if (m.effects.get(EffectTypeName.HIEU_UNG_BONG) != null) {
-                            dameHit += dmgOrigin;
-                        }
-                    }
-                    boolean isFatal = (owner.fatal > 950 ? 950 : owner.fatal) > NinjaUtils.nextInt(1000);
-                    if (isFatal) {
-                        dameHit += dmgOrigin;
-                    }
-
-                    switch (this.sys) {
-                        case 1: // Hoả hệ
-                            dameHit -= m.resFire;
-                            break;
-                        case 2: // Băng hệ
-                            dameHit -= m.resIce;
-                            break;
-                        case 3: // Phong hệ
-                            dameHit -= m.resWind;
-                            break;
-                    }
-
-                    if (m.template.id == MobName.NGUOI_TUYET) {
-                        dameHit = 1;
-                    }
-                    dameHit = dameHit > 0 ? dameHit : 1;
-                    int preHP = m.hp;
-                    if (m.template.id == MobName.BU_NHIN) {
-                        m.addHp(-(m.maxHP / 5));
-                    } else {
-                        m.addHp(-dameHit);
-                    }
-                    if (m.hp < 0) {
-                        m.hp = 0;
-                    }
-                    int nextHP = m.hp;
-                    int hp = Math.abs(nextHP - preHP);
-                    if (m.template.id != MobName.BOSS_TUAN_LOC && m.template.id != MobName.QUAI_VAT) {
-                        owner.addExp(m, hp);
-                    }
-                    if (m.hp <= 0) {
-                        m.die();
-                    }
-                    if (m.isDead) {
-                        Char killer = owner.getOriginChar();
-                        m.dead(killer);
-                    } else {
-                        if (m.id != 0 && !owner.isNhanBan) {
-                            m.addCharId(this.id);
-                        }
-                    }
-
-                    if (m.template.id == MobName.HOP_BI_AN && m.isDead) {
-                        owner.zone.getService().addEffectAuto((byte) 8, (short) m.x, m.y, (byte) 0, (short) 1);
-                    }
-                    this.lastTimeAttack = System.currentTimeMillis();
-                    owner.zone.getService().mobMeAttack(owner, m, this);
-                    owner.zone.getService().attackMonster(dameHit, isFatal, m);
-
-                    if (owner.zone.tilemap.isDungeoClan()) {
-                        Territory.checkEveryAttack(owner);
-                    }
-                }
-            } catch (Exception e) {
-                Log.error(e.getMessage(), e);
-            } finally {
-                m.lock.unlock();
+        }
+        if (Event.isEvent() && (owner.getEventPoint().getPoint(LunarNewYear.MYSTERY_BOX_LEFT) <= 0 && monster.template.id == MobName.HOP_BI_AN
+                && owner.mob == null)) {
+            return;
+        }
+        if (owner.clan == null && monster.template.id == MobName.NGUOI_TUYET) {
+            return;
+        }
+        if (monster.template.id == MobName.BAO_QUAN && owner.getEm().findByID((byte) 23) == null) {
+            return;
+        }
+        if (monster.template.id == MobName.KORO_KING && owner.getIndexItemByIdInBag(ItemName.VIEN_THUOC_THAN_KY) == -1) {
+            return;
+        }
+        if (monster.template.id == MobName.CHUOT_CANH_TY) {
+            if (owner.fashion[2] == null || (owner.fashion[2] != null && owner.fashion[2].template.id != ItemName.AO_NGU_THAN
+                    && owner.fashion[2].template.id != ItemName.AO_TAN_THOI)) {
+                return;
             }
+        }
+        monster.mobLock.lock();
+        try {
+            int miss = NinjaUtils.nextInt(monster.level + 10);
+            int exactly = NinjaUtils.nextInt(owner.exactly + 100);
+            boolean isMiss = miss > exactly;
+
+            if (isMiss) {
+                this.lastTimeAttack = System.currentTimeMillis();
+                owner.zone.getService().mobMeAttack(owner, monster, this);
+                owner.zone.getService().attackMonster(-1, false, monster);
+            } else {
+                int dmgOrigin = NinjaUtils.nextInt(this.damageOnMob2, this.damageOnMob);
+                int dameHit = dmgOrigin;
+
+                if (monster.isFire) {
+                    dameHit += dmgOrigin;
+                }
+                boolean isFatal = (owner.fatal > 950 ? 950 : owner.fatal) > NinjaUtils.nextInt(1000);
+                if (isFatal) {
+                    dameHit += dmgOrigin;
+                }
+
+                switch (this.sys) {
+                    case 1: // Hoả hệ
+                        dameHit -= monster.resFire;
+                        break;
+                    case 2: // Băng hệ
+                        dameHit -= monster.resIce;
+                        break;
+                    case 3: // Phong hệ
+                        dameHit -= monster.resWind;
+                        break;
+                }
+
+                if (monster.template.id == MobName.NGUOI_TUYET) {
+                    dameHit = 1;
+                }
+                dameHit = dameHit > 0 ? dameHit : 1;
+                int preHP = monster.hp;
+
+                if (monster.template.id == MobName.BU_NHIN) {
+                    monster.addHp(-(monster.maxHP / 5));
+                } else {
+                    monster.addHp(-dameHit);
+                }
+                if (monster.hp < 0) {
+                    monster.hp = 0;
+                }
+                int exp = Math.abs(monster.hp - preHP);
+                if (monster.template.id != MobName.BOSS_TUAN_LOC && monster.template.id != MobName.QUAI_VAT) {
+                    owner.addExp(monster, exp);
+                }
+                if (monster.hp <= 0) {
+                    monster.die();
+                }
+                if (monster.isDead) {
+                    Char killer = owner.getOriginChar();
+                    monster.dead(killer);
+                }
+
+                if (monster.template.id == MobName.HOP_BI_AN && monster.isDead) {
+                    owner.zone.getService().addEffectAuto((byte) 8, (short) monster.x, monster.y, (byte) 0, (short) 1);
+                }
+
+                this.lastTimeAttack = System.currentTimeMillis();
+                owner.zone.getService().mobMeAttack(owner, monster, this);
+                owner.zone.getService().attackMonster(dameHit, isFatal, monster);
+
+                if (owner.zone.tilemap.isDungeoClan()) {
+                    Territory.checkEveryAttack(owner);
+                }
+            }
+        } finally {
+            monster.mobLock.unlock();
         }
     }
 
     public void attack(Char pl) {
-        if (pl != null && !pl.isDead) {
-            try {
-                pl.lock.lock();
+        if (pl == null || pl.isDead) {
+            return;
+        }
+        pl.charLock.lock();
+        try {
+            int exactly = NinjaUtils.nextInt(((this.level > 0 ? this.level : 1) * 10) + 100);
+            int miss = NinjaUtils.nextInt(pl.miss + 100);
+            boolean isMiss = miss > exactly;
+            if (pl.isMiss) {
+                isMiss = true;
+            }
 
-                int level = this.level > 0 ? this.level : 1;
-                int exactly = NinjaUtils.nextInt((level * 10) + 100);
-                int miss = NinjaUtils.nextInt(pl.miss + 100);
-                boolean isMiss = miss > exactly;
-                if (pl.isMiss) {
+            if (pl.optionsSupportSkill[31] > 0) { // Quạt 60
+                if (NinjaUtils.nextInt(100) <= pl.optionsSupportSkill[31]) {
                     isMiss = true;
                 }
-
-                if (pl.optionsSupportSkill[SkillOptionName.NE_TRANH_HOAN_TOAN_TAN_CONG_ADD_POINT_PERCENT] > 0) {
-                    int rand = NinjaUtils.nextInt(100);
-                    if (rand <= pl.optionsSupportSkill[SkillOptionName.NE_TRANH_HOAN_TOAN_TAN_CONG_ADD_POINT_PERCENT]) {
-                        isMiss = true;
-                    }
-                }
-
-                if (pl.optionsSupportSkill[69] > 0 && !isMiss) { // đóng băng kunai 6x
-                    int rand = NinjaUtils.nextInt(100);
-                    if (rand <= pl.optionsSupportSkill[69]) {
-                        Effect eff = new Effect(6, pl.optionsSupportSkill[70], 0);
-                        eff.addTime(pl.options[44] * 1000);
-                        byte type = eff.template.type;
-                        Effect effDongBang = effects.get(type);
-                        if (effDongBang != null) {
-                            if (effDongBang.getTimeRemaining() > effDongBang.getTimeLength()) {
-                                return;
-                            }
+            }
+            if (!isMiss && pl.optionsSupportSkill[69] > 0) { // Kunai 60
+                if (NinjaUtils.nextInt(100) <= pl.optionsSupportSkill[69]) {
+                    Effect newEff = new Effect(6, pl.optionsSupportSkill[70], 0); // Kunai 60 time
+                    newEff.addTime(pl.options[44] * 1000); // Upgrade 16 add time
+                    Effect oldEff = this.effects.get(newEff.template.type);
+                    if (oldEff != null) {
+                        if (oldEff.getTimeRemaining() > newEff.getTimeLength()) {
+                            return;
                         }
-                        effects.put(type, eff);
-                        zone.setIce(this, true);
                     }
+                    this.effects.put(newEff.template.type, newEff);
+                    this.zone.setIce(this, true);
                 }
+            }
 
-                int dameHp = NinjaUtils.nextInt(this.damageOnPlayer2, this.damageOnPlayer);
-
-                if (zone.tilemap.isDungeo()) {
+            int dameHp = NinjaUtils.nextInt(this.damageOnPlayer2, this.damageOnPlayer);
+            if (this.zone.tilemap.isDungeo()) {
+                dameHp *= 2;
+            } else if (this.zone.tilemap.isDungeoClan()) {
+                dameHp = pl.hp * 80 / 100;
+                if (this.isBoss) {
+                    dameHp *= 20;
+                } else if (this.levelBoss == 1) {
                     dameHp *= 2;
-                } else if (zone.tilemap.isDungeoClan()) {
-                    dameHp = pl.hp * 80 / 100;
-                    if (this.isBoss) {
-                        dameHp *= 20;
-                    } else if (this.levelBoss == 1) {
-                        dameHp *= 2;
-                    } else if (this.levelBoss == 2) {
-                        dameHp *= 3;
-                    }
-                } else if (zone.tilemap.isDauTruong() || zone.tilemap.isLoiDai()) {
-                    dameHp = dameHp * 10 / 100;
+                } else if (this.levelBoss == 2) {
+                    dameHp *= 3;
+                }
+            } else if (this.zone.tilemap.isDauTruong() || this.zone.tilemap.isLoiDai()) {
+                dameHp = dameHp * 10 / 100;
+            }
+
+            if (pl.isFire) {
+                dameHp += dameHp;
+            }
+            dameHp -= pl.dameDown;
+            switch (this.sys) {
+                case 1:
+                    dameHp -= pl.options[48];
+                    dameHp -= pl.resFire;
+                    dameHp -= dameHp * pl.options[127] / 100; // Kháng st hệ hoả %
+                    break;
+
+                case 2:
+                    dameHp -= pl.options[49];
+                    dameHp -= pl.resIce;
+                    dameHp -= dameHp * pl.options[130] / 100; // Kháng st hệ băng %
+                    break;
+
+                case 3:
+                    dameHp -= pl.options[50];
+                    dameHp -= pl.resWind;
+                    dameHp -= dameHp * pl.options[131] / 100; // Kháng st hệ phong %
+                    break;
+            }
+            dameHp -= dameHp * (pl.options[63] + pl.options[98]) / 100; // Miễn giảm sát thương trang bị
+            if (pl.isReductionDame) { // Skill phượng hoàng, miễn giảm sát thương 5s
+                dameHp -= dameHp * pl.options[136] / 100;
+            }
+            Effect eff2 = pl.getEm().findByID(EffectIdName.HIEU_UNG_LONG_DEN_NGOI_SAO_MIEN_GIAM_SAT_THUONG_20_PERCENT);
+            if (eff2 != null) {
+                dameHp -= dameHp * eff2.param / 100;
+            }
+            if (this.zone.tilemap.isDungeoClan()) {
+                int effectId = -1;
+                int downTimeEffectId = -1;
+                int randEffectId = NinjaUtils.nextInt(3);
+                if (this.zone.tilemap.id == 84 || ((this.zone.tilemap.id == 90 || this.zone.tilemap.id == 167) && randEffectId == 1)) {
+                    effectId = 5;
+                    downTimeEffectId = 40;
+                } else if (this.zone.tilemap.id == 85 || ((this.zone.tilemap.id == 90 || this.zone.tilemap.id == 167) && randEffectId == 2)) {
+                    effectId = 7;
+                    downTimeEffectId = 42;
+                } else if (this.zone.tilemap.id == 86 || ((this.zone.tilemap.id == 90 || this.zone.tilemap.id == 167) && randEffectId == 3)) {
+                    effectId = 6;
+                    downTimeEffectId = 41;
                 }
 
-                if (pl.isFire) {
-                    dameHp += dameHp;
-                }
-                dameHp -= pl.dameDown;
-                switch (sys) {
-                    case 1:
-                        dameHp -= pl.options[48];
-                        dameHp -= pl.resFire;
-                        break;
-
-                    case 2:
-                        dameHp -= pl.options[49];
-                        dameHp -= pl.resIce;
-                        break;
-
-                    case 3:
-                        dameHp -= pl.options[50];
-                        dameHp -= pl.resWind;
-                        break;
-                }
-                switch (sys) {
-                    case 1:
-                        dameHp -= dameHp * pl.options[127] / 100; // Kháng st hệ hoả %
-                        break;
-
-                    case 2:
-                        dameHp -= dameHp * pl.options[130] / 100; // Kháng st hệ băng %
-                        break;
-
-                    case 3:
-                        dameHp -= dameHp * pl.options[131] / 100; // Kháng st hệ phong %
-                        break;
-                }
-                dameHp -= dameHp * (pl.options[63] + pl.options[98]) / 100; // Miễn giảm sát thương trang bị
-                if (pl.isReductionDame) { // Skill phượng hoàng, miễn giảm sát thương 5s
-                    dameHp -= dameHp * pl.options[136] / 100;
-                }
-                Effect eff2 = pl.getEm().findByID(EffectIdName.HIEU_UNG_LONG_DEN_NGOI_SAO_MIEN_GIAM_SAT_THUONG_20_PERCENT);
-                if (eff2 != null) {
-                    dameHp -= dameHp * eff2.param / 100;
-                }
-                if (zone.tilemap.isDungeoClan()) {
-                    int effectId = -1;
-                    int downTimeEffectId = -1;
-                    int randEffectId = NinjaUtils.nextInt(3);
-                    if (zone.tilemap.id == 84 || ((zone.tilemap.id == 90 || zone.tilemap.id == 167) && randEffectId == 1)) {
-                        effectId = 5;
-                        downTimeEffectId = 40;
-                    } else if (zone.tilemap.id == 85 || ((zone.tilemap.id == 90 || zone.tilemap.id == 167) && randEffectId == 2)) {
-                        effectId = 7;
-                        downTimeEffectId = 42;
-                    } else if (zone.tilemap.id == 86 || ((zone.tilemap.id == 90 || zone.tilemap.id == 167) && randEffectId == 3)) {
-                        effectId = 6;
-                        downTimeEffectId = 41;
-                    }
-
-                    int randEffect = NinjaUtils.nextInt(100);
-                    if (effectId != -1 && downTimeEffectId != -1
-                            && (randEffect < 10 || (randEffect < 50 && zone.tilemap.id == 90) || (randEffect < 20 && zone.tilemap.id == 167))) {
-                        Effect eff = new Effect(effectId, 3000, 0);
-                        eff.addTime(-pl.options[downTimeEffectId] * 1000);
-                        switch (effectId) {
-                            case 5: { // Bỏng
-                                int skill45 = pl.optionsSupportSkill[SkillOptionName.GIAM_THOI_GIAN_BI_BONG_SUB_0_POINT_GIAY] * 100;
-                                eff.addTime(-skill45);
-                                Effect effQuat40 = pl.getEm().findByType(EffectTypeName.GIAM_TRU_THOI_GIAN_CHO_MINH_VA_DONG_DOI);
-                                if (effQuat40 != null) {
-                                    int decreaseTime = 0;
-                                    if (effQuat40.param == Effect.EFF_ME) {
-                                        decreaseTime = Effect.GIAM_3_GIAY_THOI_GIAN_BI_BONG;
-                                    } else if (effQuat40.param == Effect.EFF_FRIEND) {
-                                        decreaseTime = Effect.GIAM_2_GIAY_THOI_GIAN_BI_BONG_CHO_DONG_DOI;
-                                    }
-                                    eff.addTime(-decreaseTime);
+                int randEffect = NinjaUtils.nextInt(100);
+                if (effectId != -1 && downTimeEffectId != -1
+                        && (randEffect < 10 || (randEffect < 50 && this.zone.tilemap.id == 90) || (randEffect < 20 && this.zone.tilemap.id == 167))) {
+                    Effect newEff = new Effect(effectId, 3000, 0);
+                    newEff.addTime(-pl.options[downTimeEffectId] * 1000);
+                    switch (effectId) {
+                        case 5: { // Bỏng
+                            int skill45 = pl.optionsSupportSkill[SkillOptionName.GIAM_THOI_GIAN_BI_BONG_SUB_0_POINT_GIAY] * 100;
+                            newEff.addTime(-skill45);
+                            Effect effQuat40 = pl.getEm().findByType(EffectTypeName.GIAM_TRU_THOI_GIAN_CHO_MINH_VA_DONG_DOI);
+                            if (effQuat40 != null) {
+                                int decreaseTime = 0;
+                                if (effQuat40.param == Effect.EFF_ME) {
+                                    decreaseTime = Effect.GIAM_3_GIAY_THOI_GIAN_BI_BONG;
+                                } else if (effQuat40.param == Effect.EFF_FRIEND) {
+                                    decreaseTime = Effect.GIAM_2_GIAY_THOI_GIAN_BI_BONG_CHO_DONG_DOI;
                                 }
-                                break;
+                                newEff.addTime(-decreaseTime);
                             }
-                            case 6: { // Đóng băng
-                                int skill45 = pl.optionsSupportSkill[SkillOptionName.GIAM_THOI_GIAN_BI_DONG_BANG_SUB_0_POINT_GIAY] * 100;
-                                eff.addTime(-skill45);
-                                Effect effQuat40 = pl.getEm().findByType(EffectTypeName.GIAM_TRU_THOI_GIAN_CHO_MINH_VA_DONG_DOI);
-                                if (effQuat40 != null) {
-                                    int decreaseTime = 0;
-                                    if (effQuat40.param == Effect.EFF_ME) {
-                                        decreaseTime = Effect.GIAM_2_GIAY_THOI_GIAN_BI_DONG_BANG;
-                                    } else if (effQuat40.param == Effect.EFF_FRIEND) {
-                                        decreaseTime = Effect.GIAM_1_GIAY_THOI_GIAN_BI_DONG_BANG_CHO_DONG_DOI;
-                                    }
-                                    eff.addTime(-decreaseTime);
-                                }
-                                break;
-                            }
-                            case 7: { // Choáng
-                                int skill45 = pl.optionsSupportSkill[SkillOptionName.GIAM_THOI_GIAN_BI_CHOANG_SUB_0_POINT_GIAY] * 100;
-                                eff.addTime(-skill45);
-                                Effect effQuat40 = pl.getEm().findByType(EffectTypeName.GIAM_TRU_THOI_GIAN_CHO_MINH_VA_DONG_DOI);
-                                if (effQuat40 != null) {
-                                    int decreaseTime = 0;
-                                    if (effQuat40.param == Effect.EFF_ME) {
-                                        decreaseTime = Effect.GIAM_1_GIAY_THOI_GIAN_BI_CHOANG;
-                                    } else if (effQuat40.param == Effect.EFF_FRIEND) {
-                                        decreaseTime = Effect.GIAM_0_5_GIAY_THOI_GIAN_BI_CHOANG_CHO_DONG_DOI;
-                                    }
-                                    eff.addTime(-decreaseTime);
-                                }
-                                break;
-                            }
+                            break;
                         }
-                        pl.getEm().setEffect(eff);
+                        case 6: { // Đóng băng
+                            int skill45 = pl.optionsSupportSkill[SkillOptionName.GIAM_THOI_GIAN_BI_DONG_BANG_SUB_0_POINT_GIAY] * 100;
+                            newEff.addTime(-skill45);
+                            Effect effQuat40 = pl.getEm().findByType(EffectTypeName.GIAM_TRU_THOI_GIAN_CHO_MINH_VA_DONG_DOI);
+                            if (effQuat40 != null) {
+                                int decreaseTime = 0;
+                                if (effQuat40.param == Effect.EFF_ME) {
+                                    decreaseTime = Effect.GIAM_2_GIAY_THOI_GIAN_BI_DONG_BANG;
+                                } else if (effQuat40.param == Effect.EFF_FRIEND) {
+                                    decreaseTime = Effect.GIAM_1_GIAY_THOI_GIAN_BI_DONG_BANG_CHO_DONG_DOI;
+                                }
+                                newEff.addTime(-decreaseTime);
+                            }
+                            break;
+                        }
+                        case 7: { // Choáng
+                            int skill45 = pl.optionsSupportSkill[SkillOptionName.GIAM_THOI_GIAN_BI_CHOANG_SUB_0_POINT_GIAY] * 100;
+                            newEff.addTime(-skill45);
+                            Effect effQuat40 = pl.getEm().findByType(EffectTypeName.GIAM_TRU_THOI_GIAN_CHO_MINH_VA_DONG_DOI);
+                            if (effQuat40 != null) {
+                                int decreaseTime = 0;
+                                if (effQuat40.param == Effect.EFF_ME) {
+                                    decreaseTime = Effect.GIAM_1_GIAY_THOI_GIAN_BI_CHOANG;
+                                } else if (effQuat40.param == Effect.EFF_FRIEND) {
+                                    decreaseTime = Effect.GIAM_0_5_GIAY_THOI_GIAN_BI_CHOANG_CHO_DONG_DOI;
+                                }
+                                newEff.addTime(-decreaseTime);
+                            }
+                            break;
+                        }
                     }
+                    pl.getEm().setEffect(newEff);
                 }
+            }
 
-                if (!isMiss) { // Phản dmg
+            if (!isMiss) { // Phản dmg
+                this.mobLock.lock();
+                try {
                     int preHP = this.hp;
                     int reactDame = pl.reactDame;
 
                     if (pl.options[135] > 0) { // Skill phượng hoàng phản dmg 20% máu hiện tại
                         if (NinjaUtils.nextInt(100) < pl.options[135]) {
-                            reactDame = hp * 20 / 100;
+                            reactDame = this.hp * 20 / 100;
                             zone.getService().addEffect(pl.mob, 64, 5, 5, 0);
                         }
                     }
@@ -1202,21 +1183,18 @@ public class Mob {
                         int dmgOrigin = NinjaUtils.nextInt(reactDame2, reactDame);
                         int dmgHit = dmgOrigin;
                         boolean isFatal = (pl.fatal > 950 ? 950 : pl.fatal) > NinjaUtils.nextInt(1000);
-                        if (this.effects != null) {
-                            if (this.effects.get(EffectTypeName.HIEU_UNG_BONG) != null) {
-                                dmgHit += dmgOrigin;
-                            }
+                        if (this.isFire) {
+                            dmgHit += dmgOrigin;
                         }
                         if (isFatal) {
                             dmgHit += dmgOrigin;
                         }
-                        addHp(-dmgHit);
+                        this.addHp(-dmgHit);
                         zone.getService().attackMonster(dmgHit, isFatal, this);
                     }
 
-                    int nextHP = this.hp;
-                    int hp = Math.abs(nextHP - preHP);
-                    pl.addExp(this, hp);
+                    int exp = Math.abs(this.hp - preHP);
+                    pl.addExp(this, exp);
 
                     if (this.hp <= 0) {
                         this.die();
@@ -1225,50 +1203,48 @@ public class Mob {
                         Char killer = pl.getOriginChar();
                         this.dead(killer);
                     }
+                } finally {
+                    this.mobLock.unlock();
                 }
-
-                if (isMiss) {
-                    dameHp = 0;
-                } else {
-                    if (dameHp <= 0) {
-                        dameHp = 1;
-                    }
-                }
-                int dameMp = 0;
-                if (pl.isShieldMana) {
-                    Effect eff = pl.getEm().findByType(EffectTypeName.HIEU_UNG_MANA_SHIELD);
-                    if (eff != null) {
-                        if ((float) (pl.mp / (float) pl.maxMP * 100f) >= 10) {
-                            dameMp = dameHp * eff.param / 100;
-                            if (dameMp >= pl.mp) {
-                                dameMp = pl.mp;
-                            }
-                            dameHp -= dameMp;
-                            pl.addMp(-dameMp);
-                            pl.getService().updateMp();
-                        }
-                    }
-                }
-
-                if ((pl.taskId == TaskName.NV_LAY_NUOC_HANG_SAU || pl.taskId == TaskName.NV_LAY_NUOC_HANG_SAU || pl.taskId == TaskName.NV_HAI_NAM)
-                        && pl.isCatchItem) {
-                    pl.isFailure = true;
-                }
-
-                pl.addHp(-dameHp);
-                pl.zone.getService().loadHP(pl);
-                pl.getService().updateHp();
-                if (pl.hp <= 0) {
-                    pl.startDie();
-                }
-
-                pl.getService().npcAttackMe(this, dameHp, dameMp);
-                zone.getService().npcAttackPlayer(this, pl);
-            } catch (Exception e) {
-                Log.error(e.getMessage(), e);
-            } finally {
-                pl.lock.unlock();
             }
+
+            if (isMiss) {
+                dameHp = 0;
+            } else {
+                if (dameHp <= 0) {
+                    dameHp = 1;
+                }
+            }
+            int dameMp = 0;
+            if (pl.isShieldMana) {
+                Effect eff = pl.getEm().findByType(EffectTypeName.HIEU_UNG_MANA_SHIELD);
+                if (eff != null) {
+                    if ((float) (pl.mp / (float) pl.maxMP * 100f) >= 10) {
+                        dameMp = dameHp * eff.param / 100;
+                        if (dameMp >= pl.mp) {
+                            dameMp = pl.mp;
+                        }
+                        dameHp -= dameMp;
+                        pl.addMp(-dameMp);
+                        pl.getService().updateMp();
+                    }
+                }
+            }
+
+            if ((pl.taskId == TaskName.NV_LAY_NUOC_HANG_SAU || pl.taskId == TaskName.NV_LAY_NUOC_HANG_SAU || pl.taskId == TaskName.NV_HAI_NAM)
+                    && pl.isCatchItem) {
+                pl.isFailure = true;
+            }
+
+            pl.getService().npcAttackMe(this, dameHp, dameMp);
+            this.zone.getService().npcAttackPlayer(this, pl);
+
+            pl.addHp(-dameHp);
+            if (pl.hp <= 0) {
+                pl.startDie();
+            }
+        } finally {
+            pl.charLock.unlock();
         }
     }
 
@@ -1505,14 +1481,14 @@ public class Mob {
         }
     }
 
-    public void addCharId(int charId) {
-        if (!chars.contains(charId)) {
-            chars.add(charId);
+    public void addAttackableCharId(int charId) {
+        if (!attackableChars.contains(charId)) {
+            attackableChars.add(charId);
         }
     }
 
     public boolean checkExist(int charId) {
-        for (int id : chars) {
+        for (int id : attackableChars) {
             if (id == charId) {
                 return true;
             }
@@ -1520,9 +1496,9 @@ public class Mob {
         return false;
     }
 
-    public Vector<Char> getChars() {
+    public Vector<Char> getAttackableChars() {
         Vector<Char> chars = new Vector<>();
-        Vector<Integer> clone = (Vector<Integer>) this.chars.clone();
+        Vector<Integer> clone = (Vector<Integer>) this.attackableChars.clone();
         for (int id : clone) {
             Char _char = zone.findCharById(id);
             if (_char != null) {
@@ -1535,8 +1511,8 @@ public class Mob {
     }
 
     public void removeCharIfExist(int id) {
-        if (chars.contains(id)) {
-            chars.remove(chars.indexOf(id));
+        if (attackableChars.contains(id)) {
+            attackableChars.remove(attackableChars.indexOf(id));
         }
     }
 
@@ -1560,7 +1536,7 @@ public class Mob {
 
     public Char randomChar() {
         Char _char = null;
-        Vector<Integer> chars = (Vector<Integer>) this.chars.clone();
+        Vector<Integer> chars = (Vector<Integer>) this.attackableChars.clone();
         do {
             int size = chars.size();
             if (size == 0) {
@@ -1586,79 +1562,79 @@ public class Mob {
     }
 
     public void update() {
-        if (!this.isDead) {
-            if (template.id != MobName.BACH_LONG_TRU && template.id != MobName.HAC_LONG_TRU) {
-                if (template.id != MobName.BOSS_TUAN_LOC && template.id != MobName.NGUOI_TUYET && template.id != MobName.HOP_BI_AN
-                        && template.id != MobName.QUAI_VAT) {
-                    List<Char> list = zone.getChars();
-                    if (list.size() > 0) {
-                        int add = 0;
-                        if (isBoss) {
-                            add = 100;
+        if (this.isDead) {
+            return;
+        }
+        if (this.template.id != MobName.BACH_LONG_TRU && this.template.id != MobName.HAC_LONG_TRU) {
+            if (this.template.id != MobName.BOSS_TUAN_LOC && this.template.id != MobName.NGUOI_TUYET && this.template.id != MobName.HOP_BI_AN
+                    && this.template.id != MobName.QUAI_VAT) {
+                List<Char> charsInZone = this.zone.getChars();
+                if (charsInZone.size() > 0) {
+                    int extraRange = this.isBoss ? 100 : 0;
+                    for (Char _char : charsInZone) {
+                        if (_char.isDead) {
+                            continue;
                         }
-                        for (Char _char : list) {
-                            if (_char.isDead) {
-                                continue;
-                            }
-                            if ((_char.faction == 0 && zone.tilemap.id == 99) || (_char.faction == 1 && zone.tilemap.id == 103)
-                                    || _char.faction == 2) {
-                                continue;
-                            }
-                            if (template.type == 4) {
-                                int range = NinjaUtils.getDistance(this.x, this.y, _char.x, _char.y);
-                                if (range < template.rangeMove + 50 + add) {
-                                    if (!_char.isInvisible()) {
-                                        addCharId(_char.id);
-                                    }
+                        if ((_char.faction == 0 && this.zone.tilemap.id == 99) || (_char.faction == 1 && this.zone.tilemap.id == 103)
+                                || _char.faction == 2) {
+                            continue;
+                        }
+                        if (this.template.type == 4) { // Fly
+                            int range = NinjaUtils.getDistance(this.x, this.y, _char.x, _char.y);
+                            if (range < this.template.rangeMove + 50 + extraRange) {
+                                if (!_char.isInvisible()) {
+                                    this.addAttackableCharId(_char.id);
                                 }
-                            } else {
-                                if (this.y == _char.y && Math.abs(this.x - _char.x) < template.rangeMove + 20 + add) {
-                                    if (!_char.isInvisible()) {
-                                        addCharId(_char.id);
-                                    }
+                            }
+                        } else {
+                            if (this.y == _char.y && Math.abs(this.x - _char.x) < this.template.rangeMove + 20 + extraRange) {
+                                if (!_char.isInvisible()) {
+                                    this.addAttackableCharId(_char.id);
                                 }
                             }
                         }
                     }
                 }
-                if (!isIce && !isWind && !isDisable && template.id != MobName.BU_NHIN && template.id != MobName.MOC_NHAN
-                        && template.id != MobName.THAO_DUOC && chars.size() > 0) {
+            }
+            if (this.attackableChars.size() > 0 || this.attackedChars.size() > 0) {
+                if (!this.isIce && !this.isWind && !this.isDisable && this.template.id != MobName.BU_NHIN && this.template.id != MobName.MOC_NHAN
+                        && this.template.id != MobName.THAO_DUOC) {
                     if (System.currentTimeMillis() - this.lastTimeAttack > this.attackDelay) {
                         this.lastTimeAttack = System.currentTimeMillis();
-                        attack();
+                        this.attack();
                     }
                 }
             }
-            Effect eff5 = effects.get(EffectTypeName.LUA_VO_HINH);
-            if (eff5 != null) {
-                thieuDot(eff5);
+        }
+        Effect eff5 = this.effects.get(EffectTypeName.LUA_VO_HINH);
+        if (eff5 != null) {
+            this.thieuDot(eff5);
+        }
+        Vector<Byte> effectsToRemove = new Vector<>();
+        for (Entry<Byte, Effect> entry : this.effects.entrySet()) {
+            Effect eff = entry.getValue();
+            if (eff == null || eff.isExpired()) {
+                effectsToRemove.add(entry.getKey());
             }
-            Vector<Byte> removeEffect = new Vector<>();
-            for (Entry<Byte, Effect> entry : this.effects.entrySet()) {
-                Effect eff = entry.getValue();
-                if (eff == null || eff.isExpired()) {
-                    removeEffect.add(entry.getKey());
-                }
-            }
-            for (byte b : removeEffect) {
-                this.effects.remove(b);
-                if (b == 1) {
-                    zone.setFire(this, false);
-                } else if (b == 2) {
-                    zone.setIce(this, false);
-                } else if (b == 3) {
-                    zone.setWind(this, false);
-                } else if (b == 14) {
-                    zone.setMove(this, false);
-                } else if (b == 0) {
-                    zone.setDisable(this, false);
-                }
+        }
+        for (byte effType : effectsToRemove) {
+            this.effects.remove(effType);
+            if (effType == 1) {
+                zone.setFire(this, false);
+            } else if (effType == 2) {
+                zone.setIce(this, false);
+            } else if (effType == 3) {
+                zone.setWind(this, false);
+            } else if (effType == 14) {
+                zone.setMove(this, false);
+            } else if (effType == 0) {
+                zone.setDisable(this, false);
             }
         }
     }
 
     public void thieuDot(Effect eff5) {
-        lock.lock();
+        this.mobLock.lock();
         try {
             int charId = eff5.param2;
             int damage = eff5.param;
@@ -1667,24 +1643,22 @@ public class Mob {
 
             zone.getService().callEffectNpc(this);
             int preHP = this.hp;
-            Char p = zone.findCharById(charId);
-            if (p == null) {
+            Char pl = this.zone.findCharById(charId);
+            if (pl == null) {
                 return;
             }
 
             int dmgHit = dmgOrigin;
-            boolean isFatal = (p.fatal > 950 ? 950 : p.fatal) > NinjaUtils.nextInt(1000);
-            if (this.effects != null) {
-                if (this.effects.get(EffectTypeName.HIEU_UNG_BONG) != null) {
-                    dmgHit += dmgOrigin;
-                }
+            boolean isFatal = (pl.fatal > 950 ? 950 : pl.fatal) > NinjaUtils.nextInt(1000);
+            if (this.isFire) {
+                dmgHit += dmgOrigin;
             }
             if (isFatal) {
                 dmgHit += dmgOrigin;
             }
 
             if (this.template.id == MobName.NGUOI_TUYET) {
-                if (p.clan != null) {
+                if (pl.clan != null) {
                     dmgHit = 1;
                 } else {
                     dmgHit = 0;
@@ -1694,32 +1668,36 @@ public class Mob {
             }
 
             if (this.template.id == MobName.BU_NHIN) {
-                addHp(-(this.maxHP / 5));
+                this.addHp(-(this.maxHP / 5));
             } else {
-                addHp(-dmgHit);
+                this.addHp(-dmgHit);
             }
-            zone.getService().attackMonster(dmgHit, isFatal, this);
-            int nextHP = this.hp;
-            int hp = Math.abs(nextHP - preHP);
-            p.addExp(this, hp);
+            this.zone.getService().attackMonster(dmgHit, isFatal, this);
+            int exp = Math.abs(this.hp - preHP);
+            pl.addExp(this, exp);
 
             if (this.hp <= 0) {
                 this.die();
             }
             if (this.isDead) {
-                Char killer = p.getOriginChar();
+                Char killer = pl.getOriginChar();
                 this.dead(killer);
             }
 
-            if (zone.tilemap.isDungeoClan()) {
-                Territory.checkEveryAttack(p);
+            if (this.zone.tilemap.isDungeoClan()) {
+                Territory.checkEveryAttack(pl);
             }
         } finally {
-            lock.unlock();
+            this.mobLock.unlock();
         }
     }
 
     public void addHp(int add) {
-        this.hp += add;
+        this.mobLock.lock();
+        try {
+            this.hp += add;
+        } finally {
+            this.mobLock.unlock();
+        }
     }
 }

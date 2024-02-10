@@ -1,15 +1,13 @@
 package com.nsoz.network;
 
 public interface ISession {
+    boolean isConnected();
 
-    public abstract boolean isConnected();
+    void setHandler(IMessageHandler messageHandler);
 
-    public abstract void setHandler(IMessageHandler messageHandler);
+    void setService(Service service);
 
-    public abstract void setService(Service service);
+    void sendMessage(Message message);
 
-    public abstract void sendMessage(Message message);
-
-    public abstract void close();
-
+    void close();
 }

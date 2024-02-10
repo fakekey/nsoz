@@ -1,15 +1,15 @@
 package com.nsoz.bot.attack;
 
+import java.util.ArrayList;
+import java.util.List;
+import com.nsoz.bot.Bot;
+import com.nsoz.bot.IAttack;
+import com.nsoz.bot.IMove;
 import com.nsoz.bot.move.MoveToTarget;
+import com.nsoz.map.zones.Zone;
 import com.nsoz.model.Char;
 import com.nsoz.skill.Skill;
-import java.util.ArrayList;
-import com.nsoz.bot.Bot;
-import com.nsoz.map.zones.Zone;
 import com.nsoz.util.NinjaUtils;
-import java.util.List;
-import com.nsoz.bot.IMove;
-import com.nsoz.bot.IAttack;
 
 public class AttackAround implements IAttack {
 
@@ -47,11 +47,9 @@ public class AttackAround implements IAttack {
         if (target == null || target.isDead || target.zone != owner.zone) {
             target = detect(owner);
             IMove move = owner.getMove();
-            if (move != null) {
-                if (move instanceof MoveToTarget) {
-                    MoveToTarget m = (MoveToTarget) move;
-                    m.setTarget(target);
-                }
+            if (move instanceof MoveToTarget) {
+                MoveToTarget m = (MoveToTarget) move;
+                m.setTarget(target);
             }
         }
         if (target == null || target.isDead) {
