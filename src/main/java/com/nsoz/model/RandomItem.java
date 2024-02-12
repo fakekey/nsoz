@@ -153,7 +153,7 @@ public class RandomItem {
         VDMQ.add(2, ItemName.LINH_LANG_HO_DIEP);
         VDMQ.add(0.5, ItemName.SACH_VO_CONG_KAGE_BUNSHIN);
         VDMQ.add(2, ItemName.PHAN_THAN_LENH);
-        VDMQ.add(40, ItemName.DA_CAP_5);
+        VDMQ.add(40, ItemName.YEN);
 
         // Item
         ITEM.add(2, ItemName.DA_CAP_1);

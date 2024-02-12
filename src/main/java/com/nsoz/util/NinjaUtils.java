@@ -48,8 +48,8 @@ public class NinjaUtils {
     private static final NumberFormat numberFormat = NumberFormat.getInstance(new Locale("vi"));
     private static final DateFormat dateFormatWeek = new SimpleDateFormat("yyyy-MM-ww");
 
-    public static int nextInt(int max) {
-        return rand.nextInt(max);
+    public static int nextInt(int lessThan) {
+        return rand.nextInt(lessThan);
     }
 
     public static Object randomObject(Object... array) {

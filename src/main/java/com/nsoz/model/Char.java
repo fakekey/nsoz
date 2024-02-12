@@ -6106,9 +6106,9 @@ public class Char {
                             if (mob.hp < 0) {
                                 mob.hp = 0;
                             }
-                            int exp = Math.abs(mob.hp - preHP);
+                            int dHP = Math.abs(mob.hp - preHP);
                             if (mob.template.id != MobName.BOSS_TUAN_LOC && mob.template.id != MobName.QUAI_VAT) {
-                                addExp(mob, exp);
+                                addExp(mob, dHP);
                             }
                             if (mob.hp <= 0) {
                                 mob.die();
@@ -6149,13 +6149,13 @@ public class Char {
     }
 
     // exp sever
-    public void addExp(Mob mob, int dame) {
+    public void addExp(Mob mob, int dHP) {
         int dLevel = Math.abs(mob.level - this.level);
         if (mob.template.id != MobName.BU_NHIN && (dLevel <= 10)) {
             long exp = 1;
             int a = this.level / 20;
             a = a == 0 ? 1 : a;
-            int b = dame * a;
+            int b = dHP * a;
             int c = (mob.level - this.level) * a;
             exp = (b / 2) + (b * c / 100);
             if (mob.isBoss) {
@@ -16660,8 +16660,9 @@ public class Char {
                 getService().levelUp();
                 zone.getService().loadLevel(this);
                 this.tangKyNang6x(this.equipment[ItemTemplate.TYPE_BIKIP], false);
+            } else {
+                getService().addExp(exp);
             }
-            getService().addExp(exp);
         }
     }
 

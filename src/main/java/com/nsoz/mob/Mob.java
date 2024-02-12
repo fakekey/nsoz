@@ -21,6 +21,7 @@ import com.nsoz.event.LunarNewYear;
 import com.nsoz.event.Noel;
 import com.nsoz.item.Item;
 import com.nsoz.item.ItemFactory;
+import com.nsoz.item.ItemTemplate;
 import com.nsoz.lib.RandomCollection;
 import com.nsoz.map.item.ItemMap;
 import com.nsoz.map.item.ItemMapFactory;
@@ -368,7 +369,7 @@ public class Mob {
             if (this.level <= 40) {
                 itemID = this.level / 11;
                 if (itemID == 1) {
-                    itemID = NinjaUtils.nextInt(1);
+                    itemID = NinjaUtils.nextInt(0, 1);
                 } else if (itemID == 2) {
                     itemID = NinjaUtils.nextInt(1, 2);
                 } else {
@@ -376,16 +377,9 @@ public class Mob {
                 }
             } else if (this.level > 40 && this.level <= 50) {
                 int[] itId = {2, 3};
-                itemID = itId[NinjaUtils.randomWithRate(new int[] {15, 85})];
-            } else if (this.level > 50 && this.level <= 60) {
-                int[] itId = {3, 4};
                 itemID = itId[NinjaUtils.randomWithRate(new int[] {5, 95})];
-            } else if (this.level > 60 && this.level <= 70) {
-                int[] itId = {4, 5};
-                itemID = itId[NinjaUtils.randomWithRate(new int[] {75, 25})];
-            } else if (this.level > 70) {
-                itemID = (this.level / 10) - 2;
-                itemID = itemID > 10 ? 10 : itemID;
+            } else if (this.level > 50) {
+                itemID = ItemName.DA_CAP_5;
             }
         } else if (itemID == ItemName.BINH_HP_CUC_TIEU) {
             if (this.level < 10) {
@@ -448,11 +442,11 @@ public class Mob {
             } else if (type == BOSS_LDGT) {
                 itemId = RandomItem.BOSS_LDGT.next();
             } else if (type == CHIEN_TRUONG) {
-                itemId = 846;// chìa khóa
+                itemId = ItemName.KHOA_RUONG; // chìa khóa
             } else if (type == CHIA_KHOA_CO_QUAN) {
-                itemId = ItemName.CHIA_KHOA_LANH_DIA_GIA_TOC;// chìa khóa
+                itemId = ItemName.CHIA_KHOA_LANH_DIA_GIA_TOC; // chìa khóa
             } else if (type == LAM_THAO_DUOC) {
-                itemId = ItemName.LAM_THAO_DUOC;// lam thảo dược
+                itemId = ItemName.LAM_THAO_DUOC; // lam thảo dược
             } else if (type == YEN) {
                 itemId = ItemName.YEN;
             } else if (type == ITEM_TASK) {
@@ -517,7 +511,7 @@ public class Mob {
             if (item.id < 12 && !this.isBoss && this.levelBoss == 0) {
                 item.isLock = true;
             }
-            if (item.template.type == 25) {
+            if (item.template.type == ItemTemplate.TYPE_TASK) {
                 item.isLock = true;
             }
             if (item.id == ItemName.SUSHI) {
@@ -985,9 +979,9 @@ public class Mob {
                 if (monster.hp < 0) {
                     monster.hp = 0;
                 }
-                int exp = Math.abs(monster.hp - preHP);
+                int dHP = Math.abs(monster.hp - preHP);
                 if (monster.template.id != MobName.BOSS_TUAN_LOC && monster.template.id != MobName.QUAI_VAT) {
-                    owner.addExp(monster, exp);
+                    owner.addExp(monster, dHP);
                 }
                 if (monster.hp <= 0) {
                     monster.die();
@@ -1193,8 +1187,8 @@ public class Mob {
                         zone.getService().attackMonster(dmgHit, isFatal, this);
                     }
 
-                    int exp = Math.abs(this.hp - preHP);
-                    pl.addExp(this, exp);
+                    int dHP = Math.abs(this.hp - preHP);
+                    pl.addExp(this, dHP);
 
                     if (this.hp <= 0) {
                         this.die();
@@ -1388,16 +1382,16 @@ public class Mob {
                             dropItem(killer, Mob.BOSS_LDGT);
                         }
                     } else if (dLevel <= 7) {
-                        int[] percents = {14, 10, 1, 75};
+                        int[] percents = {15, 10, 3, 72};
                         byte[] types = {Mob.YEN, Mob.ITEM, Mob.EQUIP, -1};
                         int index = NinjaUtils.randomWithRate(percents, 100);
                         byte type = types[index];
                         if (type == -1) {
                             if (zone.tilemap.isVDMQ()) {
-                                if (killer.isTNP && NinjaUtils.nextInt(250) < 5) {
+                                if (killer.isTNP && NinjaUtils.nextInt(100) < 6) {
                                     type = Mob.VDMQ;
                                 }
-                                if (killer.isKNP && NinjaUtils.nextInt(250) == 0) {
+                                if (killer.isKNP && NinjaUtils.nextInt(100) < 2) {
                                     type = Mob.VDMQ;
                                 }
                             }
@@ -1411,7 +1405,7 @@ public class Mob {
                             dropItem(killer, type);
                         }
                     }
-                    if (Event.isEvent()) {
+                    if (Event.isHalloween()) {
                         int distance = 5;
                         int percentage = 10;
                         if (killer.isTNP || killer.isKNP) {
@@ -1437,6 +1431,21 @@ public class Mob {
                                 if (r <= 5) {
                                     dropItem(killer, BI_MA);
                                 }
+                            }
+                        }
+                    } else if (Event.isLunarNewYear() && killer.level >= 20) {
+                        int percent = 10;
+                        if (zone.tilemap.isLangCo() || zone.tilemap.isLangTruyenThuyet() || zone.tilemap.isVDMQ()) {
+                            percent += 5;
+                        }
+                        if (killer.isTNP) {
+                            percent = 100;
+                        } else if (killer.isKNP) {
+                            percent = 50;
+                        }
+                        if (dLevel <= 7) {
+                            if (NinjaUtils.nextInt(1, 100) <= percent) {
+                                dropItem(killer, EVENT);
                             }
                         }
                     }
@@ -1673,8 +1682,8 @@ public class Mob {
                 this.addHp(-dmgHit);
             }
             this.zone.getService().attackMonster(dmgHit, isFatal, this);
-            int exp = Math.abs(this.hp - preHP);
-            pl.addExp(this, exp);
+            int dHP = Math.abs(this.hp - preHP);
+            pl.addExp(this, dHP);
 
             if (this.hp <= 0) {
                 this.die();
