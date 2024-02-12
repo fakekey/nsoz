@@ -1,9 +1,8 @@
 package com.nsoz.util;
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
-import org.apache.log4j.Priority;
-
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import com.nsoz.server.Config;
 
 public class Log {
@@ -59,8 +58,8 @@ public class Log {
         LOG.error(message, throwable);
     }
 
-    public static void log(Priority priority, Object message) {
-        LOG.log(priority, message);
+    public static void log(Level level, Object message) {
+        LOG.log(level, message);
     }
 
 }
