@@ -805,7 +805,7 @@ public class Service extends AbsService {
                 ds.writeByte(levelBoss);
                 ds.writeBoolean(mob.isBoss);
             }
-            Figurehead[] buNhins = zone.getBuNhins();
+            Figurehead[] buNhins = zone.getFigureheads();
             int num = buNhins.length;
             ds.writeByte(num);
             for (Figurehead buNhin : buNhins) {

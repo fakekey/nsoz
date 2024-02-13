@@ -549,7 +549,7 @@ public class Zone {
         return list;
     }
 
-    public Figurehead[] getBuNhins() {
+    public Figurehead[] getFigureheads() {
         return this.figureheads.toArray(new Figurehead[this.figureheads.size()]);
     }
 

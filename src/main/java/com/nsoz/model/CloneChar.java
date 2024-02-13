@@ -5,6 +5,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Vector;
+import java.util.stream.IntStream;
 import org.bson.Document;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -43,6 +44,8 @@ public class CloneChar extends Char {
     public short selectSkillId;
     public boolean isUpdate;
     private Message hoiSinh;
+    private long invisibleTime = 500L;
+    private long lastTimeInvisible;
 
     public CloneChar(Char _char, int damePercent) {
         super(-(10000000 + _char.id));
@@ -85,6 +88,54 @@ public class CloneChar extends Char {
             return human.isMeCanAttackNpc(cAtt);
         }
         return super.isMeCanAttackNpc(cAtt);
+    }
+
+    private void checkUseSkillSupport(Callback callback) {
+        short mainSkillId = selectSkillId;
+        if (!isDead && isNhanBan) {
+            int[] useSkill = switch (this.classId) {
+                case 1 -> new int[] {SkillName.CHIEU_KAKYUU, SkillName.CHIEU_HIHEBUN};
+                case 2 -> new int[] {SkillName.CHIEU_HINOTAMA};
+                case 3 -> new int[] {SkillName.CHIEU_HIBIKOU, SkillName.CHIEU_KOGOERU};
+                case 4 -> new int[] {SkillName.CHIEU_KOGOSA};
+                case 5 -> new int[] {SkillName.CHIEU_MAGUMANDARI, SkillName.CHIEU_AISUBAAGU, SkillName.CHIEU_HAYATETO};
+                default -> null;
+            };
+            if (useSkill != null) {
+                synchronized (vSkillFight) {
+                    for (Skill skill : vSkillFight) {
+                        if (!skill.isCooldown() && IntStream.of(useSkill).anyMatch(templateId -> skill.template.id == templateId)) {
+                            this.selectSkill((short) skill.template.id);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        if ((classId == 1 || classId == 2) && System.currentTimeMillis() < (lastTimeInvisible + invisibleTime)) {
+            this.selectSkill(mainSkillId);
+            return;
+        }
+        if (classId == 2) {
+            isDontMove = false;
+        }
+        callback.call();
+        this.selectSkill(mainSkillId);
+    }
+
+    @Override
+    public void attackAllType(Message ms, int type) {
+        checkUseSkillSupport(() -> super.attackAllType(ms, type));
+    }
+
+    @Override
+    public void attackCharacter(Message ms) {
+        checkUseSkillSupport(() -> super.attackCharacter(ms));
+    }
+
+    @Override
+    public void attackMonster(Message ms) {
+        checkUseSkillSupport(() -> super.attackMonster(ms));
     }
 
     @Override
@@ -272,7 +323,14 @@ public class CloneChar extends Char {
     @Override
     public void addMp(int add, Callback... callbacks) {
         if (!isNhanBan) {
-            this.mp += add;
+            super.addMp(add, callbacks);
+        }
+    }
+
+    @Override
+    public void addHp(int add, Callback... callbacks) {
+        if (!isNhanBan) {
+            super.addHp(add, callbacks);
         }
     }
 
@@ -429,9 +487,11 @@ public class CloneChar extends Char {
     }
 
     public void move(short x, short y) {
-        this.x = x;
-        this.y = y;
-        zone.getService().playerMove(this);
+        if (!isDontMove) {
+            this.x = x;
+            this.y = y;
+            zone.getService().playerMove(this);
+        }
     }
 
     @Override
@@ -527,7 +587,22 @@ public class CloneChar extends Char {
     public void updateEveryHalfSecond() {
         super.updateEveryHalfSecond();
         if (!isDead) {
-            if (isNhanBan && classId == 6) {
+            if (isNhanBan && (IntStream.of(1, 2, 3, 4, 5).anyMatch(classId -> this.classId == classId))) {
+                synchronized (vSkillFight) {
+                    for (Skill skill : vSkillFight) {
+                        if (!skill.isCooldown() && skill.template.type == 2) {
+                            if (skill.template.id == SkillName.CHIEU_RAIKOU || skill.template.id == SkillName.CHIEU_HOSHITAMA) {
+                                lastTimeInvisible = System.currentTimeMillis();
+                                if (classId == 2) {
+                                    isDontMove = true;
+                                }
+                            }
+                            this.useSkillBuff((byte) (human.x > this.x ? 1 : -1), skill);
+                            break;
+                        }
+                    }
+                }
+            } else if (isNhanBan && classId == 6) {
                 synchronized (vSkillFight) {
                     for (Skill skill : vSkillFight) {
                         if (!skill.isCooldown() && (skill.template.type == 2 || skill.template.type == 4)) {

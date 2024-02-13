@@ -28,6 +28,7 @@ import com.nsoz.map.item.ItemMapFactory;
 import com.nsoz.map.world.Territory;
 import com.nsoz.map.zones.Zone;
 import com.nsoz.model.Char;
+import com.nsoz.model.CloneChar;
 import com.nsoz.model.Figurehead;
 import com.nsoz.model.Friend;
 import com.nsoz.model.RandomItem;
@@ -574,7 +575,7 @@ public class Mob {
             y = zone.tilemap.collisionY(x, (short) (this.y / 24 * 24));
 
             ItemMap itemMap = ItemMapFactory.getInstance().builder().id(zone.numberDropItem++).x(x).y(y).build();
-            itemMap.setOwnerID(owner.id);
+            itemMap.setOwnerID(owner.isNhanBan ? ((CloneChar) owner).human.id : owner.id);
             if (type == BOSS_LDGT) {
                 itemMap.setOwnerID(-1);
             }
@@ -593,16 +594,6 @@ public class Mob {
     }
 
     private void attack() {
-        Figurehead[] buNhins = this.zone.getBuNhins();
-        for (int j = 0; j < buNhins.length; j++) {
-            Figurehead buNhin = buNhins[j];
-            int distance = NinjaUtils.getDistance(this.x, this.y, buNhin.x, buNhin.y);
-            if ((this.isBoss && distance > 300) || (!this.isBoss && distance > 300)) {
-                continue;
-            }
-            this.zone.getService().npcAttackBuNhin(this, j);
-            return;
-        }
         Vector<Char> charsToAttack = new Vector<Char>();
         Vector<Char> attackedChars = this.getAttackedChars();
         Vector<Char> attackableChars = this.getAttackableChars();
@@ -1009,6 +1000,18 @@ public class Mob {
     }
 
     public void attack(Char pl) {
+        Figurehead[] figureheads = this.zone.getFigureheads();
+        for (int i = 0; i < figureheads.length; i++) {
+            Figurehead figure = figureheads[i];
+            if (figure.name == pl.name) {
+                int distance = NinjaUtils.getDistance(this.x, this.y, figure.x, figure.y);
+                if ((this.isBoss && distance > 600) || (!this.isBoss && distance > 300)) {
+                    break;
+                }
+                this.zone.getService().npcAttackBuNhin(this, i);
+                return;
+            }
+        }
         if (pl == null || pl.isDead) {
             return;
         }
@@ -1434,17 +1437,17 @@ public class Mob {
                             }
                         }
                     } else if (Event.isLunarNewYear() && killer.level >= 20) {
-                        int percent = 10;
+                        int percentage = 10;
                         if (zone.tilemap.isLangCo() || zone.tilemap.isLangTruyenThuyet() || zone.tilemap.isVDMQ()) {
-                            percent += 5;
+                            percentage = 12;
                         }
                         if (killer.isTNP) {
-                            percent = 100;
+                            percentage = 100;
                         } else if (killer.isKNP) {
-                            percent = 50;
+                            percentage = 50;
                         }
                         if (dLevel <= 7) {
-                            if (NinjaUtils.nextInt(1, 100) <= percent) {
+                            if (NinjaUtils.nextInt(1, 100) <= percentage) {
                                 dropItem(killer, EVENT);
                             }
                         }

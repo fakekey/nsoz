@@ -1385,10 +1385,10 @@ public class Char {
 
     public void useItemChangeMap(Message ms) {
         try {
-            if (!isHuman) {
-                warningClone();
-                return;
-            }
+            // if (!isHuman) {
+            // warningClone();
+            // return;
+            // }
             if (isDead) {
                 serverDialog("Không thể sử dụng vật phẩm ở trạng thái này.");
                 return;
