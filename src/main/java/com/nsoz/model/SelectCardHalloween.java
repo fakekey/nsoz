@@ -1,10 +1,10 @@
 package com.nsoz.model;
 
+import org.jetbrains.annotations.NotNull;
 import com.nsoz.constants.ItemName;
 import com.nsoz.item.Item;
 import com.nsoz.item.ItemFactory;
 import com.nsoz.util.NinjaUtils;
-import org.jetbrains.annotations.NotNull;
 
 public class SelectCardHalloween extends AbsSelectCard {
 

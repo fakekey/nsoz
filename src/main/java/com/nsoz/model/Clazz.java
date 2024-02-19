@@ -1,8 +1,8 @@
 package com.nsoz.model;
 
-import com.nsoz.skill.SkillTemplate;
 import java.util.ArrayList;
 import java.util.List;
+import com.nsoz.skill.SkillTemplate;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

@@ -1,19 +1,17 @@
 package com.nsoz.stall;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
+import org.json.simple.JSONObject;
+import org.json.simple.JSONValue;
 import com.nsoz.constants.CMDMenu;
 import com.nsoz.db.jdbc.DbManager;
 import com.nsoz.item.Item;
 import com.nsoz.model.Char;
 import com.nsoz.model.Menu;
 import com.nsoz.server.Config;
-
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.json.simple.JSONObject;
-import org.json.simple.JSONValue;
 
 public class StallManager implements Runnable {
 
@@ -34,8 +32,8 @@ public class StallManager implements Runnable {
     public static final byte TYPE_BUA = 9;
     public static final byte TYPE_LINH_TINH = 10;
 
-    public static final byte[] AUCTION = {TYPE_DA, TYPE_NON, TYPE_VU_KHI, TYPE_AO, TYPE_DAY_CHUYEN,
-            TYPE_GANG_TAY, TYPE_NHAN, TYPE_QUAN, TYPE_BOI, TYPE_GIAY, TYPE_BUA, TYPE_LINH_TINH};
+    public static final byte[] AUCTION = {TYPE_DA, TYPE_NON, TYPE_VU_KHI, TYPE_AO, TYPE_DAY_CHUYEN, TYPE_GANG_TAY, TYPE_NHAN, TYPE_QUAN, TYPE_BOI,
+            TYPE_GIAY, TYPE_BUA, TYPE_LINH_TINH};
     private static int autoIncrement = 0;
 
     public synchronized static int autoIncrement() {
@@ -91,8 +89,8 @@ public class StallManager implements Runnable {
     public void load() {
         PreparedStatement ps = null;
         try {
-            ps = DbManager.getInstance().getConnection(DbManager.GAME).prepareStatement(
-                    "SELECT * FROM `shinwa` WHERE `status` = ? AND `server_id` = ?");
+            ps = DbManager.getInstance().getConnection(DbManager.GAME)
+                    .prepareStatement("SELECT * FROM `shinwa` WHERE `status` = ? AND `server_id` = ?");
             ps.setInt(1, STATUS_ON_SALE);
             ps.setInt(2, Config.getInstance().getServerId());
             ResultSet rs = ps.executeQuery();
@@ -193,8 +191,7 @@ public class StallManager implements Runnable {
         stalls.forEach((t) -> {
             List<Item> expiredProductList = t.getExpiredProductListBySeller(p.name);
             if (expiredProductList.isEmpty()) {
-                p.serverMessage(
-                        "Không có vật phẩm nào đang rao bán hoặc vật phẩm chưa hết thời gian rao bán!");
+                p.serverMessage("Không có vật phẩm nào đang rao bán hoặc vật phẩm chưa hết thời gian rao bán!");
             }
             for (Item item : expiredProductList) {
                 if (item.getProductStatus() == STATUS_ON_SALE) {

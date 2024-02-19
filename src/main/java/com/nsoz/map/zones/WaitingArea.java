@@ -1,9 +1,9 @@
 package com.nsoz.map.zones;
 
+import com.nsoz.constants.MobName;
 import com.nsoz.map.Map;
 import com.nsoz.map.TileMap;
 import com.nsoz.mob.Mob;
-import com.nsoz.constants.MobName;
 
 public class WaitingArea extends Z7Beasts {
 
@@ -14,8 +14,7 @@ public class WaitingArea extends Z7Beasts {
     }
 
     public void initMob() {
-        woodenDummy = new Mob(0, (short) MobName.MOC_NHAN, 15000000, (short) 62, (short) 221,
-                (short) 312, false, false, this);
+        woodenDummy = new Mob(0, (short) MobName.MOC_NHAN, 15000000, (short) 62, (short) 221, (short) 312, false, false, this);
         addMob(woodenDummy);
     }
 

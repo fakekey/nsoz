@@ -12,7 +12,6 @@ import com.nsoz.model.Char;
 import com.nsoz.network.Message;
 import com.nsoz.skill.Skill;
 import com.nsoz.util.Log;
-import com.nsoz.util.NinjaUtils;
 
 public class AttackTarget implements IAttack {
 

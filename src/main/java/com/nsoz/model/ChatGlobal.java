@@ -1,5 +1,6 @@
 package com.nsoz.model;
 
+import java.io.IOException;
 import com.nsoz.constants.ItemName;
 import com.nsoz.event.Event;
 import com.nsoz.item.Item;
@@ -7,9 +8,7 @@ import com.nsoz.lib.ProfanityFilter;
 import com.nsoz.lib.RandomCollection;
 import com.nsoz.network.Message;
 import com.nsoz.server.GlobalService;
-import com.nsoz.server.Server;
 import com.nsoz.util.NinjaUtils;
-import java.io.IOException;
 
 public class ChatGlobal implements IChat {
 
@@ -80,8 +79,7 @@ public class ChatGlobal implements IChat {
             long now = System.currentTimeMillis();
             if (now - lastTimeChat < delay) {
                 long mili = (int) (now - lastTimeChat);
-                player.serverMessage(String.format("Chỉ có thể chat sau %s giây.",
-                        NinjaUtils.timeAgo((int) ((delay - mili) / 1000))));
+                player.serverMessage(String.format("Chỉ có thể chat sau %s giây.", NinjaUtils.timeAgo((int) ((delay - mili) / 1000))));
                 return;
             }
             lastTimeChat = now;
@@ -106,8 +104,7 @@ public class ChatGlobal implements IChat {
                 return;
             }
 
-            RandomCollection<Integer> rc =
-                    type == 0 ? event.getItemsRecFromCoinItem() : event.getItemsRecFromGoldItem();
+            RandomCollection<Integer> rc = type == 0 ? event.getItemsRecFromCoinItem() : event.getItemsRecFromGoldItem();
             Item item = player.bag[indexUI];
             event.useEventItem(player, item.id, rc);
             player.getService().chatGlobal(player.name, text);

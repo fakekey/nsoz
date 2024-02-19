@@ -22,8 +22,7 @@ public class SantaClaus extends Bot {
     @Override
     public void setDefault() {
         super.setDefault();
-        FashionCustom fashionCustom = FashionCustom.builder().head((short) 267).body((short) 268)
-                .leg((short) 269).weapon((short) -1).build();
+        FashionCustom fashionCustom = FashionCustom.builder().head((short) 267).body((short) 268).leg((short) 269).weapon((short) -1).build();
         setFashionStrategy(fashionCustom);
         AbilityCustom abilityCustom = AbilityCustom.builder().hp(2000000).build();
         setAbilityStrategy(abilityCustom);
@@ -48,8 +47,7 @@ public class SantaClaus extends Bot {
             lastTimeDropItem = now;
             int q = NinjaUtils.nextInt(1, 3);
             for (int i = 0; i < q; i++) {
-                ItemMap item = ItemMapFactory.getInstance().builder().id(zone.numberDropItem++)
-                        .type(ItemMapFactory.GIFT_BOX)
+                ItemMap item = ItemMapFactory.getInstance().builder().id(zone.numberDropItem++).type(ItemMapFactory.GIFT_BOX)
                         .x((short) (x + (i * 6 * (i % 2 == 0 ? 1 : -1)))).y(y).build();
                 zone.addItemMap(item);
                 zone.getService().addItemMap(item);
@@ -57,8 +55,7 @@ public class SantaClaus extends Bot {
         }
         if (TimeUtils.canDoWithTime(lastTimeChat, 5000)) {
             lastTimeChat = now;
-            zone.getService().chat(this.id, (String) NinjaUtils.randomObject("Giáng sinh vui vẻ!",
-                    "Hô hô hô", "Giáng sinh an lành"));
+            zone.getService().chat(this.id, (String) NinjaUtils.randomObject("Giáng sinh vui vẻ!", "Hô hô hô", "Giáng sinh an lành"));
         }
     }
 

@@ -32,8 +32,7 @@ public class Trade {
 
     public void tradeItemLock(Trader trader) {
         try {
-            (trader == this.traders[0] ? this.traders[1] : this.traders[0]).player.getService()
-                    .tradeItemLock(trader);
+            (trader == this.traders[0] ? this.traders[1] : this.traders[0]).player.getService().tradeItemLock(trader);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -105,8 +104,7 @@ public class Trade {
                             int id = item.id;
                             int index = item.index;
                             int quantity = item.getQuantity();
-                            if (_char2.bag[index] == null || _char2.bag[index].id != id
-                                    || _char2.bag[index].getQuantity() != quantity
+                            if (_char2.bag[index] == null || _char2.bag[index].id != id || _char2.bag[index].getQuantity() != quantity
                                     || _char2.bag[index].isLock) {
                                 isError = true;
                                 error2 = "Vật phẩm ở ô " + (index + 1) + " không hợp lệ.";
@@ -121,8 +119,7 @@ public class Trade {
                             int id = item.id;
                             int index = item.index;
                             int quantity = item.getQuantity();
-                            if (_char1.bag[index] == null || _char1.bag[index].id != id
-                                    || _char1.bag[index].getQuantity() != quantity
+                            if (_char1.bag[index] == null || _char1.bag[index].id != id || _char1.bag[index].getQuantity() != quantity
                                     || _char1.bag[index].isLock) {
                                 isError = true;
                                 error1 = "Vật phẩm ở ô " + (index + 1) + " không hợp lệ.";

@@ -1,9 +1,12 @@
 package com.nsoz.map.zones;
 
+import java.util.ArrayList;
+import java.util.List;
+import org.jetbrains.annotations.NotNull;
 import com.nsoz.ability.AbilityCustom;
+import com.nsoz.bot.Bot;
 import com.nsoz.bot.attack.AttackAround;
 import com.nsoz.bot.move.MoveToTarget;
-import com.nsoz.bot.Bot;
 import com.nsoz.constants.ItemName;
 import com.nsoz.constants.MapName;
 import com.nsoz.constants.SkillName;
@@ -19,17 +22,11 @@ import com.nsoz.server.GameData;
 import com.nsoz.skill.Skill;
 import com.nsoz.util.NinjaUtils;
 
-import java.util.ArrayList;
-import java.util.List;
-import org.jetbrains.annotations.NotNull;
-
 public class FujukaSanctuary extends AreaWithCountdownTime {
 
-    static final String[] recoveryMessages =
-            {"Mỗi lần ngươi chết, ta lại cảm thấy cơ thể tràn đầy năng lượng",
-                    "Wowww, nguồn sức mạnh này", "Có vẻ như ngươi là một phiên bản thất bại"};
-    static final String[] defiantMessages = {
-            "Ngươi cũng chỉ là một trong số chúng ta, nhưng là phiên bản yếu kém hơn",
+    static final String[] recoveryMessages = {"Mỗi lần ngươi chết, ta lại cảm thấy cơ thể tràn đầy năng lượng", "Wowww, nguồn sức mạnh này",
+            "Có vẻ như ngươi là một phiên bản thất bại"};
+    static final String[] defiantMessages = {"Ngươi cũng chỉ là một trong số chúng ta, nhưng là phiên bản yếu kém hơn",
             "Hãy đón lấy những đòn tấn công này đi", "Sức mạnh của ngươi là một thứ gì đó rẻ mạt"};
 
     private ArrayList<Bot> bots;
@@ -50,23 +47,17 @@ public class FujukaSanctuary extends AreaWithCountdownTime {
     }
 
     public void initMap() {
-        Room room1 = Room.builder().x(24).y(0).w(312).h(192).minX(552).maxX(648).minY(480).maxY(504)
-                .tx((short) 180).ty((short) 192).build();
+        Room room1 = Room.builder().x(24).y(0).w(312).h(192).minX(552).maxX(648).minY(480).maxY(504).tx((short) 180).ty((short) 192).build();
         rooms.add(room1);
-        Room room2 = Room.builder().x(360).y(0).w(264).h(192).minX(672).maxX(768).minY(432)
-                .maxY(456).tx((short) 492).ty((short) 192).build();
+        Room room2 = Room.builder().x(360).y(0).w(264).h(192).minX(672).maxX(768).minY(432).maxY(456).tx((short) 492).ty((short) 192).build();
         rooms.add(room2);
-        Room room3 = Room.builder().x(648).y(0).w(288).h(192).minX(792).maxX(888).minY(480)
-                .maxY(504).tx((short) 792).ty((short) 192).build();
+        Room room3 = Room.builder().x(648).y(0).w(288).h(192).minX(792).maxX(888).minY(480).maxY(504).tx((short) 792).ty((short) 192).build();
         rooms.add(room3);
-        Room room4 = Room.builder().x(936).y(0).w(312).h(192).minX(1032).maxX(1128).minY(480)
-                .maxY(504).tx((short) 1092).ty((short) 192).build();
+        Room room4 = Room.builder().x(936).y(0).w(312).h(192).minX(1032).maxX(1128).minY(480).maxY(504).tx((short) 1092).ty((short) 192).build();
         rooms.add(room4);
-        Room room5 = Room.builder().x(1272).y(0).w(264).h(192).minX(1152).maxX(1248).minY(432)
-                .maxY(456).tx((short) 1404).ty((short) 192).build();
+        Room room5 = Room.builder().x(1272).y(0).w(264).h(192).minX(1152).maxX(1248).minY(432).maxY(456).tx((short) 1404).ty((short) 192).build();
         rooms.add(room5);
-        Room room6 = Room.builder().x(1560).y(0).w(312).h(192).minX(1272).maxX(1368).minY(480)
-                .maxY(504).tx((short) 1716).ty((short) 192).build();
+        Room room6 = Room.builder().x(1560).y(0).w(312).h(192).minX(1272).maxX(1368).minY(480).maxY(504).tx((short) 1716).ty((short) 192).build();
         rooms.add(room6);
     }
 
@@ -188,8 +179,7 @@ public class FujukaSanctuary extends AreaWithCountdownTime {
         Room room = p.getRoom();
         if (room == null) {
             room = getRoom(p.x, p.y);
-            if (room != null && !room.isHavePlayer() && room.getBot() != null
-                    && !room.getBot().isDead) {
+            if (room != null && !room.isHavePlayer() && room.getBot() != null && !room.getBot().isDead) {
                 p.setRoom(room);
                 room.setHavePlayer(true);
                 room.setPlayer(p);
@@ -207,8 +197,7 @@ public class FujukaSanctuary extends AreaWithCountdownTime {
             if (p instanceof Bot && !room.isHavePlayer()) {
                 return;
             }
-            if (x < room.getX() || x > (room.getX() + room.getW()) || y < room.getY()
-                    || y > (room.getY() + room.getH())) {
+            if (x < room.getX() || x > (room.getX() + room.getW()) || y < room.getY() || y > (room.getY() + room.getH())) {
                 p.returnToPreviousPostion(() -> {
                 });
                 return;
@@ -220,8 +209,7 @@ public class FujukaSanctuary extends AreaWithCountdownTime {
 
     public Room getRoom(short x, short y) {
         for (Room room : rooms) {
-            if (x >= room.getMinX() && x <= room.getMaxX() && y > room.getMinY()
-                    && y <= room.getMaxY()) {
+            if (x >= room.getMinX() && x <= room.getMaxX() && y > room.getMinY() && y <= room.getMaxY()) {
                 return room;
             }
         }
@@ -240,22 +228,17 @@ public class FujukaSanctuary extends AreaWithCountdownTime {
     }
 
     public void initBot(int classID, Room r, short wp) {
-        Bot bot = Bot.builder().id(-(classID + 100)).name(player.name).level(player.level)
-                .typePk(Char.PK_DOSAT).classId((byte) classID).build();
+        Bot bot = Bot.builder().id(-(classID + 100)).name(player.name).level(player.level).typePk(Char.PK_DOSAT).classId((byte) classID).build();
         bot.setDefault();
-        FashionCustom fashionCustom = FashionCustom.builder().head(player.head).body(player.body)
-                .leg(player.leg).glove(player.glove).coat(player.coat).weapon(wp)
-                .fBody(player.ID_BODY).fHair(player.ID_HAIR).fHorse(player.ID_HORSE)
-                .fLeg(player.ID_LEG).fMask(player.ID_MAT_NA).fName(player.ID_NAME).fPP(player.ID_PP)
-                .fRank(player.ID_RANK).fTransform(player.ID_BIEN_HINH).fWeapon(player.ID_WEA_PONE)
-                .build();
+        FashionCustom fashionCustom = FashionCustom.builder().head(player.head).body(player.body).leg(player.leg).glove(player.glove)
+                .coat(player.coat).weapon(wp).fBody(player.ID_BODY).fHair(player.ID_HAIR).fHorse(player.ID_HORSE).fLeg(player.ID_LEG)
+                .fMask(player.ID_MAT_NA).fName(player.ID_NAME).fPP(player.ID_PP).fRank(player.ID_RANK).fTransform(player.ID_BIEN_HINH)
+                .fWeapon(player.ID_WEA_PONE).build();
         bot.setFashionStrategy(fashionCustom);
-        AbilityCustom abilityCustom = AbilityCustom.builder()
-                .hp(player.maxHP > 50000 ? player.maxHP * 8 : 50000)
-                .mp(player.maxHP > 50000 ? player.maxHP * 8 : 50000).damage(player.damage)
-                .damage2(player.damage2).miss(player.miss).exactly(player.exactly)
-                .fatal(player.fatal).speed(player.speed).reactDame(player.reactDame)
-                .resFire(player.resFire).resIce(player.resIce).resWind(player.resWind).build();
+        AbilityCustom abilityCustom = AbilityCustom.builder().hp(player.maxHP > 50000 ? player.maxHP * 8 : 50000)
+                .mp(player.maxHP > 50000 ? player.maxHP * 8 : 50000).damage(player.damage).damage2(player.damage2).miss(player.miss)
+                .exactly(player.exactly).fatal(player.fatal).speed(player.speed).reactDame(player.reactDame).resFire(player.resFire)
+                .resIce(player.resIce).resWind(player.resWind).build();
         bot.setAbilityStrategy(abilityCustom);
         bot.setRoom(r);
         bot.setAbility();
@@ -267,12 +250,9 @@ public class FujukaSanctuary extends AreaWithCountdownTime {
                     bot.optionsSupportSkill[option.optionTemplate.id] += option.param;
                 }
             }
-            if (skill.template.id == SkillName.NHAN_THUAT_KAGE_BUNSHIN_1
-                    || skill.template.id == SkillName.NHAN_THUAT_KAGE_BUNSHIN_2
-                    || skill.template.id == SkillName.NHAN_THUAT_KAGE_BUNSHIN_3
-                    || skill.template.id == SkillName.NHAN_THUAT_KAGE_BUNSHIN_4
-                    || skill.template.id == SkillName.NHAN_THUAT_KAGE_BUNSHIN_5
-                    || skill.template.id == SkillName.NHAN_THUAT_KAGE_BUNSHIN_6) {
+            if (skill.template.id == SkillName.NHAN_THUAT_KAGE_BUNSHIN_1 || skill.template.id == SkillName.NHAN_THUAT_KAGE_BUNSHIN_2
+                    || skill.template.id == SkillName.NHAN_THUAT_KAGE_BUNSHIN_3 || skill.template.id == SkillName.NHAN_THUAT_KAGE_BUNSHIN_4
+                    || skill.template.id == SkillName.NHAN_THUAT_KAGE_BUNSHIN_5 || skill.template.id == SkillName.NHAN_THUAT_KAGE_BUNSHIN_6) {
                 continue;
             }
             attackAround.addSkill(skill);
@@ -309,8 +289,7 @@ public class FujukaSanctuary extends AreaWithCountdownTime {
                         Bot bot = r.getBot();
                         if (System.currentTimeMillis() - lastTimeChatPublic > 10000) {
                             lastTimeChatPublic = System.currentTimeMillis();
-                            getService().chat(bot.id, defiantMessages[NinjaUtils
-                                    .nextInt(defiantMessages.length - 1)]);
+                            getService().chat(bot.id, defiantMessages[NinjaUtils.nextInt(defiantMessages.length - 1)]);
                         }
                     }
                 }
@@ -332,8 +311,7 @@ public class FujukaSanctuary extends AreaWithCountdownTime {
                     bot.damage2 = bot.damage - (bot.damage / 10);
                     bot.recovery();
                     getService().refreshHP(bot);
-                    getService().chat(bot.id,
-                            recoveryMessages[NinjaUtils.nextInt(recoveryMessages.length - 1)]);
+                    getService().chat(bot.id, recoveryMessages[NinjaUtils.nextInt(recoveryMessages.length - 1)]);
                 }
             }
             super.startDie(p);

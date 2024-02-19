@@ -1,10 +1,5 @@
 package com.nsoz.effect;
 
-import com.google.gson.Gson;
-import com.nsoz.db.jdbc.DbManager;
-import com.nsoz.lib.ParseData;
-import com.nsoz.model.PartFrame;
-import com.nsoz.model.SmallImage;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -15,6 +10,10 @@ import java.util.logging.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
+import com.nsoz.db.jdbc.DbManager;
+import com.nsoz.lib.ParseData;
+import com.nsoz.model.PartFrame;
+import com.nsoz.model.SmallImage;
 
 public class EffectDataManager {
 

@@ -3,17 +3,15 @@ package com.nsoz.event;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Vector;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
-
 import com.nsoz.db.jdbc.DbManager;
 import com.nsoz.model.Char;
 import com.nsoz.server.Config;
 import com.nsoz.util.Log;
-
-import java.util.ArrayList;
 
 public class Ranking {
 

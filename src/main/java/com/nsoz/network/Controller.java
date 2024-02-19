@@ -719,6 +719,10 @@ public class Controller implements IMessageHandler {
                         _char.changeTeamLeader(mss);
                         break;
 
+                    case CMD.ADMIN_MOVE:
+                        _char.adminMove(mss);
+                        break;
+
                     default:
                         Log.debug(String.format("Client %d: messageSubCommand: %d", client.id, command));
                         break;

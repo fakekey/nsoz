@@ -1,13 +1,13 @@
 package com.nsoz.map.zones;
 
-import com.nsoz.map.item.ItemMap;
+import java.util.List;
 import com.nsoz.map.Map;
 import com.nsoz.map.TileMap;
+import com.nsoz.map.item.ItemMap;
 import com.nsoz.map.item.ItemMapFactory;
 import com.nsoz.mob.Mob;
 import com.nsoz.model.Char;
 import com.nsoz.util.NinjaUtils;
-import java.util.List;
 
 public class ChikatoyaTunnels extends AreaWithCountdownTime {
 
@@ -34,8 +34,8 @@ public class ChikatoyaTunnels extends AreaWithCountdownTime {
             List<Mob> mobs = getLivingMonsters();
             if (mobs.isEmpty()) {
                 isDroppedItem = true;
-                ItemMap itemMap = ItemMapFactory.getInstance().builder().id(numberDropItem++)
-                        .type(ItemMapFactory.MAP_ITEM).x((short) 220).y((short) 96).build();
+                ItemMap itemMap = ItemMapFactory.getInstance().builder().id(numberDropItem++).type(ItemMapFactory.MAP_ITEM).x((short) 220)
+                        .y((short) 96).build();
                 addItemMap(itemMap);
                 getService().addItemMap(itemMap);
             }

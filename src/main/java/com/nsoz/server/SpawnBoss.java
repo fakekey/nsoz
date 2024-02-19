@@ -41,8 +41,7 @@ public class SpawnBoss {
         Zone z = map.getZoneById(zoneId);
         int mobID = mobs.next();
         MobTemplate mobTemplate = MobManager.getInstance().find(mobID);
-        Mob mob = z.getMobFactory().createBoss((short) mobTemplate.getId(), mobTemplate.getHp(),
-                mobTemplate.getLevel(), x, y);
+        Mob mob = z.getMobFactory().createBoss((short) mobTemplate.getId(), mobTemplate.getHp(), mobTemplate.getLevel(), x, y);
         z.addMob(mob);
         currMonster = mob;
         String text = mob.template.name + " đã xuất hiện ở " + z.tilemap.name;

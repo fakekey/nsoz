@@ -1,6 +1,5 @@
 package com.nsoz.server;
 
-import com.nsoz.map.MapManager;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -16,59 +15,54 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import com.nsoz.item.ItemManager;
-import com.nsoz.event.Event;
-import com.nsoz.event.Ranking;
-import com.nsoz.db.mongodb.MongoDbConnection;
-import com.nsoz.model.ArrowPaint;
-import com.google.gson.Gson;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.JSONValue;
 import com.nsoz.clan.Clan;
-import com.nsoz.effect.Effect;
-import com.nsoz.effect.EffectCharPaint;
-import com.nsoz.effect.EffectInfoPaint;
-import com.nsoz.model.Part;
-import com.nsoz.model.PartImage;
-import com.nsoz.model.RandomItem;
-import com.nsoz.skill.Skill;
-import com.nsoz.skill.SkillInfoPaint;
-import com.nsoz.skill.SkillPaint;
-import com.nsoz.task.Task;
-import com.nsoz.map.TileMap;
-import com.nsoz.model.User;
-import com.nsoz.map.War;
-import com.nsoz.network.Session;
-import com.nsoz.option.SkillOption;
-import com.nsoz.stall.StallManager;
-import com.nsoz.effect.EffectTemplate;
-import com.nsoz.lib.ImageMap;
 import com.nsoz.constants.MapName;
 import com.nsoz.constants.SQLStatement;
 import com.nsoz.db.jdbc.DbManager;
+import com.nsoz.db.mongodb.MongoDbConnection;
 import com.nsoz.effect.EffectAutoDataManager;
+import com.nsoz.effect.EffectCharPaint;
 import com.nsoz.effect.EffectDataManager;
+import com.nsoz.effect.EffectInfoPaint;
 import com.nsoz.effect.EffectTemplateManager;
-import com.nsoz.mob.MobTemplate;
-import com.nsoz.npc.NpcManager;
-import com.nsoz.npc.NpcTemplate;
-import com.nsoz.skill.SkillOptionTemplate;
-import com.nsoz.skill.SkillTemplate;
-import com.nsoz.task.TaskTemplate;
-import com.nsoz.thiendia.ThienDiaManager;
-import com.nsoz.util.Log;
+import com.nsoz.event.Event;
+import com.nsoz.event.Ranking;
+import com.nsoz.item.ItemManager;
+import com.nsoz.lib.ImageMap;
 import com.nsoz.lib.ParseData;
-import com.nsoz.lib.ProfanityFilter;
+import com.nsoz.map.MapManager;
+import com.nsoz.map.TileMap;
+import com.nsoz.map.War;
 import com.nsoz.map.world.WorldManager;
 import com.nsoz.mob.MobManager;
+import com.nsoz.mob.MobTemplate;
+import com.nsoz.model.ArrowPaint;
 import com.nsoz.model.Char;
 import com.nsoz.model.Clazz;
 import com.nsoz.model.MountData;
 import com.nsoz.model.MountDataManager;
+import com.nsoz.model.Part;
+import com.nsoz.model.PartImage;
+import com.nsoz.model.RandomItem;
+import com.nsoz.model.User;
+import com.nsoz.network.Session;
+import com.nsoz.npc.NpcManager;
+import com.nsoz.npc.NpcTemplate;
+import com.nsoz.option.SkillOption;
+import com.nsoz.skill.Skill;
+import com.nsoz.skill.SkillInfoPaint;
+import com.nsoz.skill.SkillOptionTemplate;
+import com.nsoz.skill.SkillPaint;
+import com.nsoz.skill.SkillTemplate;
+import com.nsoz.stall.StallManager;
 import com.nsoz.store.StoreManager;
-
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.JSONValue;
+import com.nsoz.task.Task;
+import com.nsoz.task.TaskTemplate;
+import com.nsoz.thiendia.ThienDiaManager;
+import com.nsoz.util.Log;
 
 public class Server {
 
@@ -1005,8 +999,10 @@ public class Server {
                     user.session.closeMessage();
                 }
             }
-            server.close();
-            server = null;
+            if (server != null) {
+                server.close();
+                server = null;
+            }
             if (ServerManager.getUsers().isEmpty()) {
                 Log.info("Server đóng, hiện không có user nào!");
             }

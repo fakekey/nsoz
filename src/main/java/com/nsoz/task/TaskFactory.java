@@ -1,12 +1,11 @@
 package com.nsoz.task;
 
-import com.nsoz.map.Map;
-import com.nsoz.map.MapManager;
-import com.nsoz.model.Char;
-import com.nsoz.util.NinjaUtils;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import com.nsoz.map.MapManager;
+import com.nsoz.model.Char;
+import com.nsoz.util.NinjaUtils;
 
 public class TaskFactory {
 
@@ -20,18 +19,14 @@ public class TaskFactory {
     private final List<MobInfo> taskDays = new ArrayList<>();
 
     public void addMobInfoTaskBoss(MobInfo info) {
-        if (taskBosss
-                .stream().filter(m -> m.getMobID() == info.getMobID()
-                        && m.getLevel() == info.getLevel() && m.getMapID() == info.getMapID())
+        if (taskBosss.stream().filter(m -> m.getMobID() == info.getMobID() && m.getLevel() == info.getLevel() && m.getMapID() == info.getMapID())
                 .count() == 0) {
             taskBosss.add(info);
         }
     }
 
     public void addMobInfoTaskDay(MobInfo info) {
-        if (taskDays
-                .stream().filter(m -> m.getMobID() == info.getMobID()
-                        && m.getLevel() == info.getLevel() && m.getMapID() == info.getMapID())
+        if (taskDays.stream().filter(m -> m.getMobID() == info.getMobID() && m.getLevel() == info.getLevel() && m.getMapID() == info.getMapID())
                 .count() == 0) {
             taskDays.add(info);
         }
@@ -62,9 +57,7 @@ public class TaskFactory {
     }
 
     public MobInfo randomMobInfoTaskDay(int level) {
-        List<MobInfo> list =
-                taskDays.stream().filter((mobInfo) -> (Math.abs(mobInfo.getLevel() - level) <= 5))
-                        .collect(Collectors.toList());
+        List<MobInfo> list = taskDays.stream().filter((mobInfo) -> (Math.abs(mobInfo.getLevel() - level) <= 5)).collect(Collectors.toList());
         int size = list.size();
         int rd = NinjaUtils.nextInt(size);
         return list.get(rd);
@@ -76,15 +69,13 @@ public class TaskFactory {
             int level = getLevellMobInfoClosestLevel(p.level);
             MobInfo info = randomMobInfoTaskDay(level);
             task.setTask(0, NinjaUtils.nextInt(20, 40), "Nhiệm vụ hàng ngày",
-                    "Ghi chú: đi đến " + MapManager.getInstance().getTileMap(info.getMapID()).name
-                            + " để làm nhiệm vụ.",
-                    info.getMobID(), info.getMapID());
+                    "Ghi chú: đi đến " + MapManager.getInstance().getTileMap(info.getMapID()).name + " để làm nhiệm vụ.", info.getMobID(),
+                    info.getMapID());
         } else if (type == TaskOrder.TASK_BOSS) {
             MobInfo info = getMobInfoTaskBossClosestLevel(p.level);
             task.setTask(0, 1, "Nhiệm vụ truy bắt tà thú",
-                    "Ghi chú: đi đến " + MapManager.getInstance().getTileMap(info.getMapID()).name
-                            + " để làm nhiệm vụ.",
-                    info.getMobID(), info.getMapID());
+                    "Ghi chú: đi đến " + MapManager.getInstance().getTileMap(info.getMapID()).name + " để làm nhiệm vụ.", info.getMobID(),
+                    info.getMapID());
         }
         return task;
     }

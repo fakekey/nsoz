@@ -1,9 +1,5 @@
 package com.nsoz.clan;
 
-import com.nsoz.api.Dao;
-import com.nsoz.db.jdbc.DbManager;
-import com.nsoz.util.Log;
-import com.nsoz.util.NinjaUtils;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -13,6 +9,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import com.nsoz.api.Dao;
+import com.nsoz.db.jdbc.DbManager;
+import com.nsoz.util.Log;
+import com.nsoz.util.NinjaUtils;
 
 public class MemberDAO implements Dao<Member> {
 

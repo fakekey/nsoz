@@ -1,6 +1,6 @@
 package com.nsoz.constants;
 
-public class ConstTime {
+public interface ConstTime {
 
     public static final long FOREVER = -1;
     public static final long SECOND = 1000;

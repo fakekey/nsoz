@@ -1,11 +1,11 @@
 package com.nsoz.map.zones;
 
+import java.util.List;
 import com.nsoz.map.Map;
 import com.nsoz.map.TileMap;
 import com.nsoz.mob.Mob;
 import com.nsoz.model.Char;
 import com.nsoz.util.NinjaUtils;
-import java.util.List;
 
 public class InoshishiCave extends AreaWithCountdownTime {
 
@@ -24,8 +24,7 @@ public class InoshishiCave extends AreaWithCountdownTime {
             if (mobs.isEmpty()) {
                 isWin = true;
                 setTimeMap(20);
-                getService().serverMessage(
-                        String.format("Bạn có %s giây để nhặt lấy Cây Rìu Bạc", this.countDown));
+                getService().serverMessage(String.format("Bạn có %s giây để nhặt lấy Cây Rìu Bạc", this.countDown));
             }
         }
     }

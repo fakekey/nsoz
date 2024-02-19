@@ -1,10 +1,10 @@
 package com.nsoz.map.zones;
 
-import com.nsoz.map.item.ItemMap;
+import java.util.ArrayList;
 import com.nsoz.map.Map;
 import com.nsoz.map.TileMap;
+import com.nsoz.map.item.ItemMap;
 import com.nsoz.map.item.ItemMapFactory;
-import java.util.ArrayList;
 
 public class AkaCave extends Zone {
 
@@ -21,8 +21,7 @@ public class AkaCave extends Zone {
         ores = new ArrayList<>();
         short[][] xys = {{530, 624}, {900, 384}, {1093, 192}};
         for (short[] xy : xys) {
-            ItemMap itemMap = ItemMapFactory.getInstance().builder().id(numberDropItem++)
-                    .type(ItemMapFactory.ORE).x(xy[0]).y(xy[1]).build();
+            ItemMap itemMap = ItemMapFactory.getInstance().builder().id(numberDropItem++).type(ItemMapFactory.ORE).x(xy[0]).y(xy[1]).build();
             ores.add(itemMap);
         }
     }

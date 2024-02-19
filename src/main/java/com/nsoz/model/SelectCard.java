@@ -1,5 +1,7 @@
 package com.nsoz.model;
 
+import java.util.List;
+import org.jetbrains.annotations.NotNull;
 import com.nsoz.constants.ItemName;
 import com.nsoz.constants.TaskName;
 import com.nsoz.convert.Converter;
@@ -8,8 +10,6 @@ import com.nsoz.item.ItemFactory;
 import com.nsoz.store.ItemStore;
 import com.nsoz.store.StoreManager;
 import com.nsoz.util.NinjaUtils;
-import java.util.List;
-import org.jetbrains.annotations.NotNull;
 
 public class SelectCard extends AbsSelectCard {
 

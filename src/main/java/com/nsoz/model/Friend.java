@@ -1,8 +1,7 @@
 package com.nsoz.model;
 
-import com.nsoz.lib.ParseData;
-
 import org.json.simple.JSONObject;
+import com.nsoz.lib.ParseData;
 
 public class Friend {
 

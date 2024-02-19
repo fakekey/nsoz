@@ -1,11 +1,10 @@
 package com.nsoz.item;
 
-import com.nsoz.option.ItemOption;
-import com.nsoz.lib.ParseData;
 import java.util.ArrayList;
-
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import com.nsoz.lib.ParseData;
+import com.nsoz.option.ItemOption;
 
 public class Equip extends Item {
 

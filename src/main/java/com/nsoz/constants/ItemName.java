@@ -1,6 +1,7 @@
 package com.nsoz.constants;
 
 public interface ItemName {
+
     public static final int DA_CAP_1 = 0;
     public static final int DA_CAP_2 = 1;
     public static final int DA_CAP_3 = 2;

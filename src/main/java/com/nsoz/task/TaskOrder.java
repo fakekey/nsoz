@@ -47,12 +47,10 @@ public class TaskOrder {
                 this.name = "Nhiệm vụ truy bắt tà thú";
                 break;
         }
-        this.description = "Ghi chú: đi đến " + MapManager.getInstance().getTileMap(mapId).name
-                + " để làm nhiệm vụ.";
+        this.description = "Ghi chú: đi đến " + MapManager.getInstance().getTileMap(mapId).name + " để làm nhiệm vụ.";
     }
 
-    public void setTask(int count, int maxCount, String name, String description, int killId,
-            int mapId) {
+    public void setTask(int count, int maxCount, String name, String description, int killId, int mapId) {
         this.count = count;
         this.maxCount = maxCount;
         this.name = name;

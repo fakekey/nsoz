@@ -1,24 +1,20 @@
 package com.nsoz.map.zones;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
-
 import com.mongodb.lang.Nullable;
 import com.nsoz.constants.CMDMenu;
 import com.nsoz.constants.MapName;
-import com.nsoz.event.Event;
 import com.nsoz.map.Map;
-import com.nsoz.map.MapManager;
 import com.nsoz.model.Char;
 import com.nsoz.model.Menu;
 import com.nsoz.network.AbsService;
 import com.nsoz.network.Message;
-import com.nsoz.server.Events;
 import com.nsoz.server.GlobalService;
 import com.nsoz.server.ServerManager;
 import com.nsoz.util.NinjaUtils;
-import java.util.List;
 import lombok.Getter;
 
 public class TalentShow extends Zone {
@@ -61,8 +57,7 @@ public class TalentShow extends Zone {
             addPlayer(name, TalentShow.BLACK);
         }
         setTimeMap(120);
-        String message = String.format("Trận thi đấu giữa %s và %s sẽ bắt đầu sau ít phút nữa",
-                whiteName.toUpperCase(), blackName.toUpperCase());
+        String message = String.format("Trận thi đấu giữa %s và %s sẽ bắt đầu sau ít phút nữa", whiteName.toUpperCase(), blackName.toUpperCase());
         notify(message);
     }
 
@@ -73,8 +68,7 @@ public class TalentShow extends Zone {
             return;
         }
         started = true;
-        String message = String.format(
-                "Trận thi đấu giữa %s và %s chính thức bắt đầu, hãy cùng đón xem ai sẽ là đội chiến thắng",
+        String message = String.format("Trận thi đấu giữa %s và %s chính thức bắt đầu, hãy cùng đón xem ai sẽ là đội chiến thắng",
                 whiteName.toUpperCase(), blackName.toUpperCase());
         notify(message);
         globalNotify(message);
@@ -172,12 +166,9 @@ public class TalentShow extends Zone {
                 boolean isTeamTwoAllDead = isTeamAllDead(BLACK);
                 if (isTeamOneAllDead || isTeamTwoAllDead) {
                     finished = true;
-                    String winName =
-                            isTeamTwoAllDead ? whiteName.toUpperCase() : blackName.toUpperCase();
-                    String loseName =
-                            isTeamTwoAllDead ? blackName.toUpperCase() : whiteName.toUpperCase();
-                    String message = String.format("Phe %s đã giành chiến thắng trước phe %s",
-                            winName, loseName);
+                    String winName = isTeamTwoAllDead ? whiteName.toUpperCase() : blackName.toUpperCase();
+                    String loseName = isTeamTwoAllDead ? blackName.toUpperCase() : whiteName.toUpperCase();
+                    String message = String.format("Phe %s đã giành chiến thắng trước phe %s", winName, loseName);
                     results.add(String.format("- Phe %s thắng phe %s", winName, loseName));
                     notify(message);
                     globalNotify(message);
@@ -187,8 +178,7 @@ public class TalentShow extends Zone {
 
             if (countDown <= 0) {
                 if (!finished) {
-                    String message =
-                            String.format("Đã quá thời gian thi đấu, kết quả 2 đội hòa nhau");
+                    String message = String.format("Đã quá thời gian thi đấu, kết quả 2 đội hòa nhau");
                     notify(message);
                     finish();
                 } else {
@@ -340,8 +330,7 @@ public class TalentShow extends Zone {
                     if (players.size() > 0) {
                         start();
                     } else {
-                        _charz.getService()
-                                .serverMessage("Chưa có người chơi nào tham gia thi đấu");
+                        _charz.getService().serverMessage("Chưa có người chơi nào tham gia thi đấu");
                     }
                 }));
             }
@@ -367,8 +356,7 @@ public class TalentShow extends Zone {
                     }
                     if (sb.length() > 0) {
                         sb.delete(sb.length() - 2, sb.length());
-                        _charz.getService()
-                                .serverMessage("Đã mời " + sb.toString() + " vào trận đấu");
+                        _charz.getService().serverMessage("Đã mời " + sb.toString() + " vào trận đấu");
                     }
                 }));
             }
@@ -411,8 +399,7 @@ public class TalentShow extends Zone {
             Char _char = ServerManager.findCharByName(name);
             if ((_char) != null) {
                 sb.append(" (").append(_char.level).append(")");
-                sb.append(" - ").append(isFightingPlayer(_char) ? "Có mặt" : "Vắng mặt")
-                        .append("\n");
+                sb.append(" - ").append(isFightingPlayer(_char) ? "Có mặt" : "Vắng mặt").append("\n");
             } else {
                 sb.append(" - Không hoạt động\n");
             }

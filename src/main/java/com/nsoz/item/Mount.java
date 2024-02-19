@@ -1,32 +1,31 @@
 package com.nsoz.item;
 
-import com.nsoz.constants.ItemName;
-import java.util.HashMap;
-
-import com.nsoz.option.ItemOption;
-import com.nsoz.util.NinjaUtils;
-import com.nsoz.lib.ParseData;
 import java.util.ArrayList;
-
+import java.util.HashMap;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import com.nsoz.constants.ItemName;
+import com.nsoz.constants.ItemOptionName;
+import com.nsoz.lib.ParseData;
+import com.nsoz.option.ItemOption;
+import com.nsoz.util.NinjaUtils;
 
 public class Mount extends Item {
 
     public static HashMap<Integer, Integer> mountOptions = new HashMap<Integer, Integer>();
 
     static {
-        mountOptions.put(6, 50);
-        mountOptions.put(7, 50);
-        mountOptions.put(10, 10);
-        mountOptions.put(67, 5);
-        mountOptions.put(68, 10);
-        mountOptions.put(69, 10);
-        mountOptions.put(70, 5);
-        mountOptions.put(71, 5);
-        mountOptions.put(72, 5);
-        mountOptions.put(73, 100);
-        mountOptions.put(74, 50);
+        mountOptions.put(ItemOptionName.HP_TOI_DA_ADD_POINT_TYPE_1, 50);
+        mountOptions.put(ItemOptionName.MP_TOI_DA_ADD_POINT_TYPE_1, 50);
+        mountOptions.put(ItemOptionName.CHINH_XAC_ADD_POINT_TYPE_1, 10);
+        mountOptions.put(ItemOptionName.TAN_CONG_KHI_DANH_CHI_MANG_POINT_PERCENT_TYPE_1, 5);
+        mountOptions.put(ItemOptionName.NE_DON_ADD_POINT_TYPE_1, 10);
+        mountOptions.put(ItemOptionName.CHI_MANG_ADD_POINT_TYPE_1, 10);
+        mountOptions.put(ItemOptionName.KHANG_HOA_ADD_POINT_TYPE_1, 5);
+        mountOptions.put(ItemOptionName.KHANG_BANG_ADD_POINT_TYPE_1, 5);
+        mountOptions.put(ItemOptionName.KHANG_PHONG_ADD_POINT_TYPE_1, 5);
+        mountOptions.put(ItemOptionName.TAN_CONG_POINT_TYPE_1, 100);
+        mountOptions.put(ItemOptionName.CHIU_SAT_THUONG_CHO_CHU_ADD_POINT_TYPE_1, 50);
     }
 
     public Mount(int id) {
@@ -75,9 +74,8 @@ public class Mount extends Item {
     }
 
     public void fixMount() {
-        if ((this.id == ItemName.HUYET_SAC_HUNG_LANG || this.id == ItemName.XICH_NHAN_NGAN_LANG
-                || this.id == ItemName.PHUONG_HOANG_BANG || this.id == ItemName.LAN_SU_VU)
-                && this.isForever() && this.sys > 1) {
+        if ((this.id == ItemName.HUYET_SAC_HUNG_LANG || this.id == ItemName.XICH_NHAN_NGAN_LANG || this.id == ItemName.PHUONG_HOANG_BANG
+                || this.id == ItemName.LAN_SU_VU) && this.isForever() && this.sys > 1) {
             fixMountOption();
         }
     }
@@ -87,14 +85,12 @@ public class Mount extends Item {
             if (Mount.mountOptions.get(option.optionTemplate.id) == null) {
                 continue;
             }
-            if (!NinjaUtils.inArray(option.optionTemplate.id, 6, 7, 10, 67, 69, 68, 70, 71, 72, 73,
-                    74)) {
+            if (!NinjaUtils.inArray(option.optionTemplate.id, 6, 7, 10, 67, 69, 68, 70, 71, 72, 73, 74)) {
                 continue;
             }
             int originValue = Mount.mountOptions.get(option.optionTemplate.id);
             int level = this.upgrade + 1;
-            int correctValue =
-                    originValue + originValue * (level / 10) + (originValue * 2 * this.sys);
+            int correctValue = originValue + originValue * (level / 10) + (originValue * 2 * this.sys);
             if (correctValue != option.param) {
                 option.param = correctValue;
             }

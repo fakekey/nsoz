@@ -1,5 +1,21 @@
 package com.nsoz.server;
 
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import com.nsoz.constants.ConstTime;
 import com.nsoz.constants.SQLStatement;
 import com.nsoz.convert.Converter;
@@ -16,23 +32,7 @@ import com.nsoz.skill.SkillOptionTemplate;
 import com.nsoz.skill.SkillTemplate;
 import com.nsoz.util.Log;
 import com.nsoz.util.NinjaUtils;
-import java.io.DataOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import lombok.Getter;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 public class GameData extends Thread {
 
@@ -58,6 +58,14 @@ public class GameData extends Thread {
     public static final long[] UP_EXP_SKILL_CLONE =
             new long[] {39000000000L, 42000000000L, 45500000000L, 49000000000L, 52500000000L, 56000000000L, 59500000000L, 63000000000L, 67000000000L};
     public static long UP_EXP_SKILL_CLONE_MAX = 0;
+
+    public static long getExpSkillCloneByPoint(int point) {
+        long sumExp = 0;
+        for (int i = 0; i <= point - 2; i++) {
+            sumExp += UP_EXP_SKILL_CLONE[i];
+        }
+        return sumExp;
+    }
 
     public static long getUpExpSkillCloneMax() {
         if (UP_EXP_SKILL_CLONE_MAX == 0) {

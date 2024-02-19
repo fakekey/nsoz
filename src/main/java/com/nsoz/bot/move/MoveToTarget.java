@@ -1,11 +1,11 @@
 package com.nsoz.bot.move;
 
+import com.nsoz.bot.IMove;
 import com.nsoz.map.TileMap;
 import com.nsoz.map.zones.Zone;
 import com.nsoz.model.Char;
 import com.nsoz.util.NinjaUtils;
 import lombok.Setter;
-import com.nsoz.bot.IMove;
 
 public class MoveToTarget implements IMove {
 

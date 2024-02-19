@@ -1,7 +1,7 @@
 package com.nsoz.effect;
 
-import lombok.Getter;
 import org.json.simple.JSONObject;
+import lombok.Getter;
 
 @Getter
 public class Effect {

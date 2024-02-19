@@ -1,7 +1,6 @@
 package com.nsoz.task;
 
 import java.util.ArrayList;
-
 import com.nsoz.item.ItemManager;
 import com.nsoz.model.Char;
 import com.nsoz.util.NinjaUtils;
@@ -23,18 +22,14 @@ public class GloryTask {
     public static final String TITLE_NHAT_YEN = "Nông dân chăm chỉ";
 
     public static final String TASK_NANG_CAP = "- Nâng cấp %d/%d món lên cấp 8";
-    public static final String TASK_TIEU_DIET_TINH_ANH =
-            "- Tiêu diệt %d/%d quái tinh anh không chênh lệch quá 10 cấp độ";
-    public static final String TASK_TIEU_DIET_THU_LINH =
-            "- Tiêu diệt %d/%d quái thủ lĩnh không chênh lệch quá 10 cấp độ";
-    public static final String TASK_CHIEN_THANG_LOI_DAI =
-            "- Chiến thắng %d/%d trận lôi đài với người không chênh lệch quá 10 cấp độ";
-    public static final String TASK_CUU_SAT_NGUOI_KHAC =
-            "- Cừu sát %d/%d người khác nhau không chênh lệch quá 10 cấp độ";
+    public static final String TASK_TIEU_DIET_TINH_ANH = "- Tiêu diệt %d/%d quái tinh anh không chênh lệch quá 10 cấp độ";
+    public static final String TASK_TIEU_DIET_THU_LINH = "- Tiêu diệt %d/%d quái thủ lĩnh không chênh lệch quá 10 cấp độ";
+    public static final String TASK_CHIEN_THANG_LOI_DAI = "- Chiến thắng %d/%d trận lôi đài với người không chênh lệch quá 10 cấp độ";
+    public static final String TASK_CUU_SAT_NGUOI_KHAC = "- Cừu sát %d/%d người khác nhau không chênh lệch quá 10 cấp độ";
     public static final String TASK_NHAT_YEN = "- Kiếm %d/%d yên từ quái vật";
 
-    public static final int[][] TASKS = {{TIEU_DIET_THU_LINH, 5}, {TIEU_DIET_TINH_ANH, 10},
-            {CHIEN_THANG_LOI_DAI, 5}, {CUU_SAT_NGUOI_KHAC, 10}, {NHAT_YEN, 1000000}, {NANG_CAP, 1}};
+    public static final int[][] TASKS = {{TIEU_DIET_THU_LINH, 5}, {TIEU_DIET_TINH_ANH, 10}, {CHIEN_THANG_LOI_DAI, 5}, {CUU_SAT_NGUOI_KHAC, 10},
+            {NHAT_YEN, 1000000}, {NANG_CAP, 1}};
 
     public Char _char;
     public int requireUseEquip;
@@ -148,8 +143,7 @@ public class GloryTask {
 
     public void updateProgress(int update) {
         int equipType = getEquipType();
-        if (_char.equipment[equipType] != null
-                && _char.equipment[equipType].id == requireUseEquip) {
+        if (_char.equipment[equipType] != null && _char.equipment[equipType].id == requireUseEquip) {
             this.progress += update;
             if (isComplete()) {
                 this.progress = this.quantity;

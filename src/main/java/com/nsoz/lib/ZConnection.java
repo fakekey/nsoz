@@ -1,8 +1,8 @@
 package com.nsoz.lib;
 
-import com.nsoz.db.jdbc.DbManager;
 import java.sql.Connection;
 import java.sql.SQLException;
+import com.nsoz.db.jdbc.DbManager;
 
 public class ZConnection {
 

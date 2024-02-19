@@ -1,21 +1,17 @@
 package com.nsoz.model;
 
-import com.nsoz.constants.SQLStatement;
-import com.nsoz.db.jdbc.DbManager;
-import com.nsoz.item.Item;
-import com.nsoz.lib.ZConnection;
-import com.nsoz.server.Config;
-import com.nsoz.util.NinjaUtils;
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+import com.nsoz.constants.SQLStatement;
+import com.nsoz.db.jdbc.DbManager;
+import com.nsoz.item.Item;
+import com.nsoz.server.Config;
+import com.nsoz.util.NinjaUtils;
 
 public class GiftCode {
 

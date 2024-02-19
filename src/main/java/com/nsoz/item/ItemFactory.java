@@ -1,6 +1,5 @@
 package com.nsoz.item;
 
-import java.util.ArrayList;
 import java.util.List;
 import com.nsoz.lib.RandomCollection;
 import com.nsoz.option.ItemOption;

@@ -1,5 +1,6 @@
 package com.nsoz.map.world;
 
+import org.jetbrains.annotations.NotNull;
 import com.nsoz.constants.MapName;
 import com.nsoz.map.Map;
 import com.nsoz.map.MapManager;
@@ -11,7 +12,6 @@ import com.nsoz.map.zones.Zone;
 import com.nsoz.model.Char;
 import lombok.Getter;
 import lombok.Setter;
-import org.jetbrains.annotations.NotNull;
 
 public class CandyBattlefield extends World {
 

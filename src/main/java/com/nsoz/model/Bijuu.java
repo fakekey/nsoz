@@ -1,9 +1,9 @@
 package com.nsoz.model;
 
-import com.nsoz.item.Item;
-import com.nsoz.skill.Skill;
 import java.util.ArrayList;
 import java.util.List;
+import com.nsoz.item.Item;
+import com.nsoz.skill.Skill;
 
 @SuppressWarnings("unused")
 public class Bijuu {

@@ -1,13 +1,23 @@
 package com.nsoz.event;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import com.nsoz.bot.Bot;
 import com.nsoz.bot.SantaClaus;
 import com.nsoz.bot.move.SantaClausMove;
-import com.nsoz.constants.ItemOptionName;
 import com.nsoz.constants.CMDInputDialog;
 import com.nsoz.constants.CMDMenu;
 import com.nsoz.constants.ConstTime;
 import com.nsoz.constants.ItemName;
+import com.nsoz.constants.ItemOptionName;
 import com.nsoz.constants.MapName;
 import com.nsoz.constants.MobName;
 import com.nsoz.constants.NpcName;
@@ -31,16 +41,6 @@ import com.nsoz.server.ServerManager;
 import com.nsoz.store.ItemStore;
 import com.nsoz.store.StoreManager;
 import com.nsoz.util.NinjaUtils;
-import java.time.Duration;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 public class Noel extends Event {
 
@@ -135,12 +135,10 @@ public class Noel extends Event {
     }
 
     private void spawnSantaClaus() {
-        GlobalService.getInstance().chat("Hệ thống",
-                "Ông già Noel đã xuất hiện, hãy tới nhặt quà dưới gốc Cây thông.");
-        int[] maps = {MapName.TRUONG_HIROSAKI, MapName.TRUONG_OOKAZA, MapName.TRUONG_HARUNA,
-                MapName.LANG_CHAI, MapName.LANG_CHAKUMI, MapName.LANG_ECHIGO, MapName.LANG_FEARRI,
-                MapName.LANG_KOJIN, MapName.LANG_OSHIN, MapName.LANG_SANZU, MapName.LANG_SHIIBA,
-                MapName.LANG_TONE};
+        GlobalService.getInstance().chat("Hệ thống", "Ông già Noel đã xuất hiện, hãy tới nhặt quà dưới gốc Cây thông.");
+        int[] maps =
+                {MapName.TRUONG_HIROSAKI, MapName.TRUONG_OOKAZA, MapName.TRUONG_HARUNA, MapName.LANG_CHAI, MapName.LANG_CHAKUMI, MapName.LANG_ECHIGO,
+                        MapName.LANG_FEARRI, MapName.LANG_KOJIN, MapName.LANG_OSHIN, MapName.LANG_SANZU, MapName.LANG_SHIIBA, MapName.LANG_TONE};
 
         for (int mapID : maps) {
             Map map = MapManager.getInstance().find(mapID);
@@ -162,8 +160,7 @@ public class Noel extends Event {
             GlobalService.getInstance().chat("Người tuyết",
                     "Màn đêm đã buông, làn gió lạnh lẽo đang thổi tới trên khắp bản đồ, các ngươi hãy cẩn thận nhé!");
             ServerManager.getChars().stream().forEach((Char _char) -> {
-                _char.serverMessage(
-                        "Lạnh quá, sức đánh và khả năng hồi phục của bạn bị giảm đi 50%, hãy tìm gosho để mua lãnh dược!");
+                _char.serverMessage("Lạnh quá, sức đánh và khả năng hồi phục của bạn bị giảm đi 50%, hãy tìm gosho để mua lãnh dược!");
             });
         }, 6, 0, 0);
         NinjaUtils.schedule(() -> {
@@ -174,24 +171,18 @@ public class Noel extends Event {
     @Override
     public void initStore() {
         StoreManager.getInstance().addItem((byte) StoreManager.TYPE_MISCELLANEOUS,
-                ItemStore.builder().id(996).itemID(ItemName.CHOCOLATE).gold(20)
-                        .expire(ConstTime.FOREVER).build());
+                ItemStore.builder().id(996).itemID(ItemName.CHOCOLATE).gold(20).expire(ConstTime.FOREVER).build());
         StoreManager.getInstance().addItem((byte) StoreManager.TYPE_MISCELLANEOUS,
-                ItemStore.builder().id(997).itemID(ItemName.DAU_TAY).coin(100000)
-                        .expire(ConstTime.FOREVER).build());
+                ItemStore.builder().id(997).itemID(ItemName.DAU_TAY).coin(100000).expire(ConstTime.FOREVER).build());
         StoreManager.getInstance().addItem((byte) StoreManager.TYPE_MISCELLANEOUS,
-                ItemStore.builder().id(998).itemID(ItemName.TUAN_THU_LENH).gold(20)
-                        .expire(ConstTime.FOREVER).build());
+                ItemStore.builder().id(998).itemID(ItemName.TUAN_THU_LENH).gold(20).expire(ConstTime.FOREVER).build());
         List<ItemOption> options = new ArrayList<>();
         StoreManager.getInstance().addItem((byte) StoreManager.TYPE_MISCELLANEOUS,
-                ItemStore.builder().id(999).itemID(ItemName.TUAN_LOC).gold(500).options(options)
-                        .expire(ConstTime.MONTH).build());
+                ItemStore.builder().id(999).itemID(ItemName.TUAN_LOC).gold(500).options(options).expire(ConstTime.MONTH).build());
         StoreManager.getInstance().addItem((byte) StoreManager.TYPE_MISCELLANEOUS,
-                ItemStore.builder().id(1000).itemID(ItemName.LANH_DUOC).gold(20)
-                        .expire(ConstTime.DAY * 7).build());
+                ItemStore.builder().id(1000).itemID(ItemName.LANH_DUOC).gold(20).expire(ConstTime.DAY * 7).build());
         StoreManager.getInstance().addItem((byte) StoreManager.TYPE_MISCELLANEOUS,
-                ItemStore.builder().id(1001).itemID(ItemName.QUA_TRANG_TRI).gold(20)
-                        .expire(ConstTime.FOREVER).build());
+                ItemStore.builder().id(1001).itemID(ItemName.QUA_TRANG_TRI).gold(20).expire(ConstTime.FOREVER).build());
     }
 
     @Override
@@ -223,15 +214,13 @@ public class Noel extends Event {
     }
 
     private void makeStrawberryCake(Char p, int amount) {
-        int[][] itemRequires = new int[][] {{ItemName.BO, 5}, {ItemName.KEM, 5},
-                {ItemName.DUONG_BOT, 5}, {ItemName.DAU_TAY, 2}};
+        int[][] itemRequires = new int[][] {{ItemName.BO, 5}, {ItemName.KEM, 5}, {ItemName.DUONG_BOT, 5}, {ItemName.DAU_TAY, 2}};
         int itemIdReceive = ItemName.BANH_KHUC_CAY_DAU_TAY;
         makeEventItem(p, amount, itemRequires, 0, 0, 0, itemIdReceive);
     }
 
     private void makeChocolateCake(Char p, int amount) {
-        int[][] itemRequires = new int[][] {{ItemName.BO, 5}, {ItemName.KEM, 5},
-                {ItemName.DUONG_BOT, 5}, {ItemName.CHOCOLATE, 1}};
+        int[][] itemRequires = new int[][] {{ItemName.BO, 5}, {ItemName.KEM, 5}, {ItemName.DUONG_BOT, 5}, {ItemName.CHOCOLATE, 1}};
         int itemIdReceive = ItemName.BANH_KHUC_CAY_CHOCOLATE;
         boolean isDone = makeEventItem(p, amount, itemRequires, 0, 0, 0, itemIdReceive);
         if (isDone) {
@@ -241,8 +230,7 @@ public class Noel extends Event {
     }
 
     private void makeGiftBox(Char p, int amount) {
-        int[][] itemRequires = new int[][] {{ItemName.TRAI_CHAU, 3}, {ItemName.RUY_BANG, 3},
-                {ItemName.CHUONG_VANG, 3}};
+        int[][] itemRequires = new int[][] {{ItemName.TRAI_CHAU, 3}, {ItemName.RUY_BANG, 3}, {ItemName.CHUONG_VANG, 3}};
         int itemIdReceive = ItemName.HOP_QUA_TRANG_TRI;
         boolean isDone = makeEventItem(p, amount, itemRequires, 20, 0, 0, itemIdReceive);
         if (isDone) {
@@ -275,8 +263,7 @@ public class Noel extends Event {
     private boolean isCanExchangeSnowmanSkilledPoint(Char p, int amount) {
         if (p.getEventPoint().getPoint(TOP_KILL_SNOWMAN) < 20 * amount) {
             p.getService().npcChat(NpcName.TIEN_NU,
-                    "Ngươi cần tối thiểu " + NinjaUtils.getCurrency(20 * amount)
-                            + " điểm tiêu diệt người tuyết mới có thể trao đổi.");
+                    "Ngươi cần tối thiểu " + NinjaUtils.getCurrency(20 * amount) + " điểm tiêu diệt người tuyết mới có thể trao đổi.");
             return false;
         }
         return true;
@@ -363,10 +350,7 @@ public class Noel extends Event {
             }));
             p.menus.add(new Menu(CMDMenu.EXECUTE, "Hướng dẫn", () -> {
                 StringBuilder sb = new StringBuilder();
-                sb.append("- Tiêu diệt người tuyết: ")
-                        .append(NinjaUtils
-                                .getCurrency(p.getEventPoint().getPoint(TOP_KILL_SNOWMAN)))
-                        .append("\n");
+                sb.append("- Tiêu diệt người tuyết: ").append(NinjaUtils.getCurrency(p.getEventPoint().getPoint(TOP_KILL_SNOWMAN))).append("\n");
                 sb.append("-- CÔNG THỨC --").append("\n");
                 sb.append("- 1: 20 điểm tiêu diệt + 20 lượng").append("\n");
                 sb.append("- 2: 20 điểm tiêu diệt + 200.000 xu.").append("\n");
@@ -387,10 +371,9 @@ public class Noel extends Event {
                 makePreciousTree(p, 2);
             }));
             p.menus.add(new Menu(CMDMenu.EXECUTE, "Điểm sự kiện", () -> {
-                p.getService().showAlert("Hướng dẫn", "- Điểm sự kiện: "
-                        + NinjaUtils
-                                .getCurrency(p.getEventPoint().getPoint(EventPoint.DIEM_TIEU_XAI))
-                        + "\n\nBạn có thể quy đổi điểm sự kiện như sau\n- Lam sơn dạ: 5.000 điểm\n- Trúc bạch thiên lữ: 20.000 điểm\n");
+                p.getService().showAlert("Hướng dẫn",
+                        "- Điểm sự kiện: " + NinjaUtils.getCurrency(p.getEventPoint().getPoint(EventPoint.DIEM_TIEU_XAI))
+                                + "\n\nBạn có thể quy đổi điểm sự kiện như sau\n- Lam sơn dạ: 5.000 điểm\n- Trúc bạch thiên lữ: 20.000 điểm\n");
             }));
             p.getService().openUIMenu();
         }));
@@ -400,8 +383,7 @@ public class Noel extends Event {
             p.menus.add(new Menu(CMDMenu.EXECUTE, "Trang trí", () -> {
                 p.menus.clear();
                 p.menus.add(new Menu(CMDMenu.EXECUTE, "Bảng xếp hạng", () -> {
-                    viewTop(p, TOP_DECORATION_GIFT_BOX, "Trang trí cây thông Noel",
-                            "%d. %s đã trang trí %s lần");
+                    viewTop(p, TOP_DECORATION_GIFT_BOX, "Trang trí cây thông Noel", "%d. %s đã trang trí %s lần");
                 }));
                 p.menus.add(new Menu(CMDMenu.EXECUTE, "Phần thưởng", () -> {
                     StringBuilder sb = new StringBuilder();
@@ -427,12 +409,10 @@ public class Noel extends Event {
                 }));
                 if (isEnded()) {
                     int ranking = getRanking(p, TOP_DECORATION_GIFT_BOX);
-                    if (ranking <= 10
-                            && p.getEventPoint().getRewarded(TOP_DECORATION_GIFT_BOX) == 0) {
-                        p.menus.add(new Menu(CMDMenu.EXECUTE,
-                                String.format("Nhận Thưởng TOP %d", ranking), () -> {
-                                    receiveReward(p, TOP_DECORATION_GIFT_BOX);
-                                }));
+                    if (ranking <= 10 && p.getEventPoint().getRewarded(TOP_DECORATION_GIFT_BOX) == 0) {
+                        p.menus.add(new Menu(CMDMenu.EXECUTE, String.format("Nhận Thưởng TOP %d", ranking), () -> {
+                            receiveReward(p, TOP_DECORATION_GIFT_BOX);
+                        }));
                     }
                 }
                 p.getService().openUIMenu();
@@ -467,10 +447,9 @@ public class Noel extends Event {
                 if (isEnded()) {
                     int ranking = getRanking(p, TOP_CHOCOLATE_CAKE);
                     if (ranking <= 10 && p.getEventPoint().getRewarded(TOP_CHOCOLATE_CAKE) == 0) {
-                        p.menus.add(new Menu(CMDMenu.EXECUTE,
-                                String.format("Nhận Thưởng TOP %d", ranking), () -> {
-                                    receiveReward(p, TOP_CHOCOLATE_CAKE);
-                                }));
+                        p.menus.add(new Menu(CMDMenu.EXECUTE, String.format("Nhận Thưởng TOP %d", ranking), () -> {
+                            receiveReward(p, TOP_CHOCOLATE_CAKE);
+                        }));
                     }
                 }
                 p.getService().openUIMenu();
@@ -478,8 +457,7 @@ public class Noel extends Event {
             p.menus.add(new Menu(CMDMenu.EXECUTE, "Vua tuần lộc", () -> {
                 p.menus.clear();
                 p.menus.add(new Menu(CMDMenu.EXECUTE, "Bảng xếp hạng", () -> {
-                    viewTop(p, TOP_KILL_REINDEER_KING, "Tiêu diệt vua tuần lộc",
-                            "%d. %s đã tiêu diệt %s Boss Vua Tuần Lộc");
+                    viewTop(p, TOP_KILL_REINDEER_KING, "Tiêu diệt vua tuần lộc", "%d. %s đã tiêu diệt %s Boss Vua Tuần Lộc");
                 }));
                 p.menus.add(new Menu(CMDMenu.EXECUTE, "Phần thưởng", () -> {
                     StringBuilder sb = new StringBuilder();
@@ -504,12 +482,10 @@ public class Noel extends Event {
                 if (isEnded()) {
                     int ranking = getRanking(p, TOP_KILL_REINDEER_KING);
                     int point = p.getEventPoint().getPoint(TOP_KILL_REINDEER_KING);
-                    if (ranking <= 10 && p.getEventPoint().getRewarded(TOP_KILL_REINDEER_KING) == 0
-                            && point >= 1000) {
-                        p.menus.add(new Menu(CMDMenu.EXECUTE,
-                                String.format("Nhận Thưởng TOP %d", ranking), () -> {
-                                    receiveReward(p, TOP_KILL_REINDEER_KING);
-                                }));
+                    if (ranking <= 10 && p.getEventPoint().getRewarded(TOP_KILL_REINDEER_KING) == 0 && point >= 1000) {
+                        p.menus.add(new Menu(CMDMenu.EXECUTE, String.format("Nhận Thưởng TOP %d", ranking), () -> {
+                            receiveReward(p, TOP_KILL_REINDEER_KING);
+                        }));
                     }
                 }
                 p.getService().openUIMenu();
@@ -519,26 +495,14 @@ public class Noel extends Event {
         }));
         p.menus.add(new Menu(CMDMenu.EXECUTE, "Hướng dẫn", () -> {
             StringBuilder sb = new StringBuilder();
-            sb.append("- Số lần trang trí: ")
-                    .append(NinjaUtils
-                            .getCurrency(p.getEventPoint().getPoint(TOP_DECORATION_GIFT_BOX)))
-                    .append("\n");
-            sb.append("- Số bánh đã làm: ")
-                    .append(NinjaUtils.getCurrency(p.getEventPoint().getPoint(TOP_CHOCOLATE_CAKE)))
-                    .append("\n");
-            sb.append("- Tiêu diệt vua tuần lộc: ")
-                    .append(NinjaUtils
-                            .getCurrency(p.getEventPoint().getPoint(TOP_KILL_REINDEER_KING)))
-                    .append("\n");
-            sb.append("- Tiêu diệt người tuyết: ")
-                    .append(NinjaUtils.getCurrency(p.getEventPoint().getPoint(TOP_KILL_SNOWMAN)))
-                    .append("\n");
+            sb.append("- Số lần trang trí: ").append(NinjaUtils.getCurrency(p.getEventPoint().getPoint(TOP_DECORATION_GIFT_BOX))).append("\n");
+            sb.append("- Số bánh đã làm: ").append(NinjaUtils.getCurrency(p.getEventPoint().getPoint(TOP_CHOCOLATE_CAKE))).append("\n");
+            sb.append("- Tiêu diệt vua tuần lộc: ").append(NinjaUtils.getCurrency(p.getEventPoint().getPoint(TOP_KILL_REINDEER_KING))).append("\n");
+            sb.append("- Tiêu diệt người tuyết: ").append(NinjaUtils.getCurrency(p.getEventPoint().getPoint(TOP_KILL_SNOWMAN))).append("\n");
             sb.append("===CÔNG THỨC===").append("\n");
             sb.append("- Bánh khúc Dâu tây: 5 Bơ + 5 Kem + 5 Đường bột + 2 Dâu tây.").append("\n");
-            sb.append("- Bánh khúc Chocolate: 5 Bơ + 5 Kem + 5 Đường bột + 1 Chocolate.")
-                    .append("\n");
-            sb.append("- Hộp quà: 3 Trái châu + 3 Ruy băng + 3 Chuông vàng + 20 Lượng.")
-                    .append("\n");
+            sb.append("- Bánh khúc Chocolate: 5 Bơ + 5 Kem + 5 Đường bột + 1 Chocolate.").append("\n");
+            sb.append("- Hộp quà: 3 Trái châu + 3 Ruy băng + 3 Chuông vàng + 20 Lượng.").append("\n");
             p.getService().showAlert("Hướng Dẫn", sb.toString());
         }));
 
@@ -547,8 +511,8 @@ public class Noel extends Event {
     public void makePreciousTree(Char p, int type) {
         int point = type == 1 ? 5000 : 20000;
         if (p.getEventPoint().getPoint(EventPoint.DIEM_TIEU_XAI) < point) {
-            p.getService().npcChat(NpcName.TIEN_NU, "Ngươi cần tối thiểu "
-                    + NinjaUtils.getCurrency(point) + " điểm sự kiện mới có thể đổi được vật này.");
+            p.getService().npcChat(NpcName.TIEN_NU,
+                    "Ngươi cần tối thiểu " + NinjaUtils.getCurrency(point) + " điểm sự kiện mới có thể đổi được vật này.");
             return;
         }
 
@@ -557,8 +521,7 @@ public class Noel extends Event {
             return;
         }
 
-        Item item = ItemFactory.getInstance()
-                .newItem(type == 1 ? ItemName.LAM_SON_DA : ItemName.TRUC_BACH_THIEN_LU);
+        Item item = ItemFactory.getInstance().newItem(type == 1 ? ItemName.LAM_SON_DA : ItemName.TRUC_BACH_THIEN_LU);
         p.addItemToBag(item);
         p.getEventPoint().subPoint(EventPoint.DIEM_TIEU_XAI, point);
     }
@@ -617,8 +580,8 @@ public class Noel extends Event {
                 break;
 
             case MapName.RUNG_DAO_SAKURA:
-                Mob monster = new Mob(zone.getMonsters().size(), (short) MobName.NGUOI_TUYET, 3000,
-                        (byte) 0, (short) 1928, (short) 240, false, true, zone);
+                Mob monster =
+                        new Mob(zone.getMonsters().size(), (short) MobName.NGUOI_TUYET, 3000, (byte) 0, (short) 1928, (short) 240, false, true, zone);
                 zone.addMob(monster);
                 break;
         }
@@ -657,8 +620,7 @@ public class Noel extends Event {
         if (ranking == 1) {
             mount.options.add(new ItemOption(ItemOptionName.NE_DON_ADD_POINT_TYPE_1, 200));
             mount.options.add(new ItemOption(ItemOptionName.CHINH_XAC_ADD_POINT_TYPE_1, 100));
-            mount.options.add(new ItemOption(
-                    ItemOptionName.TAN_CONG_KHI_DANH_CHI_MANG_POINT_PERCENT_TYPE_1, 100));
+            mount.options.add(new ItemOption(ItemOptionName.TAN_CONG_KHI_DANH_CHI_MANG_POINT_PERCENT_TYPE_1, 100));
             mount.options.add(new ItemOption(ItemOptionName.CHI_MANG_ADD_POINT_TYPE_1, 100));
 
             tree.setQuantity(10);
@@ -702,10 +664,8 @@ public class Noel extends Event {
             pet.options.add(new ItemOption(ItemOptionName.MP_TOI_DA_ADD_POINT_TYPE_1, 3000));
             pet.options.add(new ItemOption(ItemOptionName.CHI_MANG_POINT_TYPE_1, 100)); // chi mang
             pet.options.add(new ItemOption(ItemOptionName.TAN_CONG_ADD_POINT_PERCENT_TYPE_8, 10));
-            pet.options
-                    .add(new ItemOption(ItemOptionName.MOI_5_GIAY_PHUC_HOI_MP_POINT_TYPE_1, 200));
-            pet.options
-                    .add(new ItemOption(ItemOptionName.MOI_5_GIAY_PHUC_HOI_HP_POINT_TYPE_1, 200));
+            pet.options.add(new ItemOption(ItemOptionName.MOI_5_GIAY_PHUC_HOI_MP_POINT_TYPE_1, 200));
+            pet.options.add(new ItemOption(ItemOptionName.MOI_5_GIAY_PHUC_HOI_HP_POINT_TYPE_1, 200));
             pet.options.add(new ItemOption(ItemOptionName.KHONG_NHAN_EXP_TYPE_0, 1));
 
             tree.setQuantity(10);

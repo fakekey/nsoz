@@ -1,8 +1,5 @@
 package com.nsoz.party;
 
-import com.nsoz.map.world.World;
-import com.nsoz.map.zones.NymozCave;
-import com.nsoz.model.Char;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
@@ -11,7 +8,9 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
-
+import com.nsoz.map.world.World;
+import com.nsoz.map.zones.NymozCave;
+import com.nsoz.model.Char;
 import lombok.Getter;
 
 public class Group {

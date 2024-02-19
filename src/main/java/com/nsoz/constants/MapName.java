@@ -1,6 +1,7 @@
 package com.nsoz.constants;
 
 public interface MapName {
+
     public static final int NHA_THI_DAU_HARUNA = 0;
     public static final int TRUONG_HIROSAKI = 1;
     public static final int KHU_LUYEN_TAP = 2;

@@ -1,6 +1,7 @@
 package com.nsoz.bot;
 
 import com.nsoz.ability.AbilityFromEquip;
+import com.nsoz.bot.attack.AttackTarget;
 import com.nsoz.fashion.FashionFromEquip;
 import com.nsoz.item.Equip;
 import com.nsoz.item.Item;
@@ -23,6 +24,14 @@ public class Bot extends Char {
     @Setter
     @Getter
     private IMove move;
+
+    @Override
+    public void outZone() {
+        if (attack instanceof AttackTarget) {
+            ((AttackTarget) attack).close();
+        }
+        super.outZone();
+    }
 
     public Bot(int id) {
         super(id);

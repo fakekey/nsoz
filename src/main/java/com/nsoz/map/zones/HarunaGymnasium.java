@@ -1,15 +1,15 @@
 package com.nsoz.map.zones;
 
 import com.nsoz.ability.AbilityCustom;
+import com.nsoz.bot.Bot;
 import com.nsoz.bot.attack.AttackAround;
 import com.nsoz.bot.move.MoveWithinCustom;
-import com.nsoz.bot.Bot;
+import com.nsoz.constants.SkillName;
 import com.nsoz.fashion.FashionCustom;
 import com.nsoz.map.Map;
 import com.nsoz.map.TileMap;
 import com.nsoz.model.Char;
 import com.nsoz.skill.SkillFactory;
-import com.nsoz.constants.SkillName;
 
 public class HarunaGymnasium extends Gymnasium {
 

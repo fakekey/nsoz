@@ -1,17 +1,17 @@
 package com.nsoz.thiendia;
 
-import com.nsoz.db.jdbc.DbManager;
-import com.nsoz.util.Log;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import lombok.Getter;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import com.nsoz.db.jdbc.DbManager;
+import com.nsoz.util.Log;
+import lombok.Getter;
 
 public class ThienDiaManager {
 
@@ -49,8 +49,8 @@ public class ThienDiaManager {
                     for (int i = 0; i < clazzArr.length; i++) {
                         clazzArr[i] = (byte) clazzs.getInt(i);
                     }
-                    ThienDiaData thienDiaData = ThienDiaData.builder().id(id).name(name)
-                            .levelMax(levelMax).levelMin(levelMin).clazzs(clazzArr).build();
+                    ThienDiaData thienDiaData =
+                            ThienDiaData.builder().id(id).name(name).levelMax(levelMax).levelMin(levelMin).clazzs(clazzArr).build();
                     list.add(thienDiaData);
                     Log.info("load finish:" + thienDiaData.getName());
                 }

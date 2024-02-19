@@ -1,7 +1,6 @@
 package com.nsoz.map.zones;
 
 import com.nsoz.bot.Bot;
-import com.nsoz.bot.attack.AttackTarget;
 import com.nsoz.map.Map;
 import com.nsoz.map.TileMap;
 import com.nsoz.model.Char;
@@ -39,11 +38,6 @@ public class ArenaT extends Zone {
             }
         }
         if (bot != null) {
-            AttackTarget atk = (AttackTarget) bot.getAttack();
-            if (atk != null) {
-                atk.close();
-                atk = null;
-            }
             bot.setArenaT(null);
             bot.outZone();
             bot = null;

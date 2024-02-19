@@ -1,8 +1,5 @@
 package com.nsoz.effect;
 
-import com.nsoz.db.jdbc.DbManager;
-import com.nsoz.network.Message;
-import com.nsoz.util.Log;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.sql.PreparedStatement;
@@ -10,6 +7,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import com.nsoz.db.jdbc.DbManager;
+import com.nsoz.network.Message;
+import com.nsoz.util.Log;
 import lombok.Getter;
 
 public class EffectTemplateManager {
@@ -31,8 +31,7 @@ public class EffectTemplateManager {
 
     public void load() {
         try {
-            PreparedStatement stmt = DbManager.getInstance().getConnection(DbManager.SERVER)
-                    .prepareStatement("SELECT * FROM `effect`;");
+            PreparedStatement stmt = DbManager.getInstance().getConnection(DbManager.SERVER).prepareStatement("SELECT * FROM `effect`;");
             ResultSet resultSet = stmt.executeQuery();
             while (resultSet.next()) {
                 EffectTemplate eff = new EffectTemplate();

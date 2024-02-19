@@ -1,8 +1,6 @@
 package com.nsoz.model;
 
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import com.nsoz.option.ItemOption;
 
 public class ImageInfo {
 

@@ -1,8 +1,8 @@
 package com.nsoz.bot.move;
 
+import com.nsoz.bot.IMove;
 import com.nsoz.model.Char;
 import com.nsoz.util.NinjaUtils;
-import com.nsoz.bot.IMove;
 
 public class JaianMove implements IMove {
 

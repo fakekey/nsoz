@@ -1,11 +1,12 @@
 package com.nsoz.map.zones;
 
+import org.jetbrains.annotations.NotNull;
 import com.nsoz.constants.ItemName;
-import com.nsoz.map.Map;
 import com.nsoz.constants.MapName;
 import com.nsoz.constants.MobName;
 import com.nsoz.item.Item;
 import com.nsoz.item.ItemFactory;
+import com.nsoz.map.Map;
 import com.nsoz.map.TileMap;
 import com.nsoz.map.Waypoint;
 import com.nsoz.map.world.SevenBeasts;
@@ -13,7 +14,6 @@ import com.nsoz.map.world.World;
 import com.nsoz.mob.Mob;
 import com.nsoz.model.Char;
 import lombok.Getter;
-import org.jetbrains.annotations.NotNull;
 
 public abstract class Z7Beasts extends ZWorld {
 
@@ -31,8 +31,7 @@ public abstract class Z7Beasts extends ZWorld {
         p.setXY((short) 35, (short) 360);
         z.join(p);
         if (map.id == MapName.THAT_THU_AI) {
-            world.getService().serverMessage(
-                    String.format("%s đã rời ải, xin mời thành viên tiếp theo", p.name));
+            world.getService().serverMessage(String.format("%s đã rời ải, xin mời thành viên tiếp theo", p.name));
         }
     }
 
@@ -52,17 +51,14 @@ public abstract class Z7Beasts extends ZWorld {
         Z7Beasts z = (Z7Beasts) world.find(nextID);
         if (nextID == MapName.KHU_VUC_CHO) {
             p.returnToPreviousPostion(() -> {
-                p.serverDialog(
-                        "Lối ra đã bị chặn. Bạn chỉ còn cách tiêu diệt hết số quái trong ải");
+                p.serverDialog("Lối ra đã bị chặn. Bạn chỉ còn cách tiêu diệt hết số quái trong ải");
             });
             return;
         } else if (nextID == MapName.THAT_THU_AI) {
             BeastArea area = (BeastArea) z;
-            if ((area.getNumberChar() > 0 || area.getPreviousPlayerDied() == p.id)
-                    && area.getLevel() < 6) {
+            if ((area.getNumberChar() > 0 || area.getPreviousPlayerDied() == p.id) && area.getLevel() < 6) {
                 p.returnToPreviousPostion(() -> {
-                    p.serverDialog(
-                            "Đã có người vào ải, hoặc chưa tới lượt đánh của bạn. Vui lòng chờ ở bên ngoài.");
+                    p.serverDialog("Đã có người vào ải, hoặc chưa tới lượt đánh của bạn. Vui lòng chờ ở bên ngoài.");
                 });
                 return;
             }
@@ -86,12 +82,11 @@ public abstract class Z7Beasts extends ZWorld {
                     killer.warningBagFull();
                 }
                 SevenBeasts sevenBeasts = (SevenBeasts) killer.findWorld(World.SEVEN_BEASTS);
-                sevenBeasts.getService().serverMessage(String.format("%s nhận được %s rơi ra từ %s",
-                        killer.name, item.template.name, mob.template.name));
+                sevenBeasts.getService()
+                        .serverMessage(String.format("%s nhận được %s rơi ra từ %s", killer.name, item.template.name, mob.template.name));
                 if (mob.template.id == MobName.MUC_ONG_DO) {
                     sevenBeasts.setCountdown(15);
-                    sevenBeasts.getService().serverMessage(
-                            "Xin chúc mừng nhóm của bạn đã vượt qua được thất thú ải.");
+                    sevenBeasts.getService().serverMessage("Xin chúc mừng nhóm của bạn đã vượt qua được thất thú ải.");
                 }
             }
         }

@@ -1,18 +1,14 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this
- * license Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.nsoz.lib;
 
-import com.nsoz.map.Map;
-import com.nsoz.map.MapManager;
-import com.nsoz.util.Log;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
+import com.nsoz.map.Map;
+import com.nsoz.map.MapManager;
+import com.nsoz.util.Log;
 import lombok.Builder;
 import lombok.Getter;
 

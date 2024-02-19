@@ -1,9 +1,8 @@
 package com.nsoz.skill;
 
+import org.json.simple.JSONObject;
 import com.nsoz.model.Char;
 import com.nsoz.option.SkillOption;
-
-import org.json.simple.JSONObject;
 
 public class Skill {
 

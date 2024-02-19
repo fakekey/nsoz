@@ -1054,7 +1054,7 @@ public class Char {
                         }
                         this.charLock.lock();
                         try {
-                            this.expSkillClone = GameData.UP_EXP_SKILL_CLONE[skill.point - 2];
+                            this.expSkillClone = GameData.getExpSkillCloneByPoint(skill.point);
                         } finally {
                             this.charLock.unlock();
                         }
@@ -5731,7 +5731,7 @@ public class Char {
         }
     }
 
-    private boolean isMeCanAtkMonster(Mob mob) {
+    public boolean isMeCanAtkMonster(Mob mob) {
         if (isMobSameParty(mob)) {
             return false;
         }
@@ -5757,13 +5757,21 @@ public class Char {
         }
 
         if (mob.template.id == MobName.CHUOT_CANH_TY) {
-            if (fashion[2] == null
-                    || (fashion[2] != null && fashion[2].template.id != ItemName.AO_NGU_THAN && fashion[2].template.id != ItemName.AO_TAN_THOI)) {
-                if (TimeUtils.canDoWithTime(lastTimeTryAttackBoss, 5000)) {
-                    lastTimeTryAttackBoss = System.currentTimeMillis();
-                    serverMessage("Bạn cần trang bị Áo dài để có thể đánh Boss");
+            if (this.isNhanBan) {
+                Char human = ((CloneChar) this).human;
+                if (human.fashion[2] == null || (human.fashion[2] != null && human.fashion[2].template.id != ItemName.AO_NGU_THAN
+                        && human.fashion[2].template.id != ItemName.AO_TAN_THOI)) {
+                    return false;
                 }
-                return false;
+            } else {
+                if (this.fashion[2] == null || (this.fashion[2] != null && this.fashion[2].template.id != ItemName.AO_NGU_THAN
+                        && this.fashion[2].template.id != ItemName.AO_TAN_THOI)) {
+                    if (TimeUtils.canDoWithTime(lastTimeTryAttackBoss, 5000)) {
+                        lastTimeTryAttackBoss = System.currentTimeMillis();
+                        serverMessage("Bạn cần trang bị Áo dài để có thể đánh Boss");
+                    }
+                    return false;
+                }
             }
         }
 
@@ -7703,7 +7711,7 @@ public class Char {
             this.invite.addCharInvite(Invite.CHANGE_ZONE, -1, 1);
             byte zoneId = ms.reader().readByte();
             byte indexUI = ms.reader().readByte();
-            Log.info(indexUI != -1 ? "Sử dụng khả di lệnh chuyển khu" : "Chuyển khu");
+            Log.debug((indexUI != -1 ? "Khả di lệnh chuyển khu" : "Chuyển khu") + " " + zoneId);
             Map map = zone.map;
             List<Zone> zones = map.getZones();
             if (zoneId < 0 || zoneId >= zones.size()) {
@@ -15738,6 +15746,26 @@ public class Char {
         }
     }
 
+    public void adminMove(Message ms) {
+        try {
+            byte mapId = ms.reader().readByte();
+            boolean isZVersion = false;
+            try {
+                isZVersion = ms.reader().readBoolean();
+            } catch (Exception e) {
+                return;
+            }
+            Map map = MapManager.getInstance().find(mapId);
+            if (map != null && isZVersion) {
+                this.zone.getService().teleport(this);
+                this.teleport(mapId);
+                this.zone.getService().teleport(this);
+            }
+        } catch (Exception e) {
+            Log.error(e.getMessage(), e);
+        }
+    }
+
     public void changeTeamLeader(Message ms) {
         try {
             if (!isHuman) {
@@ -17480,7 +17508,7 @@ public class Char {
             serverMessage("Chỉ sử dụng cho xe máy");
             return false;
         } else if (type == 2 && mount.id != ItemName.KIM_NGUU && mount.id != ItemName.HAC_NGUU && mount.id != ItemName.BACH_HO && mount.id != 1076) {
-            serverMessage("Chỉ sử dụng cho Trâu,Hổ và Lân");
+            serverMessage("Chỉ sử dụng cho Trâu, Hổ và Lân");
             return false;
         } else if (mount.upgrade < 99) {
             ItemOption opExp = null;

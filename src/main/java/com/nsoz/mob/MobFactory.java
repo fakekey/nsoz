@@ -15,16 +15,14 @@ public class MobFactory {
         MobTemplate template = MobManager.getInstance().find(mob.getId());
         int hp = template.hp;
         hp += hp * (level * 20) / 100;
-        return new Mob(id, mob.getId(), hp, template.level, mob.getX(), mob.getY(),
-                mob.isBeast() && zone.id % 5 == 0, template.isBoss(), zone);
+        return new Mob(id, mob.getId(), hp, template.level, mob.getX(), mob.getY(), mob.isBeast() && zone.id % 5 == 0, template.isBoss(), zone);
     }
 
     public Mob createMonster(int id, MobPosition mob) {
         MobTemplate template = MobManager.getInstance().find(mob.getId());
         int hp = template.hp;
         short level = template.level;
-        Mob monster = new Mob(id, mob.getId(), hp, level, mob.getX(), mob.getY(),
-                mob.isBeast() && zone.id % 5 == 0, template.isBoss(), zone);
+        Mob monster = new Mob(id, mob.getId(), hp, level, mob.getX(), mob.getY(), mob.isBeast() && zone.id % 5 == 0, template.isBoss(), zone);
         if (template.isBoss() && zone.tilemap.isNormal() && template.id != MobName.HOP_BI_AN) {
             monster.die();
         }

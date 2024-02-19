@@ -1,20 +1,18 @@
 package com.nsoz.item;
 
-import com.nsoz.constants.ItemName;
-import com.nsoz.constants.ItemOptionName;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
-
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import com.nsoz.constants.ItemName;
+import com.nsoz.constants.ItemOptionName;
+import com.nsoz.lib.ParseData;
 import com.nsoz.option.ItemOption;
 import com.nsoz.server.Config;
 import com.nsoz.util.NinjaUtils;
-import com.nsoz.lib.ParseData;
 import lombok.Getter;
 import lombok.Setter;
-
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
 
 @Getter
 @Setter
@@ -875,20 +873,20 @@ public class Item {
 
     public void randomOptionMount(boolean isSpecial) {
         Vector<int[]> opt = new Vector<>();
-        opt.add(new int[] {6, 50});
-        opt.add(new int[] {7, 50});
-        opt.add(new int[] {10, 10});
-        opt.add(new int[] {67, 5});
-        opt.add(new int[] {69, 10});
-        opt.add(new int[] {68, 10});
-        opt.add(new int[] {70, 5});
-        opt.add(new int[] {71, 5});
-        opt.add(new int[] {72, 5});
-        opt.add(new int[] {73, 100});
-        opt.add(new int[] {74, 50});
+        opt.add(new int[] {ItemOptionName.HP_TOI_DA_ADD_POINT_TYPE_1, 50});
+        opt.add(new int[] {ItemOptionName.MP_TOI_DA_ADD_POINT_TYPE_1, 50});
+        opt.add(new int[] {ItemOptionName.CHINH_XAC_ADD_POINT_TYPE_1, 10});
+        opt.add(new int[] {ItemOptionName.TAN_CONG_KHI_DANH_CHI_MANG_POINT_PERCENT_TYPE_1, 5});
+        opt.add(new int[] {ItemOptionName.NE_DON_ADD_POINT_TYPE_1, 10});
+        opt.add(new int[] {ItemOptionName.CHI_MANG_ADD_POINT_TYPE_1, 10});
+        opt.add(new int[] {ItemOptionName.KHANG_HOA_ADD_POINT_TYPE_1, 5});
+        opt.add(new int[] {ItemOptionName.KHANG_BANG_ADD_POINT_TYPE_1, 5});
+        opt.add(new int[] {ItemOptionName.KHANG_PHONG_ADD_POINT_TYPE_1, 5});
+        opt.add(new int[] {ItemOptionName.TAN_CONG_POINT_TYPE_1, 100});
+        opt.add(new int[] {ItemOptionName.CHIU_SAT_THUONG_CHO_CHU_ADD_POINT_TYPE_1, 50});
 
         if (this.id == 776 || this.id == 777) {
-            // item.options.add(new ItemOption(128, 5));
+            this.options.add(new ItemOption(128, 5));
         }
 
         if (isSpecial) {

@@ -1,6 +1,6 @@
 package com.nsoz.constants;
 
-public class CMDConfirmPopup {
+public interface CMDConfirmPopup {
 
     public static final int CANCEL = 0;
     public static final int CONFIRM = 1;

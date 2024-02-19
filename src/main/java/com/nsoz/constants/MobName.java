@@ -1,6 +1,7 @@
 package com.nsoz.constants;
 
 public interface MobName {
+
     public static final int BU_NHIN = 0;
     public static final int OC_SEN = 1;
     public static final int COC_XANH = 2;

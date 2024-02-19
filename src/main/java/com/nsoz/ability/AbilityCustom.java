@@ -1,10 +1,10 @@
 package com.nsoz.ability;
 
+import java.util.ArrayList;
 import com.nsoz.item.ItemManager;
 import com.nsoz.model.Char;
 import com.nsoz.option.ItemOption;
 import com.nsoz.server.GameData;
-import java.util.ArrayList;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;

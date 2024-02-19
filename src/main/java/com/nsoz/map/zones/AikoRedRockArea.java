@@ -1,10 +1,9 @@
 package com.nsoz.map.zones;
 
 import java.util.ArrayList;
-
-import com.nsoz.map.item.ItemMap;
 import com.nsoz.map.Map;
 import com.nsoz.map.TileMap;
+import com.nsoz.map.item.ItemMap;
 import com.nsoz.map.item.ItemMapFactory;
 
 public class AikoRedRockArea extends Zone {
@@ -22,8 +21,7 @@ public class AikoRedRockArea extends Zone {
         mushrooms = new ArrayList<>();
         short[][] xys = {{469, 528}, {737, 600}, {710, 480}};
         for (short[] xy : xys) {
-            ItemMap itemMap = ItemMapFactory.getInstance().builder().id(numberDropItem++)
-                    .type(ItemMapFactory.MUSHROOM).x(xy[0]).y(xy[1]).build();
+            ItemMap itemMap = ItemMapFactory.getInstance().builder().id(numberDropItem++).type(ItemMapFactory.MUSHROOM).x(xy[0]).y(xy[1]).build();
             mushrooms.add(itemMap);
         }
     }

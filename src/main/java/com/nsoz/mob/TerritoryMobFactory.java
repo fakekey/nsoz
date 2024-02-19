@@ -25,8 +25,7 @@ public class TerritoryMobFactory extends MobFactory {
         if (mob.getId() == MobName.LAM_THAO || mob.getId() == MobName.MY_HAU_TUONG) {
             return null;
         }
-        Mob monster = new Mob(id, mob.getId(), hp, level, mob.getX(), mob.getY(),
-                mob.isBeast() && zone.id % 5 == 0, template.isBoss(), zone);
+        Mob monster = new Mob(id, mob.getId(), hp, level, mob.getX(), mob.getY(), mob.isBeast() && zone.id % 5 == 0, template.isBoss(), zone);
         if (template.isBoss()) {
             monster.die();
         }
@@ -43,8 +42,7 @@ public class TerritoryMobFactory extends MobFactory {
             MobPosition mob = zone.tilemap.monsterCoordinates.get(rand);
             MobTemplate template = MobManager.getInstance().find(mob.getId());
             int id = zone.getMonsters().size();
-            Mob monster = new Mob(id++, mob.getId(), 2000000, (short) 100, mob.getX(), mob.getY(),
-                    false, template.isBoss(), zone);
+            Mob monster = new Mob(id++, mob.getId(), 2000000, (short) 100, mob.getX(), mob.getY(), false, template.isBoss(), zone);
             monster.levelBoss = 1;
             monster.setHP();
             zone.addMob(monster);
@@ -61,8 +59,7 @@ public class TerritoryMobFactory extends MobFactory {
             if (tilemap.isDungeoClan() && mob.getId() == MobName.LAM_THAO) {
                 hp = 2000000;
                 level = 100;
-                Mob monster = new Mob(incrementId++, mob.getId(), hp, level, mob.getX(), mob.getY(),
-                        false, template.isBoss(), zone);
+                Mob monster = new Mob(incrementId++, mob.getId(), hp, level, mob.getX(), mob.getY(), false, template.isBoss(), zone);
                 zone.addMob(monster);
             }
         }

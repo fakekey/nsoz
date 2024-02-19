@@ -1,12 +1,11 @@
 package com.nsoz.model;
 
-import com.nsoz.item.Item;
-import com.mongodb.client.MongoCollection;
-import com.nsoz.db.mongodb.MongoDbConnection;
-
 import org.bson.Document;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import com.mongodb.client.MongoCollection;
+import com.nsoz.db.mongodb.MongoDbConnection;
+import com.nsoz.item.Item;
 
 public class History {
 

@@ -5,10 +5,8 @@ import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.Properties;
-
 import com.nsoz.util.Log;
 import com.nsoz.util.StringUtils;
-
 import lombok.Getter;
 
 @Getter
@@ -125,10 +123,8 @@ public class Config {
     }
 
     public String getMongodbUrl() {
-        if (!StringUtils.isNullOrEmpty(mongodbUser)
-                && !StringUtils.isNullOrEmpty(mongodbPassword)) {
-            return String.format("mongodb://%s:%s@%s:%d/%s", mongodbUser, mongodbPassword,
-                    mongodbHost, mongodbPort, mongodbName);
+        if (!StringUtils.isNullOrEmpty(mongodbUser) && !StringUtils.isNullOrEmpty(mongodbPassword)) {
+            return String.format("mongodb://%s:%s@%s:%d/%s", mongodbUser, mongodbPassword, mongodbHost, mongodbPort, mongodbName);
         }
         return String.format("mongodb://%s:%d", mongodbHost, mongodbPort);
     }

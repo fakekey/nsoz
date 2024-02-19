@@ -1,6 +1,5 @@
 package com.nsoz.server;
 
-import com.nsoz.util.Log;
 import java.io.IOException;
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -11,7 +10,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
+import com.nsoz.util.Log;
 import com.nsoz.util.NinjaUtils;
 
 public class AutoMaintenance {

@@ -1,15 +1,15 @@
 package com.nsoz.server;
 
-import com.nsoz.bot.Bot;
-import com.nsoz.model.Char;
-import com.nsoz.model.User;
-import com.nsoz.util.Log;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import com.nsoz.bot.Bot;
+import com.nsoz.model.Char;
+import com.nsoz.model.User;
+import com.nsoz.util.Log;
 
 public class ServerManager {
 

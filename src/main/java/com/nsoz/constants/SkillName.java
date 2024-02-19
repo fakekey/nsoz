@@ -1,6 +1,7 @@
 package com.nsoz.constants;
 
 public interface SkillName {
+
     public static final int CHIEU_CO_BAN = 0; // Kiếm gỗ
     public static final int CHIEU_HIYOKO = 1; // Kiếm 10
     public static final int CHIEU_AMAGEDON = 2; // Kiếm 15

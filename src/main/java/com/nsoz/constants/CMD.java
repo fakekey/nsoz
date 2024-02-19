@@ -1,6 +1,7 @@
 package com.nsoz.constants;
 
 public interface CMD {
+
     public static final byte LOGIN = -127;
     public static final byte REGISTER = -126;
     public static final byte CLIENT_INFO = -125;
@@ -249,7 +250,6 @@ public interface CMD {
     public static final byte PLAYER_ATTACK_NPC = 60;
     public static final byte PLAYER_ATTACK_PLAYER = 61;
     public static final byte HAVE_ATTACK_PLAYER = 62;
-
     public static final byte OPEN_UI_NEWMENU = 63;
     public static final byte MOVE_FAST = 64;
     public static final byte TEST_INVITE = 65;

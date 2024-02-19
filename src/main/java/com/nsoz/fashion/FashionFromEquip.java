@@ -1,12 +1,12 @@
 package com.nsoz.fashion;
 
+import java.util.ArrayList;
 import com.nsoz.constants.ItemName;
 import com.nsoz.item.Equip;
 import com.nsoz.item.Item;
+import com.nsoz.item.ItemTemplate;
 import com.nsoz.item.Mount;
 import com.nsoz.model.Char;
-import com.nsoz.item.ItemTemplate;
-import java.util.ArrayList;
 
 public class FashionFromEquip implements FashionStrategy {
 
@@ -210,8 +210,7 @@ public class FashionFromEquip implements FashionStrategy {
             owner.coat = -1;
             owner.ID_PP = -1;
         }
-        if (owner.fashion[ItemTemplate.TYPE_THUNUOI] != null
-                && owner.fashion[ItemTemplate.TYPE_THUNUOI].id != 864) {
+        if (owner.fashion[ItemTemplate.TYPE_THUNUOI] != null && owner.fashion[ItemTemplate.TYPE_THUNUOI].id != 864) {
             owner.ID_NAME = owner.fashion[ItemTemplate.TYPE_THUNUOI].template.fashion;
         } else {
             owner.ID_NAME = -1;
@@ -241,8 +240,7 @@ public class FashionFromEquip implements FashionStrategy {
         }
         ArrayList<Integer> listMax = new ArrayList<>();
         for (Equip equip : owner.equipment) {
-            if (equip != null && (equip.template.isTypeClothe() || equip.template.isTypeAdorn()
-                    || equip.template.isTypeWeapon())) {
+            if (equip != null && (equip.template.isTypeClothe() || equip.template.isTypeAdorn() || equip.template.isTypeWeapon())) {
                 listMax.add(equip.getMaxUpgradeGem());
             }
         }

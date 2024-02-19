@@ -1,14 +1,14 @@
 package com.nsoz.map.zones;
 
+import java.util.List;
 import com.nsoz.bot.Bot;
-import com.nsoz.map.Map;
 import com.nsoz.constants.MapName;
+import com.nsoz.constants.NpcName;
+import com.nsoz.map.Map;
 import com.nsoz.map.TileMap;
 import com.nsoz.model.Char;
 import com.nsoz.npc.Npc;
-import com.nsoz.constants.NpcName;
 import com.nsoz.util.NinjaUtils;
-import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 

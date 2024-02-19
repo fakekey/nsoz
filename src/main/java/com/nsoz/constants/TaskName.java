@@ -1,6 +1,7 @@
 package com.nsoz.constants;
 
 public interface TaskName {
+
     public static final int NHIEM_VU_CHAO_LANG = 0;
     public static final int NV_KIEN_THUC = 1;
     public static final int NV_LAN_DAU_DUNG_KIEM = 2;

@@ -43,8 +43,7 @@ public class WarMobFactory extends MobFactory {
                 }
                 break;
         }
-        Mob monster = new Mob(id, mob.getId(), hp, level, mob.getX(), mob.getY(),
-                mob.isBeast() && zone.id % 5 == 0, template.isBoss(), zone);
+        Mob monster = new Mob(id, mob.getId(), hp, level, mob.getX(), mob.getY(), mob.isBeast() && zone.id % 5 == 0, template.isBoss(), zone);
         return monster;
     }
 

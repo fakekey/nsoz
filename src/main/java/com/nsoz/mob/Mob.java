@@ -17,7 +17,6 @@ import com.nsoz.effect.Effect;
 import com.nsoz.event.Event;
 import com.nsoz.event.Halloween;
 import com.nsoz.event.KoroKing;
-import com.nsoz.event.LunarNewYear;
 import com.nsoz.event.Noel;
 import com.nsoz.item.Item;
 import com.nsoz.item.ItemFactory;
@@ -895,32 +894,8 @@ public class Mob {
         if (System.currentTimeMillis() - this.lastTimeAttack < this.attackDelay) {
             return;
         }
-        if (owner.isMobSameParty(monster)) {
+        if (!owner.isMeCanAtkMonster(monster)) {
             return;
-        }
-        if (monster.template.id == MobName.BOSS_TUAN_LOC || monster.template.id == MobName.QUAI_VAT) {
-            if (monster.attackableChars.get(0) != this.id) {
-                return;
-            }
-        }
-        if (Event.isEvent() && (owner.getEventPoint().getPoint(LunarNewYear.MYSTERY_BOX_LEFT) <= 0 && monster.template.id == MobName.HOP_BI_AN
-                && owner.mob == null)) {
-            return;
-        }
-        if (owner.clan == null && monster.template.id == MobName.NGUOI_TUYET) {
-            return;
-        }
-        if (monster.template.id == MobName.BAO_QUAN && owner.getEm().findByID((byte) 23) == null) {
-            return;
-        }
-        if (monster.template.id == MobName.KORO_KING && owner.getIndexItemByIdInBag(ItemName.VIEN_THUOC_THAN_KY) == -1) {
-            return;
-        }
-        if (monster.template.id == MobName.CHUOT_CANH_TY) {
-            if (owner.fashion[2] == null || (owner.fashion[2] != null && owner.fashion[2].template.id != ItemName.AO_NGU_THAN
-                    && owner.fashion[2].template.id != ItemName.AO_TAN_THOI)) {
-                return;
-            }
         }
         monster.mobLock.lock();
         try {

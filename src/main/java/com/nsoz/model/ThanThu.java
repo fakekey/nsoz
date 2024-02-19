@@ -1,16 +1,11 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this
- * license Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.nsoz.model;
 
-import com.nsoz.constants.ItemName;
-import com.nsoz.option.ItemOption;
-import com.nsoz.util.NinjaUtils;
 import java.util.ArrayList;
-import lombok.Data;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import com.nsoz.constants.ItemName;
+import com.nsoz.option.ItemOption;
+import lombok.Data;
 
 @Data
 public class ThanThu {

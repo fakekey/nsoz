@@ -1,7 +1,7 @@
 package com.nsoz.model;
 
-import com.nsoz.lib.RandomCollection;
 import org.jetbrains.annotations.NotNull;
+import com.nsoz.lib.RandomCollection;
 
 public abstract class AbsSelectCard {
 

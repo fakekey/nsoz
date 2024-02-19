@@ -1,15 +1,16 @@
 package com.nsoz.network;
 
-import com.nsoz.constants.CMD;
-import java.net.Socket;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.EOFException;
 import java.io.IOException;
+import java.net.Socket;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.locks.Lock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import com.nsoz.constants.CMD;
 import com.nsoz.model.User;
 import com.nsoz.server.Config;
 import com.nsoz.server.GameData;
@@ -19,7 +20,6 @@ import com.nsoz.server.Server;
 import com.nsoz.server.ServerManager;
 import com.nsoz.util.Log;
 import com.nsoz.util.NinjaUtils;
-import java.util.ArrayList;
 
 public class Session implements ISession {
 

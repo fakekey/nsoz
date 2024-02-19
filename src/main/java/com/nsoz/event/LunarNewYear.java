@@ -1,13 +1,22 @@
 package com.nsoz.event;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import com.nsoz.bot.Bot;
 import com.nsoz.bot.Principal;
 import com.nsoz.bot.move.PrincipalMove;
-import com.nsoz.constants.ItemOptionName;
 import com.nsoz.constants.CMDInputDialog;
 import com.nsoz.constants.CMDMenu;
 import com.nsoz.constants.ConstTime;
 import com.nsoz.constants.ItemName;
+import com.nsoz.constants.ItemOptionName;
 import com.nsoz.constants.MapName;
 import com.nsoz.constants.MobName;
 import com.nsoz.constants.NpcName;
@@ -32,15 +41,6 @@ import com.nsoz.store.ItemStore;
 import com.nsoz.store.StoreManager;
 import com.nsoz.util.Log;
 import com.nsoz.util.NinjaUtils;
-import java.time.Duration;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 public class LunarNewYear extends Event {
 
@@ -525,8 +525,7 @@ public class LunarNewYear extends Event {
                 zone.addTree(Tree.builder().id(EffectAutoDataManager.CAY_HOA_MAI).x((short) 2527).y((short) 241).build());
                 zone.addTree(Tree.builder().id(EffectAutoDataManager.CAY_HOA_MAI).x((short) 2340).y((short) 193).build());
                 zone.addTree(Tree.builder().id(EffectAutoDataManager.CAY_HOA_DAO).x((short) 2246).y((short) 264).build());
-                zone.addTree(Tree.builder().id(EffectAutoDataManager.CAY_HOA_MAI).x((short) 206).y((short) 216).build());
-                zone.addTree(Tree.builder().id(EffectAutoDataManager.CAY_HOA_DAO).x((short) 160).y((short) 121).build());
+                zone.addTree(Tree.builder().id(EffectAutoDataManager.CAY_HOA_MAI).x((short) 148).y((short) 216).build());
                 zone.addTree(Tree.builder().id(EffectAutoDataManager.CAY_HOA_MAI).x((short) 985).y((short) 241).build());
                 zone.addTree(Tree.builder().id(EffectAutoDataManager.CAY_HOA_MAI).x((short) 1273).y((short) 241).build());
                 break;

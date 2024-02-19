@@ -1,14 +1,14 @@
 package com.nsoz.map.zones;
 
-import com.nsoz.map.Map;
+import org.jetbrains.annotations.NotNull;
 import com.nsoz.constants.MapName;
 import com.nsoz.constants.MobName;
+import com.nsoz.map.Map;
 import com.nsoz.map.TileMap;
 import com.nsoz.map.War;
 import com.nsoz.map.Waypoint;
 import com.nsoz.mob.Mob;
 import com.nsoz.model.Char;
-import org.jetbrains.annotations.NotNull;
 
 public class Battlefield extends Zone {
 
@@ -23,15 +23,13 @@ public class Battlefield extends Zone {
             return;
         }
         int nextID = wp.next;
-        if (map.war != null && map.war.status == 0
-                && (p.mapId == MapName.CAN_CU_DIA || p.mapId == MapName.CAN_CU_DIA_2)) {
+        if (map.war != null && map.war.status == 0 && (p.mapId == MapName.CAN_CU_DIA || p.mapId == MapName.CAN_CU_DIA_2)) {
             p.returnToPreviousPostion(() -> {
                 p.serverDialog("Chiến trường chưa bắt đầu.");
             });
             return;
         }
-        if ((p.faction == 0 && nextID == MapName.CAN_CU_DIA_2)
-                || (p.faction == 1 && nextID == MapName.CAN_CU_DIA)) {
+        if ((p.faction == 0 && nextID == MapName.CAN_CU_DIA_2) || (p.faction == 1 && nextID == MapName.CAN_CU_DIA)) {
             p.returnToPreviousPostion(() -> {
                 p.serverDialog("Không thể vào khu vực này.");
             });
@@ -86,8 +84,7 @@ public class Battlefield extends Zone {
             if (mob.levelBoss == 2 && killer.war != null && killer.war.type != War.TYPE_ALL_LEVEL) {
                 killer.addWarPoint((short) 20);
             }
-            if (mob.template.id == MobName.BACH_LONG_TRU
-                    || mob.template.id == MobName.HAC_LONG_TRU) {
+            if (mob.template.id == MobName.BACH_LONG_TRU || mob.template.id == MobName.HAC_LONG_TRU) {
                 if (killer.war != null) {
                     killer.war.addTurretPoint(killer.faction);
                 }

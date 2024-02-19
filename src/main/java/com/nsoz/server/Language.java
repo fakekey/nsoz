@@ -1,6 +1,5 @@
 package com.nsoz.server;
 
-import com.nsoz.util.Log;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -8,6 +7,7 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Properties;
+import com.nsoz.util.Log;
 import lombok.Getter;
 
 public class Language {

@@ -3,21 +3,18 @@ package com.nsoz.mob;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
-
 import com.nsoz.constants.SQLStatement;
 import com.nsoz.db.jdbc.DbManager;
 import com.nsoz.model.Frame;
 import com.nsoz.model.ImageInfo;
 import com.nsoz.util.Log;
 import com.nsoz.util.ProgressBar;
-import java.sql.SQLException;
-
 import lombok.Getter;
 
 public class MobManager {

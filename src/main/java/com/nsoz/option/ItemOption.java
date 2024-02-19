@@ -2,7 +2,6 @@ package com.nsoz.option;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import com.nsoz.item.ItemManager;
 import com.nsoz.item.ItemOptionTemplate;
 import com.nsoz.util.NinjaUtils;

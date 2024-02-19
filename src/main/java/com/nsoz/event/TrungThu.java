@@ -1,5 +1,6 @@
 package com.nsoz.event;
 
+import java.util.List;
 import com.nsoz.constants.CMDInputDialog;
 import com.nsoz.constants.CMDMenu;
 import com.nsoz.constants.ItemName;
@@ -18,9 +19,7 @@ import com.nsoz.model.Char;
 import com.nsoz.model.InputDialog;
 import com.nsoz.model.Menu;
 import com.nsoz.model.RandomItem;
-import com.nsoz.option.ItemOption;
 import com.nsoz.util.NinjaUtils;
-import java.util.List;
 
 public class TrungThu extends Event {
 

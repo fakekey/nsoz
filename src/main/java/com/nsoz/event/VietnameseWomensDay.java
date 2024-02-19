@@ -146,33 +146,31 @@ public class VietnameseWomensDay extends Event {
                     p.getService().showInputDialog();
                 }));
                 p.menus.add(new Menu(CMDMenu.EXECUTE, "Bó Hoa Hồng Vàng", () -> {
-                    p.setInput(
-                            new InputDialog(CMDInputDialog.EXECUTE, "Số Bó Hoa Hồng Vàng", () -> {
-                                InputDialog input = p.getInput();
-                                try {
-                                    int number = input.intValue();
-                                    action(p, BO_HOA_HONG_VANG, number);
-                                } catch (Exception e) {
-                                    if (!input.isEmpty()) {
-                                        p.inputInvalid();
-                                    }
-                                }
-                            }));
+                    p.setInput(new InputDialog(CMDInputDialog.EXECUTE, "Số Bó Hoa Hồng Vàng", () -> {
+                        InputDialog input = p.getInput();
+                        try {
+                            int number = input.intValue();
+                            action(p, BO_HOA_HONG_VANG, number);
+                        } catch (Exception e) {
+                            if (!input.isEmpty()) {
+                                p.inputInvalid();
+                            }
+                        }
+                    }));
                     p.getService().showInputDialog();
                 }));
                 p.menus.add(new Menu(CMDMenu.EXECUTE, "Bó Hoa Hồng Xanh", () -> {
-                    p.setInput(
-                            new InputDialog(CMDInputDialog.EXECUTE, "Số Bó Hoa Hồng Xanh", () -> {
-                                InputDialog input = p.getInput();
-                                try {
-                                    int number = input.intValue();
-                                    action(p, BO_HOA_HONG_XANH, number);
-                                } catch (Exception e) {
-                                    if (!input.isEmpty()) {
-                                        p.inputInvalid();
-                                    }
-                                }
-                            }));
+                    p.setInput(new InputDialog(CMDInputDialog.EXECUTE, "Số Bó Hoa Hồng Xanh", () -> {
+                        InputDialog input = p.getInput();
+                        try {
+                            int number = input.intValue();
+                            action(p, BO_HOA_HONG_XANH, number);
+                        } catch (Exception e) {
+                            if (!input.isEmpty()) {
+                                p.inputInvalid();
+                            }
+                        }
+                    }));
                     p.getService().showInputDialog();
                 }));
                 p.getService().openUIMenu();
@@ -180,8 +178,7 @@ public class VietnameseWomensDay extends Event {
         }
         p.menus.add(new Menu(CMDMenu.EXECUTE, "Hướng dẫn", () -> {
             StringBuilder sb = new StringBuilder();
-            sb.append("- Điểm tiêu xài: ")
-                    .append(p.getEventPoint().getPoint(EventPoint.DIEM_TIEU_XAI)).append("\n");
+            sb.append("- Điểm tiêu xài: ").append(p.getEventPoint().getPoint(EventPoint.DIEM_TIEU_XAI)).append("\n");
             sb.append("- 10 điểm tiêu xài = Hoa hồng xanh.").append("\n");
             sb.append("- 50 Hoa Hồng Đỏ + 1 Giấy Màu = Bó Hoa Hồng Vàng.").append("\n");
             sb.append("- 30 Hoa Hồng Đỏ + 1 Ruy Băng = Bó Hoa Hồng Đỏ.").append("\n");
@@ -193,11 +190,9 @@ public class VietnameseWomensDay extends Event {
     @Override
     public void initStore() {
         StoreManager.getInstance().addItem((byte) StoreManager.TYPE_MISCELLANEOUS,
-                ItemStore.builder().id(998).itemID(ItemName.GIAY_MAU).coin(100000)
-                        .expire(ConstTime.FOREVER).build());
+                ItemStore.builder().id(998).itemID(ItemName.GIAY_MAU).coin(100000).expire(ConstTime.FOREVER).build());
         StoreManager.getInstance().addItem((byte) StoreManager.TYPE_MISCELLANEOUS,
-                ItemStore.builder().id(999).itemID(ItemName.RUY_BANG).gold(20)
-                        .expire(ConstTime.FOREVER).build());
+                ItemStore.builder().id(999).itemID(ItemName.RUY_BANG).gold(20).expire(ConstTime.FOREVER).build());
     }
 
     @Override

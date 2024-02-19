@@ -1,6 +1,6 @@
 package com.nsoz.constants;
 
-public class CMDInputDialog {
+public interface CMDInputDialog {
 
     public static final int EXECUTE = 9999;
 

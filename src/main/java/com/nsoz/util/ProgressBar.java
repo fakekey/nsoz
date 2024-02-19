@@ -63,10 +63,10 @@ public class ProgressBar {
         }
         int currentBlock = (int) (value / maxRange * width);
         char symbol = getSymbol();
-        String filledBlock = StringUtils.repeat('#', currentBlock);
-        String remainBlock = StringUtils.repeat('-', width - currentBlock);
-        String text = String.format("%s [%s] [%s%s] %.0f/%.0f %s", this.name, symbol, filledBlock,
-                remainBlock, value, maxRange, this.extraMessge == null ? "" : this.extraMessge);
+        String filledBlock = StringUtils.repeat('▰', currentBlock);
+        String remainBlock = StringUtils.repeat('▱', width - currentBlock);
+        String text = String.format("%s [%s] %s%s  %.0f/%.0f %s", this.name, symbol, filledBlock, remainBlock, value, maxRange,
+                this.extraMessge == null ? "" : this.extraMessge);
         System.out.print(text);
         if (flag == 0) {
             System.out.print("\r");
@@ -80,9 +80,9 @@ public class ProgressBar {
     private char getSymbol() {
         switch (flag) {
             case 1:
-                return 'V';
+                return '✔';
             case -1:
-                return 'X';
+                return '✖';
             default:
                 return animation.charAt(animationIndex % animation.length());
         }

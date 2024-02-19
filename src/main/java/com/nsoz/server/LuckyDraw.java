@@ -1,26 +1,23 @@
 package com.nsoz.server;
 
-import com.nsoz.constants.CMD;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import org.json.simple.JSONObject;
-import org.json.simple.JSONValue;
-
-import com.nsoz.db.jdbc.DbManager;
-import com.nsoz.model.Char;
-import com.nsoz.model.History;
-import com.nsoz.util.NinjaUtils;
-import com.nsoz.lib.ParseData;
-import com.nsoz.lib.RandomCollection;
-import com.nsoz.network.Message;
 import java.io.DataOutputStream;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.json.simple.JSONObject;
+import org.json.simple.JSONValue;
+import com.nsoz.constants.CMD;
+import com.nsoz.db.jdbc.DbManager;
+import com.nsoz.lib.ParseData;
+import com.nsoz.lib.RandomCollection;
+import com.nsoz.model.Char;
+import com.nsoz.model.History;
+import com.nsoz.network.Message;
+import com.nsoz.util.NinjaUtils;
 import lombok.Getter;
 
 @Getter
@@ -96,14 +93,12 @@ public class LuckyDraw {
                     if (xuMax - (m.xu + numb) < xuMin) {
                         pl.serverMessage("Bạn không thể đặt thêm xu");
                     } else {
-                        pl.serverMessage("Bạn chỉ có thể đặt thêm tối đa "
-                                + NinjaUtils.getCurrency(xuMax - m.xu) + " xu");
+                        pl.serverMessage("Bạn chỉ có thể đặt thêm tối đa " + NinjaUtils.getCurrency(xuMax - m.xu) + " xu");
                     }
                     return;
                 }
                 if (numb < xuMin) {
-                    pl.serverMessage("Bạn chỉ có thể đặt từ " + NinjaUtils.getCurrency(xuMin)
-                            + " đến " + NinjaUtils.getCurrency(xuMax) + " xu!");
+                    pl.serverMessage("Bạn chỉ có thể đặt từ " + NinjaUtils.getCurrency(xuMin) + " đến " + NinjaUtils.getCurrency(xuMax) + " xu!");
                     return;
                 }
                 totalMoney += numb;
@@ -115,14 +110,12 @@ public class LuckyDraw {
                 history.setTime(System.currentTimeMillis());
                 history.setLuckyDraw(this.type, this.id, numb, "Đặt thêm");
                 History.insert(history);
-                pl.serverMessage(
-                        "Bạn đã đặt thêm " + NinjaUtils.getCurrency(numb) + " xu thành công!");
+                pl.serverMessage("Bạn đã đặt thêm " + NinjaUtils.getCurrency(numb) + " xu thành công!");
                 return;
             }
         }
         if (numb < xuMin || numb > xuMax) {
-            pl.serverMessage("Bạn chỉ có thể đặt từ " + NinjaUtils.getCurrency(xuMin) + " đến "
-                    + NinjaUtils.getCurrency(xuMax) + " xu!");
+            pl.serverMessage("Bạn chỉ có thể đặt từ " + NinjaUtils.getCurrency(xuMin) + " đến " + NinjaUtils.getCurrency(xuMax) + " xu!");
             return;
         }
         Player m = new Player();
@@ -265,9 +258,8 @@ public class LuckyDraw {
 
     public void result() {
         String name = "Admin";
-        String text = "Chúc mừng " + nameWin.toUpperCase() + " đã chiến thắng "
-                + NinjaUtils.getCurrency(xuWin) + " xu trong trò chơi Vòng xoay may mắn với "
-                + NinjaUtils.getCurrency(xuThamGia) + " xu";
+        String text = "Chúc mừng " + nameWin.toUpperCase() + " đã chiến thắng " + NinjaUtils.getCurrency(xuWin)
+                + " xu trong trò chơi Vòng xoay may mắn với " + NinjaUtils.getCurrency(xuThamGia) + " xu";
         GlobalService.getInstance().chat(name, text);
     }
 
@@ -300,8 +292,7 @@ public class LuckyDraw {
             }
             ds.writeShort(getNumberOfMemeber());
             if (!nameWin.equals("")) {
-                ds.writeUTF("Người vừa chiến thắng:" + NinjaUtils.getColor(typeColor) + nameWin
-                        + "\nSố xu thắng: " + NinjaUtils.getCurrency(xuWin)
+                ds.writeUTF("Người vừa chiến thắng:" + NinjaUtils.getColor(typeColor) + nameWin + "\nSố xu thắng: " + NinjaUtils.getCurrency(xuWin)
                         + "Xu \nSố xu tham gia: " + NinjaUtils.getCurrency(xuThamGia) + "Xu");
             } else {
                 ds.writeUTF("Chưa có thông tin!");

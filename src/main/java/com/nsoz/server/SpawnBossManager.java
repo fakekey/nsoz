@@ -1,9 +1,5 @@
 package com.nsoz.server;
 
-import com.nsoz.constants.MapName;
-import com.nsoz.constants.MobName;
-import com.nsoz.map.MapManager;
-import com.nsoz.util.NinjaUtils;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -14,6 +10,10 @@ import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import com.nsoz.constants.MapName;
+import com.nsoz.constants.MobName;
+import com.nsoz.map.MapManager;
+import com.nsoz.util.NinjaUtils;
 
 public class SpawnBossManager {
 
@@ -190,7 +190,6 @@ public class SpawnBossManager {
             }
         };
         ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
-        scheduler.scheduleAtFixedRate(runnable, initalDelay, hourlyDelay * 60 * 60,
-                TimeUnit.SECONDS);
+        scheduler.scheduleAtFixedRate(runnable, initalDelay, hourlyDelay * 60 * 60, TimeUnit.SECONDS);
     }
 }

@@ -1,10 +1,9 @@
 package com.nsoz.map.zones;
 
 import java.util.ArrayList;
-
-import com.nsoz.map.item.ItemMap;
 import com.nsoz.map.Map;
 import com.nsoz.map.TileMap;
+import com.nsoz.map.item.ItemMap;
 import com.nsoz.map.item.ItemMapFactory;
 
 public class KugyouCave extends Zone {
@@ -22,8 +21,7 @@ public class KugyouCave extends Zone {
         iceCrystal = new ArrayList<>();
         short[][] xys = {{420, 648}, {60, 336}, {490, 216}};
         for (short[] xy : xys) {
-            ItemMap itemMap = ItemMapFactory.getInstance().builder().id(numberDropItem++)
-                    .type(ItemMapFactory.ICE_CRYSTAL).x(xy[0]).y(xy[1]).build();
+            ItemMap itemMap = ItemMapFactory.getInstance().builder().id(numberDropItem++).type(ItemMapFactory.ICE_CRYSTAL).x(xy[0]).y(xy[1]).build();
             iceCrystal.add(itemMap);
         }
     }

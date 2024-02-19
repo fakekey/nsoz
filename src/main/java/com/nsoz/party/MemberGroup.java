@@ -1,10 +1,10 @@
 package com.nsoz.party;
 
+import java.util.ArrayList;
+import java.util.List;
 import com.nsoz.map.world.World;
 import com.nsoz.map.zones.NymozCave;
 import com.nsoz.model.Char;
-import java.util.ArrayList;
-import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 

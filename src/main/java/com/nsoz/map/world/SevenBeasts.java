@@ -1,17 +1,17 @@
 package com.nsoz.map.world;
 
-import com.nsoz.map.Map;
+import java.util.ArrayList;
+import java.util.List;
 import com.nsoz.constants.MapName;
+import com.nsoz.map.Map;
+import com.nsoz.map.MapManager;
 import com.nsoz.map.zones.BeastArea;
 import com.nsoz.map.zones.WaitingArea;
 import com.nsoz.map.zones.Z7Beasts;
-import com.nsoz.model.Char;
-import com.nsoz.map.MapManager;
 import com.nsoz.map.zones.Zone;
+import com.nsoz.model.Char;
 import com.nsoz.util.Log;
 import com.nsoz.util.NinjaUtils;
-import java.util.ArrayList;
-import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 

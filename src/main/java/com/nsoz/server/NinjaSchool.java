@@ -10,9 +10,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.InputStream;
 import java.util.List;
-
 import javax.swing.ImageIcon;
-
 import com.nsoz.clan.Clan;
 import com.nsoz.db.jdbc.DbManager;
 import com.nsoz.model.Char;

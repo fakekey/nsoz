@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.joor.Reflect;
-
 import at.favre.lib.crypto.bcrypt.BCrypt;
 
 public class StringUtils extends com.mysql.cj.util.StringUtils {
@@ -49,8 +48,7 @@ public class StringUtils extends com.mysql.cj.util.StringUtils {
     public static String removeAccent(String str) {
         String nfdNormalizedString = Normalizer.normalize(str, Normalizer.Form.NFD);
         Pattern pattern = Pattern.compile("\\p{InCombiningDiacriticalMarks}+");
-        return pattern.matcher(nfdNormalizedString).replaceAll("").replaceAll("Đ", "D").replace("đ",
-                "d");
+        return pattern.matcher(nfdNormalizedString).replaceAll("").replaceAll("Đ", "D").replace("đ", "d");
     }
 
     public static boolean checkPassword(String hashed, String plaintext) {

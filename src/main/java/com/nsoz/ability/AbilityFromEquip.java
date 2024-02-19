@@ -1,19 +1,17 @@
 package com.nsoz.ability;
 
-import com.nsoz.item.ItemManager;
-import com.nsoz.item.ItemTemplate;
 import com.nsoz.constants.ItemOptionName;
-import com.nsoz.constants.SkillName;
 import com.nsoz.item.Equip;
 import com.nsoz.item.Item;
+import com.nsoz.item.ItemManager;
 import com.nsoz.item.Mount;
 import com.nsoz.model.Char;
-import com.nsoz.skill.Skill;
 import com.nsoz.option.ItemOption;
 import com.nsoz.option.PotentialName;
 import com.nsoz.option.SkillOption;
 import com.nsoz.option.SkillOptionName;
 import com.nsoz.server.GameData;
+import com.nsoz.skill.Skill;
 
 public class AbilityFromEquip implements AbilityStrategy {
 

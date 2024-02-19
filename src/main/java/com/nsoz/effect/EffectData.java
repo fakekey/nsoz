@@ -1,11 +1,11 @@
 package com.nsoz.effect;
 
-import com.nsoz.model.PartFrame;
-import com.nsoz.model.SmallImage;
-import com.nsoz.util.Log;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import com.nsoz.model.PartFrame;
+import com.nsoz.model.SmallImage;
+import com.nsoz.util.Log;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

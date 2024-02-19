@@ -1,17 +1,17 @@
 package com.nsoz.map.zones;
 
-import com.nsoz.map.Map;
+import java.util.List;
+import org.jetbrains.annotations.NotNull;
 import com.nsoz.constants.MapName;
+import com.nsoz.constants.MobName;
+import com.nsoz.map.Map;
 import com.nsoz.map.TileMap;
 import com.nsoz.mob.Mob;
-import com.nsoz.constants.MobName;
-import com.nsoz.mob.MobPosition;
 import com.nsoz.mob.MobManager;
+import com.nsoz.mob.MobPosition;
 import com.nsoz.mob.MobTemplate;
 import com.nsoz.model.Char;
-import java.util.List;
 import lombok.Getter;
-import org.jetbrains.annotations.NotNull;
 
 public class BeastArea extends Z7Beasts {
 
@@ -36,8 +36,7 @@ public class BeastArea extends Z7Beasts {
         if (this.level < 6) {
             createMonster();
         } else {
-            Mob mob = new Mob(monsters.size(), (short) MobName.MUC_ONG_DO, 20000000, (short) 68,
-                    (short) 565, (short) 384, false, false, this);
+            Mob mob = new Mob(monsters.size(), (short) MobName.MUC_ONG_DO, 20000000, (short) 68, (short) 565, (short) 384, false, false, this);
             addMob(mob);
         }
     }

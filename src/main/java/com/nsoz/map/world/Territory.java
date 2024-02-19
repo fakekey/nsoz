@@ -1,24 +1,23 @@
 package com.nsoz.map.world;
 
-import com.nsoz.map.zones.Zone;
-import com.nsoz.constants.MobName;
-import com.nsoz.mob.Mob;
-import com.nsoz.event.KoroKing;
-import com.nsoz.event.Event;
-import com.nsoz.map.Map;
-import com.nsoz.map.TileMap;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
+import com.nsoz.constants.MobName;
+import com.nsoz.event.Event;
+import com.nsoz.event.KoroKing;
+import com.nsoz.map.Map;
+import com.nsoz.map.MapManager;
+import com.nsoz.map.TileMap;
 import com.nsoz.map.zones.ClanTerritory;
+import com.nsoz.map.zones.Zone;
+import com.nsoz.mob.Mob;
+import com.nsoz.mob.MobManager;
+import com.nsoz.mob.MobPosition;
 import com.nsoz.mob.MobTemplate;
 import com.nsoz.model.Char;
-import com.nsoz.map.MapManager;
-import com.nsoz.mob.MobPosition;
-import com.nsoz.mob.MobManager;
 import com.nsoz.util.Log;
 import com.nsoz.util.NinjaUtils;
-import java.util.ArrayList;
 
 public class Territory extends World {
 
@@ -94,8 +93,7 @@ public class Territory extends World {
                         int posX = NinjaUtils.nextInt(230, 425);
                         _char.setXY((short) posX, (short) 120);
                         _char.changeMap(this.nextMapId);
-                        _char.serverMessage(
-                                "Đây nơi mà các cố nhẫn giả đã từng đi mà không trở về, hãy cẩn thận với quái vật và không khí ở đây.");
+                        _char.serverMessage("Đây nơi mà các cố nhẫn giả đã từng đi mà không trở về, hãy cẩn thận với quái vật và không khí ở đây.");
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -187,8 +185,7 @@ public class Territory extends World {
             }
         } else if (_char.mapId >= 87 && _char.mapId <= 89) {
             this.countOpen++;
-            service.serverMessage(
-                    _char.name + " đã cắm chìa khóa cơ quan " + _char.zone.tilemap.name);
+            service.serverMessage(_char.name + " đã cắm chìa khóa cơ quan " + _char.zone.tilemap.name);
             if (this.countOpen >= 3) {
                 Zone mapOpen = find(90);
                 if (mapOpen != null) {
@@ -205,8 +202,7 @@ public class Territory extends World {
             if (mapOpen != null) {
                 if (!mapOpen.isOpened) {
                     mapOpen.isOpened = true;
-                    service.serverMessage(
-                            _char.name + " đã cắm chìa khóa cơ quan " + _char.zone.tilemap.name);
+                    service.serverMessage(_char.name + " đã cắm chìa khóa cơ quan " + _char.zone.tilemap.name);
                 } else {
                     _char.serverMessage("Cửa này đã được mở");
                 }
@@ -290,8 +286,7 @@ public class Territory extends World {
         TileMap tilemap = zone.tilemap;
         zone.killAllMonsters();
         int incrementId = zone.getMonsters().size();
-        List<MobPosition> monsters =
-                tilemap.monsterCoordinates.subList(127, tilemap.monsterCoordinates.size());
+        List<MobPosition> monsters = tilemap.monsterCoordinates.subList(127, tilemap.monsterCoordinates.size());
         for (MobPosition mob : monsters) {
             MobTemplate template = MobManager.getInstance().find(mob.getId());
             int hp = template.hp;
@@ -304,8 +299,7 @@ public class Territory extends World {
                 level = 100;
             }
 
-            Mob monster = new Mob(incrementId++, mob.getId(), hp, level, mob.getX(), mob.getY(),
-                    false, template.isBoss(), zone);
+            Mob monster = new Mob(incrementId++, mob.getId(), hp, level, mob.getX(), mob.getY(), false, template.isBoss(), zone);
             zone.addMob(monster);
         }
     }
@@ -319,8 +313,7 @@ public class Territory extends World {
                     ter = (Territory) _char.findWorld(World.TERRITORY);
                     ter.finish();
                 } catch (Exception e) {
-                    Log.error(String.format("Error finish on char name %s | Is null: %b",
-                            _char.name, ter == null));
+                    Log.error(String.format("Error finish on char name %s | Is null: %b", _char.name, ter == null));
                     e.printStackTrace();
                 }
             } else {

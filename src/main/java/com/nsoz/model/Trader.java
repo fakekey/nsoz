@@ -1,7 +1,7 @@
 package com.nsoz.model;
 
-import com.nsoz.item.Item;
 import java.util.Vector;
+import com.nsoz.item.Item;
 
 public class Trader {
 

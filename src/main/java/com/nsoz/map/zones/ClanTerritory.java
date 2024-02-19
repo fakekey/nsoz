@@ -1,17 +1,16 @@
 package com.nsoz.map.zones;
 
-import com.nsoz.map.Map;
+import org.jetbrains.annotations.NotNull;
 import com.nsoz.constants.MapName;
 import com.nsoz.constants.MobName;
+import com.nsoz.map.Map;
 import com.nsoz.map.TileMap;
 import com.nsoz.map.Waypoint;
 import com.nsoz.map.world.Territory;
-import com.nsoz.map.world.World;
 import com.nsoz.mob.Mob;
 import com.nsoz.mob.TerritoryMobFactory;
 import com.nsoz.model.Char;
 import com.nsoz.util.NinjaUtils;
-import org.jetbrains.annotations.NotNull;
 
 public class ClanTerritory extends ZWorld {
 

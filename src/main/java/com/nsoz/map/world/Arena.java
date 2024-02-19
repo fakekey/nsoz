@@ -1,19 +1,18 @@
 package com.nsoz.map.world;
 
-import com.nsoz.map.Map;
-import com.nsoz.constants.MapName;
-import com.nsoz.map.zones.BattleZone;
-import com.nsoz.map.zones.AttendanceArea;
-import com.nsoz.map.zones.Zone;
-import com.nsoz.model.Char;
-import com.nsoz.task.GloryTask;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
-
-import com.nsoz.server.GlobalService;
+import com.nsoz.constants.MapName;
+import com.nsoz.map.Map;
 import com.nsoz.map.MapManager;
+import com.nsoz.map.zones.AttendanceArea;
+import com.nsoz.map.zones.BattleZone;
+import com.nsoz.map.zones.Zone;
+import com.nsoz.model.Char;
+import com.nsoz.server.GlobalService;
+import com.nsoz.task.GloryTask;
 import com.nsoz.util.NinjaUtils;
 
 public class Arena extends World {

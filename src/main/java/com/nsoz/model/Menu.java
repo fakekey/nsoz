@@ -1,7 +1,7 @@
 package com.nsoz.model;
 
-import lombok.Setter;
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
 public class Menu {

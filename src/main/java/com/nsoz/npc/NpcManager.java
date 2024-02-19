@@ -3,19 +3,16 @@ package com.nsoz.npc;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.json.JSONArray;
-
+import org.json.JSONException;
 import com.nsoz.constants.SQLStatement;
 import com.nsoz.db.jdbc.DbManager;
 import com.nsoz.util.Log;
 import com.nsoz.util.ProgressBar;
-import java.sql.SQLException;
-
 import lombok.Getter;
-import org.json.JSONException;
 
 public class NpcManager {
 

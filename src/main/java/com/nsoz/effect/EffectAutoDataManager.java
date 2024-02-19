@@ -1,15 +1,7 @@
 package com.nsoz.effect;
 
-import com.nsoz.db.jdbc.DbManager;
-import com.nsoz.lib.ParseData;
-import com.nsoz.model.Frame;
-import com.nsoz.model.ImageInfo;
-import com.nsoz.server.GameData;
-import com.nsoz.util.Log;
-import com.nsoz.util.NinjaUtils;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
-import java.io.FileInputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -20,6 +12,12 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 import org.json.simple.parser.ParseException;
+import com.nsoz.db.jdbc.DbManager;
+import com.nsoz.lib.ParseData;
+import com.nsoz.model.Frame;
+import com.nsoz.model.ImageInfo;
+import com.nsoz.util.Log;
+import com.nsoz.util.NinjaUtils;
 
 public class EffectAutoDataManager {
 
