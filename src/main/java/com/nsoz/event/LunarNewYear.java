@@ -44,6 +44,7 @@ import com.nsoz.util.NinjaUtils;
 
 public class LunarNewYear extends Event {
 
+    public static final String TOP_KILL_MOUSE = "kill_mouse";
     public static final String TOP_LUCKY_CHARM = "lucky_charm";
     public static final String TOP_MAKE_CHUNG_CAKE = "chung_cake";
     public static final String MYSTERY_BOX_LEFT = "mystery_box";
@@ -64,6 +65,7 @@ public class LunarNewYear extends Event {
         itemsThrownFromMonsters.add(2, ItemName.LAT_TRE);
 
         keyEventPoint.add(EventPoint.DIEM_TIEU_XAI);
+        keyEventPoint.add(TOP_KILL_MOUSE);
         keyEventPoint.add(TOP_LUCKY_CHARM);
         keyEventPoint.add(TOP_MAKE_CHUNG_CAKE);
         keyEventPoint.add(MYSTERY_BOX_LEFT);
@@ -461,7 +463,25 @@ public class LunarNewYear extends Event {
                 }
                 p.getService().openUIMenu();
             }));
-
+            p.menus.add(new Menu(CMDMenu.EXECUTE, "Diệt chuột", () -> {
+                p.menus.clear();
+                p.menus.add(new Menu(CMDMenu.EXECUTE, "Bảng xếp hạng", () -> {
+                    viewTop(p, TOP_KILL_MOUSE, "Dũng sĩ diệt chuột", "%d. %s đã tiêu diệt %s BOSS chuột");
+                }));
+                p.menus.add(new Menu(CMDMenu.EXECUTE, "Phần thưởng", () -> {
+                    StringBuilder sb = new StringBuilder();
+                    sb.append("Top 1:").append("\n");
+                    sb.append("- 1 Thời trang hổ v.v\n");
+                    sb.append("- 500 nl chế tạo (tự chọn hoa tuyết/pha lê/nham thạch)\n");
+                    sb.append("- 1 Pet cửu vĩ thời hạn 3 tháng\n\n");
+                    sb.append("Top 2-9:").append("\n");
+                    sb.append("- 1 Thời trang hổ 3 tháng\n");
+                    sb.append("- 500 nl chế tạo (tự chọn hoa tuyết/pha lê/nham thạch)\n");
+                    sb.append("- 1 Pet cửu vĩ thời hạn 1 tháng\n");
+                    p.getService().showAlert("Phần thưởng", sb.toString());
+                }));
+                p.getService().openUIMenu();
+            }));
             p.getService().openUIMenu();
         }));
         p.menus.add(new Menu(CMDMenu.EXECUTE, "Hướng dẫn", () -> {

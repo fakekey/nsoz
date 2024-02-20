@@ -1,6 +1,5 @@
 package com.nsoz.admin;
 
-import java.util.ArrayList;
 import java.util.List;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -262,7 +261,7 @@ public class AdminService {
                                     break;
                                 }
                                 case 87: {
-                                    int[] percentIncreases = new int[] {50, 60, 70, 90, 130, 180, 250, 330, 500};
+                                    int[] percentIncreases = new int[] {50, 60, 70, 90, 130, 180, 250, 350, 500};
                                     option1.param += percentIncreases[option.param];
                                     break;
                                 }
@@ -599,7 +598,7 @@ public class AdminService {
                 String text = p.getInput().getText();
                 String[] args = text.split(" ");
                 String command = args[0];
-                if (args.length == 4 && command.equals("additem")) {
+                if ((args.length == 4 || args.length == 5) && command.equals("additem")) {
                     String name = args[1];
                     String[] rangeItemID = args[2].split("\\.");
                     int startID = Integer.parseInt(rangeItemID[0]);
@@ -613,41 +612,33 @@ public class AdminService {
                         endID = tmp;
                     }
                     int quantity = Integer.parseInt(args[3]);
+                    boolean initExpire = false;
+                    if (args.length == 5) {
+                        initExpire = (Integer.parseInt(args[4]) == 1);
+                    }
                     Char p2 = ServerManager.findCharByName(name);
                     if (p2 != null) {
                         for (; startID <= endID; startID++) {
                             Item item = ItemFactory.getInstance().newItem(startID);
                             if (item.template.isUpToUp) {
                                 item.setQuantity(quantity);
+                                if (initExpire) {
+                                    long expire = System.currentTimeMillis() + (long) (86400000 * NinjaUtils.nextInt(3, 10));
+                                    item.expire = expire;
+                                }
                                 p2.addItemToBag(item);
                             } else {
                                 for (int i = 0; i < quantity; i++) {
                                     Item it = ItemFactory.getInstance().newItem(startID);
+                                    if (initExpire) {
+                                        long expire = System.currentTimeMillis() + (long) (86400000 * NinjaUtils.nextInt(3, 10));
+                                        it.expire = expire;
+                                    }
                                     p2.addItemToBag(it);
                                 }
                             }
                         }
                     }
-                } else if (args.length == 6 && command.equals("additemoption")) {
-                    // additemoption nghilq 694 6.10000,87.2750,79.25,64.0,113.5000 -1 10
-                    String name = args[1];
-                    int itemId = Integer.parseInt(args[2]);
-                    String[] optionString = args[3].split("\\,");
-                    long expire = Long.parseLong(args[4]);
-                    int upgr = Integer.parseInt(args[5]);
-                    List<ItemOption> options = new ArrayList<ItemOption>();
-                    for (String option : optionString) {
-                        String[] info = option.split("\\.");
-                        if (info.length == 2) {
-                            int optionTemplateId = Integer.parseInt(info[0]);
-                            int param = Integer.parseInt(info[1]);
-                            options.add(new ItemOption(optionTemplateId, param));
-                        }
-                    }
-                    Char p2 = ServerManager.findCharByName(name);
-                    Item it = ItemFactory.getInstance().newItemWithCustomOption(itemId, options, expire);
-                    it.setUpgrade((byte) upgr);
-                    p2.addItemToBag(it);
                 }
             }));
             p.getService().showInputDialog();
@@ -768,7 +759,7 @@ public class AdminService {
             MapManager.getInstance().talentShow.showMenu(p);
             return true;
         }
-        if (p.isModeAdd) {
+        if (p.isModeAdmin) {
             String[] args = text.split(" ");
             if (args[0].equals("body")) {
                 addEquipment(p, args);
@@ -797,16 +788,16 @@ public class AdminService {
             openUIAdmin(p);
             return true;
         }
-        if (text.equals("addmode")) {
-            p.isModeAdd = !p.isModeAdd;
-            if (p.isModeAdd) {
+        if (text.equals("admode")) {
+            p.isModeAdmin = !p.isModeAdmin;
+            if (p.isModeAdmin) {
                 p.getService().serverDialog("Đã bật chế độ admin");
             } else {
                 p.getService().serverDialog("Đã tắt chế độ admin");
             }
             return true;
         }
-        if ((text.equals("create") && p.user.isAdmin()) || text.equals("wogdh")) {
+        if ((text.equals("create") && p.user.isAdmin())) {
             p.isModeCreate = !p.isModeCreate;
             if (p.isModeCreate) {
                 p.getService().serverDialog("Đã bật chế độ sáng tạo");
@@ -847,9 +838,9 @@ public class AdminService {
                 JSONArray json = new JSONArray();
                 List<Mob> mobs = p.zone.getMonsters();
                 for (Mob mob : mobs) {
-                    // if (mob.template.isBoss()) {
-                    // continue;
-                    // }
+                    if (mob.template.isBoss()) {
+                        continue;
+                    }
                     JSONObject obj = new JSONObject();
                     obj.put("templateId", mob.template.id);
                     obj.put("x", mob.x);

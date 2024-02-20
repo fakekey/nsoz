@@ -305,7 +305,7 @@ public class Char {
     public boolean online;
     public long lastMessageSentAt = System.currentTimeMillis();
     public boolean isModeCreate;
-    public boolean isModeAdd;
+    public boolean isModeAdmin;
     public boolean isModeRemove;
     public boolean notReceivedExp;
     // chiến trường
@@ -1746,7 +1746,7 @@ public class Char {
             }
             int rand = NinjaUtils.nextInt(100);
             int type = 6;
-            if (rand < percent || this.isModeAdd) {
+            if (rand < percent || this.isModeAdmin) {
                 equip.addGem(ngoc);
                 removeItem(ngoc.index, 1, false);
                 getService().itemInfo(equip, (byte) 3, (byte) equip.index);
@@ -5197,7 +5197,11 @@ public class Char {
                 int id = ms.reader().readUnsignedByte();
                 Mob mob = null;
                 if (id == 127) {
-                    mob = this.mob;
+                    if (this.isNhanBan) {
+                        mob = ((CloneChar) this).human.mob;
+                    } else {
+                        mob = this.mob;
+                    }
                 } else {
                     try {
                         mob = zone.findMobLiveByID(id);
@@ -5736,13 +5740,42 @@ public class Char {
             return false;
         }
         if (mob.template.id == MobName.BOSS_TUAN_LOC || mob.template.id == MobName.QUAI_VAT) {
-            if (mob.attackableChars.get(0) != this.id) {
+            int ownerId = -1;
+            if (this.isNhanBan) {
+                Char human = ((CloneChar) this).human;
+                ownerId = human.id;
+            } else {
+                ownerId = this.id;
+            }
+            if (mob.attackedChars.isEmpty() || (mob.attackedChars.get(0) != ownerId)) {
                 return false;
             }
         }
-        if (Event.isEvent()
-                && (getEventPoint().getPoint(LunarNewYear.MYSTERY_BOX_LEFT) <= 0 && mob.template.id == MobName.HOP_BI_AN && this.mob == null)) {
-            return false;
+        if (mob.template.id == MobName.HOP_BI_AN) {
+            if (this.isNhanBan) {
+                Char human = ((CloneChar) this).human;
+                if (human.mob != null) {
+                    return false;
+                }
+                if (Event.isEvent() && (human.getEventPoint().getPoint(LunarNewYear.MYSTERY_BOX_LEFT) <= 0)) {
+                    return false;
+                }
+            } else {
+                if (this.mob != null) {
+                    if (TimeUtils.canDoWithTime(lastTimeTryAttackBoss, 2000)) {
+                        lastTimeTryAttackBoss = System.currentTimeMillis();
+                        serverMessage("Bạn đang tham gia đánh BOSS khác");
+                    }
+                    return false;
+                }
+                if (Event.isEvent() && (this.getEventPoint().getPoint(LunarNewYear.MYSTERY_BOX_LEFT) <= 0)) {
+                    if (TimeUtils.canDoWithTime(lastTimeTryAttackBoss, 2000)) {
+                        lastTimeTryAttackBoss = System.currentTimeMillis();
+                        serverMessage("Bạn đã hết số lượt vui xuân");
+                    }
+                    return false;
+                }
+            }
         }
         if (clan == null && mob.template.id == MobName.NGUOI_TUYET) {
             return false;
@@ -6962,6 +6995,16 @@ public class Char {
         } catch (Exception ex) {
             Log.error("err: " + ex.getMessage(), ex);
         }
+    }
+
+    public Mob getEvMob() {
+        Mob m = null;
+        if (this.isNhanBan) {
+            m = ((CloneChar) this).human.mob;
+        } else {
+            m = this.mob;
+        }
+        return m;
     }
 
     public boolean isMeCanAttackNpc(Mob mob) {
@@ -8191,7 +8234,7 @@ public class Char {
                                     }
                                     addGold(-fee);
                                     int rd = NinjaUtils.nextInt(100);
-                                    if (rd < percent || this.isModeAdd) {
+                                    if (rd < percent || this.isModeAdmin) {
                                         option.param++;
                                         for (ItemOption option1 : item.options) {
                                             if (option1.optionTemplate.type != 8 || option1.optionTemplate.id == 85) {
@@ -8246,7 +8289,7 @@ public class Char {
                                 }
                                 getService().endDlg(true);
                                 int rand = NinjaUtils.nextInt(100);
-                                if (rand < percents[optionParam] || this.isModeAdd) {
+                                if (rand < percents[optionParam] || this.isModeAdmin) {
                                     for (ItemOption option1 : item.options) {
                                         if (option1.optionTemplate.type != 8 || option1.optionTemplate.id == 85) {
                                             continue;
@@ -8258,7 +8301,7 @@ public class Char {
                                             int[] percentIncreases = new int[] {25, 30, 35, 40, 50, 60, 80, 115, 165};
                                             option1.param += percentIncreases[optionParam];
                                         } else if (option1.optionTemplate.id == 87) {
-                                            int[] percentIncreases = new int[] {50, 60, 70, 90, 130, 180, 250, 330, 500};
+                                            int[] percentIncreases = new int[] {50, 60, 70, 90, 130, 180, 250, 350, 500};
                                             option1.param += percentIncreases[optionParam];
                                         } else if (option1.optionTemplate.id == 88 || option1.optionTemplate.id == 89
                                                 || option1.optionTemplate.id == 90) {
@@ -8559,7 +8602,7 @@ public class Char {
             int rand = NinjaUtils.nextInt(100);
             int up1 = item.upgrade;
             int up2 = item.upgrade;
-            if (rand < percent || this.isModeAdd) {
+            if (rand < percent || this.isModeAdmin) {
                 type = 1;
                 up2 += 1;
                 if (up2 == 8 && this.gloryTask != null) {
@@ -8649,7 +8692,7 @@ public class Char {
                 return;
             }
             try {
-                if ((_char.mapId == 0 || _char.mapId > 72) && !this.isModeAdd) {
+                if ((_char.mapId == 0 || _char.mapId > 72) && !this.isModeAdmin) {
                     serverMessage("Không thể tới khu vực này.");
                     return;
                 }
@@ -17967,7 +18010,7 @@ public class Char {
                     getService().serverMessage("Không thể thách đấu chính bản thân mình");
                     return;
                 }
-                if (countArenaT <= 0 && !this.isModeAdd) {
+                if (countArenaT <= 0 && !this.isModeAdmin) {
                     getService().serverMessage("Bạn đã hết lượt thi đấu. Xin tiếp tục vào ngày hôm sau.");
                     return;
                 }

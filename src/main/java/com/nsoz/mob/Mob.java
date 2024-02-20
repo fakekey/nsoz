@@ -17,6 +17,7 @@ import com.nsoz.effect.Effect;
 import com.nsoz.event.Event;
 import com.nsoz.event.Halloween;
 import com.nsoz.event.KoroKing;
+import com.nsoz.event.LunarNewYear;
 import com.nsoz.event.Noel;
 import com.nsoz.item.Item;
 import com.nsoz.item.ItemFactory;
@@ -660,6 +661,9 @@ public class Mob {
         if (this.mobMeFocus instanceof Mob) {
             Mob m = (Mob) this.mobMeFocus;
             Mob find = owner.zone.findMobLiveByID(m.id);
+            if (find == null && Event.isEvent()) {
+                find = owner.getEvMob();
+            }
             if (find == null || !m.equals(find) || find.isDead || NinjaUtils.getDistance(find.x, find.y, owner.x, owner.y) > 200
                     || !owner.isMeCanAttackNpc(find)) {
                 this.mobMeFocus = null;
@@ -1283,7 +1287,7 @@ public class Mob {
             } else if (this.template.id == MobName.QUAI_VAT) {
                 killer.rewardVuiXuan();
             } else if (this.template.id == MobName.CHUOT_CANH_TY) {
-                // killer.addEventPoint(1, Events.TOP_CHUOT);
+                killer.getEventPoint().addPoint(LunarNewYear.TOP_KILL_MOUSE, 1);
             } else if (this.template.id == MobName.BOSS_TUAN_LOC) {
                 killer.getEventPoint().addPoint(Noel.TOP_KILL_REINDEER_KING, 1);
                 killer.addExp(8000000);
@@ -1412,9 +1416,9 @@ public class Mob {
                             }
                         }
                     } else if (Event.isLunarNewYear() && killer.level >= 20) {
-                        int percentage = 10;
+                        int percentage = 7;
                         if (zone.tilemap.isLangCo() || zone.tilemap.isLangTruyenThuyet() || zone.tilemap.isVDMQ()) {
-                            percentage = 12;
+                            percentage = 10;
                         }
                         if (killer.isTNP) {
                             percentage = 100;
