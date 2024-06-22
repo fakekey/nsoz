@@ -2,11 +2,11 @@
 <Configuration status="INFO">
     <Appenders>
         <Console name="ConsoleAppender" target="SYSTEM_OUT">
-            <PatternLayout pattern="[%d{yyyy-MM-dd HH:mm:ss} %-5p (%t)] - %m\r\n" />
+            <PatternLayout pattern="[%d{yyyy-MM-dd HH:mm:ss} %-5p (%t)] - %m\r\n" charset="UTF-8" />
         </Console>
         <File name="FileAppender" fileName="logs/nsoz.log" immediateFlush="false"
             append="true">
-            <PatternLayout pattern="[%d{yyyy-MM-dd HH:mm:ss} %-5p (%t)] - %m\r\n" />
+            <PatternLayout pattern="[%d{yyyy-MM-dd HH:mm:ss} %-5p (%t)] - %m\r\n" charset="UTF-8" />
         </File>
     </Appenders>
     <Loggers>

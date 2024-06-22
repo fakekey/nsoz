@@ -127,7 +127,7 @@ public class NinjaSchool extends WindowAdapter implements ActionListener {
             StallManager.getInstance().save();
             Log.info("Lưu xong");
         } else {
-            Log.info("Mãy chủ chưa bật");
+            Log.info("Máy chủ chưa bật");
         }
     }
 

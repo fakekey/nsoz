@@ -490,6 +490,23 @@ public class Item {
         } else if (this.id == ItemName.MAT_NA_THO || this.id == ItemName.MAT_NA_THO_NU) {
             long expire = System.currentTimeMillis() + (long) (24 * 60 * 60 * 1000 * 7);
             this.expire = expire;
+        } else if (this.id == ItemName.BI_KIP_CUNG || this.id == ItemName.BI_KIP_DAO || this.id == ItemName.BI_KIP_KIEM_THUAT
+                || this.id == ItemName.BI_KIP_KUNAI || this.id == ItemName.BI_KIP_QUAT || this.id == ItemName.BI_KIP_TIEU_THUAT) {
+            int bikipType = NinjaUtils.nextInt(1, 3);
+            switch (bikipType) {
+                case 1:
+                    long expire = System.currentTimeMillis() + (long) (86400000 * 3);
+                    this.expire = expire;
+                    break;
+                case 2:
+                    expire = System.currentTimeMillis() + (long) (86400000 * 7);
+                    this.expire = expire;
+                    break;
+                case 3:
+                    expire = System.currentTimeMillis() + (long) (86400000 * 15);
+                    this.expire = expire;
+                    break;
+            }
         }
     }
 

@@ -759,10 +759,12 @@ public class Char {
                 }
             }
 
-            hp += this.options[ItemOptionName.MOI_NUA_GIAY_HOI_PHUC_POINT_HP_VA_MP_TYPE_8]
-                    + this.options[ItemOptionName.MOI_NUA_GIAY_HOI_PHUC_POINT_HP_VA_MP_TYPE_8_2];
-            mp += this.options[ItemOptionName.MOI_NUA_GIAY_HOI_PHUC_POINT_HP_VA_MP_TYPE_8]
-                    + this.options[ItemOptionName.MOI_NUA_GIAY_HOI_PHUC_POINT_HP_VA_MP_TYPE_8_2];
+            if (!this.isDead) {
+                hp += this.options[ItemOptionName.MOI_NUA_GIAY_HOI_PHUC_POINT_HP_VA_MP_TYPE_8]
+                        + this.options[ItemOptionName.MOI_NUA_GIAY_HOI_PHUC_POINT_HP_VA_MP_TYPE_8_2];
+                mp += this.options[ItemOptionName.MOI_NUA_GIAY_HOI_PHUC_POINT_HP_VA_MP_TYPE_8]
+                        + this.options[ItemOptionName.MOI_NUA_GIAY_HOI_PHUC_POINT_HP_VA_MP_TYPE_8_2];
+            }
             if (isCool()) {
                 hp /= 2;
                 mp /= 2;
@@ -8548,19 +8550,19 @@ public class Char {
                 coin = GameData.COIN_UP_ADORN[item.upgrade];
             }
             if (item.template.isTypeWeapon()) {
-                percent = (int) (temp * 95 / GameData.UP_WEAPON[item.upgrade]);
+                percent = (int) (temp * 100 / GameData.UP_WEAPON[item.upgrade]);
                 coin = GameData.COIN_UP_WEAPON[item.upgrade];
             }
             int maxPercent = GameData.MAX_PERCENT[item.upgrade];
             maxPercent += maxPercent * Config.getInstance().getMaxPercentAdd();
-            if (item.upgrade >= 14) {
-                maxPercent -= 1;
-            }
+            // if (item.upgrade >= 14) {
+            // maxPercent -= 1;
+            // }
             if (percent > maxPercent) {
                 percent = maxPercent;
             }
             if (isGold) {
-                percent = (int) ((double) percent * 1);
+                percent = (int) ((double) percent * 1.5);
                 gold = GameData.GOLD_UP[item.upgrade];
             }
             if (coin > NinjaUtils.sum(this.coin, this.yen)) {
@@ -10052,6 +10054,7 @@ public class Char {
         if (taskMain != null) {
             if (taskId == TaskName.NV_KIEN_THUC && taskMain.index == 0) {
                 if (nAnswer < 7) {
+                    menus.clear();
                     questionAndAnswer();
                 } else {
                     taskNext();
@@ -10064,6 +10067,7 @@ public class Char {
             }
             if (taskId == TaskName.NV_BAI_HOC_VAO_TRUONG && (taskMain.index == 1 || taskMain.index == 6 || taskMain.index == 11)) {
                 if (nAnswer < 5) {
+                    menus.clear();
                     questionAndAnswer();
                 } else {
                     taskNext();
@@ -17543,6 +17547,7 @@ public class Char {
             serverMessage("Bạn cần có thú cưỡi");
             return false;
         } else if (mount.hasExpire()) {
+            serverMessage("Chỉ sử dụng cho thú cưỡi vĩnh viễn");
             return false;
         } else if (type == 0 && mount.id != 443 && mount.id != 523 && mount.id != 798 && mount.id != 524 && mount.id != 830) {
             serverMessage("Chỉ sử dụng cho thú cưỡi");

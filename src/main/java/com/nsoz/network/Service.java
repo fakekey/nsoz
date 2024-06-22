@@ -2895,7 +2895,7 @@ public class Service extends AbsService {
             ds.writeShort(pl.sysUp);// cường khắc
             ds.writeShort(pl.sysDown);// hạ khắc
             ds.writeByte(pl.level);
-            ds.writeShort(321);// diem hoat dong
+            ds.writeShort(pl.pointUyDanh);// diem hoat dong
             if (pl.clan == null) {
                 ds.writeUTF("");
             } else {
@@ -2954,7 +2954,7 @@ public class Service extends AbsService {
 
             ms = new Message(CMD.VIEW_INFO1);
             ds = ms.writer();
-            ds.writeInt(0);// tinh tu
+            ds.writeInt(pl.pointTinhTu); // tinh tu
             ds.writeByte(pl.limitPhongLoi);
             ds.writeByte(pl.limitBangHoa);
             ds.flush();

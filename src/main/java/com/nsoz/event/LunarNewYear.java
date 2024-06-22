@@ -429,7 +429,7 @@ public class LunarNewYear extends Event {
             p.menus.add(new Menu(CMDMenu.EXECUTE, "Thợ làm bánh", () -> {
                 p.menus.clear();
                 p.menus.add(new Menu(CMDMenu.EXECUTE, "Bảng xếp hạng", () -> {
-                    viewTop(p, TOP_MAKE_CHUNG_CAKE, "Thợ làm bánh", "%d. %s đã làm %s chiếc bánh");
+                    viewTop(p, TOP_MAKE_CHUNG_CAKE, "Thợ làm bánh", "%d. %s đã làm %s chiếc bánh chưng");
                 }));
                 p.menus.add(new Menu(CMDMenu.EXECUTE, "Phần thưởng", () -> {
                     StringBuilder sb = new StringBuilder();
@@ -437,17 +437,17 @@ public class LunarNewYear extends Event {
                     sb.append("- Pet ứng long v.v MCS\n");
                     sb.append("- Gậy thời trang v.v\n");
                     sb.append("- 3 rương huyền bí\n");
-                    sb.append("- 10 Trúc bạch thiên lữ\n\n");
+                    sb.append("- 10 Trúc bạch thiên lữ\n\n");
                     sb.append("Top 2:").append("\n");
                     sb.append("- Pet ứng long v.v\n");
                     sb.append("- Gậy thời trang v.v\n");
                     sb.append("- 1 rương huyền bí\n");
-                    sb.append("- 5 Trúc bạch thiên lữ\n\n");
+                    sb.append("- 5 Trúc bạch thiên lữ\n\n");
                     sb.append("Top 3 - 5:").append("\n");
                     sb.append("- Pet ứng long 3 tháng\n");
                     sb.append("- Gậy thời trang 3 tháng\n");
                     sb.append("- 2 rương bạch ngân\n");
-                    sb.append("- 3 Trúc bạch thiên lữ\n\n");
+                    sb.append("- 3 Trúc bạch thiên lữ\n\n");
                     sb.append("Top 6 - 10:").append("\n");
                     sb.append("- Pet ứng long 1 tháng\n");
                     sb.append("- 1 rương bạch ngân\n");
