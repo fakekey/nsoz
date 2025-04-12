@@ -125,7 +125,7 @@ public class LunarNewYear extends Event {
         ZoneId currentZone = ZoneId.of("Asia/Ho_Chi_Minh");
         ZonedDateTime zonedNow = ZonedDateTime.of(localNow, currentZone);
         start = zonedNow.withMonth(2).withDayOfMonth(1).withHour(0).withMinute(0).withSecond(0);
-        end = zonedNow.withMonth(2).withDayOfMonth(29).withHour(23).withMinute(59).withSecond(59);
+        end = zonedNow.withMonth(2).withDayOfMonth(28).withHour(23).withMinute(59).withSecond(59);
         if (zonedNow.isAfter(start) && zonedNow.isBefore(end)) {
             // start = zonedNow.plusMinutes(5); // thời gian khởi động server
             start = zonedNow.withHour(21).withMinute(0).withSecond(0);
