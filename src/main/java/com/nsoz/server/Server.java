@@ -359,7 +359,9 @@ public class Server {
             Event event = Event.getCurrentEvent();
             if (event != null) {
                 event.loadEventPoint();
-                event.initStore();
+                if (!event.isEnded()) {
+                    event.initStore();
+                }
             }
             EffectDataManager.getInstance().setData();
             MapManager.getInstance().init();
