@@ -12335,7 +12335,7 @@ public class Char {
         menus.add(new Menu(CMDMenu.EXECUTE, "Dược phẩm (Xu)", () -> {
             getService().openUI((byte) StoreManager.TYPE_POTION);
         }));
-        if (Event.isKoroKing() || Event.isTrungThu() || true) {
+        if (Event.isKoroKing() || Event.isTrungThu()) {
             menus.add(new Menu(CMDMenu.EXECUTE, "Hoa phục sinh", () -> {
                 menus.clear();
                 menus.add(new Menu(CMDMenu.EXECUTE, "Hoa thiên diệu", () -> {
