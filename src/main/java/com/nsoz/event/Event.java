@@ -72,9 +72,10 @@ public abstract class Event {
     };
 
     public static void init() {
-        if (Config.getInstance().getEvent() != null) {
+        String eventStr = Config.getInstance().getEvent();
+        if (eventStr != null && !eventStr.isEmpty()) {
             try {
-                Class<?> eventClass = Class.forName(Config.getInstance().getEvent());
+                Class<?> eventClass = Class.forName(eventStr);
                 instance = (Event) eventClass.getDeclaredConstructor().newInstance();
             } catch (ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
                 Log.error(ex.getMessage(), ex);
