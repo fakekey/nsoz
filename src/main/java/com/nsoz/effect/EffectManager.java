@@ -291,7 +291,7 @@ public class EffectManager {
             case EffectTypeName.TRANG_THAI_AN_THAN:
                 player.isHide = is;
                 break;
-            case EffectTypeName.GIAM_TRU_MAU_VA_TANG_TAN_CONG:
+            case EffectTypeName.GIAM_TRU_MAU_VA_TANG_TAN_CONG: // Cung 35
                 if (is) {
                     player.incrDame2 = eff.param;
                 } else {
@@ -301,7 +301,7 @@ public class EffectManager {
             case EffectTypeName.TRANG_THAI_BI_TROI:
                 player.isDontMove = is;
                 break;
-            case EffectTypeName.TANG_KHANG_CHO_MINH_VA_DONG_DOI:
+            case EffectTypeName.TANG_KHANG_CHO_MINH_VA_DONG_DOI: // Quạt 35
                 if (is) {
                     player.incrDame = eff.param2;
                     player.incrRes1 = eff.param;
@@ -324,7 +324,7 @@ public class EffectManager {
                     player.incrExactly = 0;
                 }
                 break;
-            case EffectTypeName.HIEU_UNG_TANG_SUC_MANH:
+            case EffectTypeName.HIEU_UNG_TANG_SUC_MANH: // Long lực đan
                 if (is) {
                     player.incrDame3 = eff.param;
                 } else {

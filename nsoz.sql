@@ -8414,7 +8414,7 @@ INSERT INTO `task_template` (`taskId`, `name`, `detail`, `subnames`, `counts`, `
 (39, 'NV Hoạt động hằng ngày', '', '[\"Trình độ đạt cấp 63\",\"Hoàn thành nhiệm vụ tà thú\",\"Hoàn thành hang động\",\"Hoàn thành nhiệm vụ hằng ngày\",\"Báo cáo với Guriin\"]', '[-1, 10, 1, 100, -1]', 63, '[]', '[]'),
 (40, 'NV Thử tài may mắn', '', '[\"Trình độ đạt cấp 65\",\"Sử dụng rương hang động\",\"Sử dụng rương thất thú bảo\",\"Tham gia lật hình\",\"Báo cáo với Guriin\"]', '[-1, 50, 10, 5, -1]', 65, '[]', '[]'),
 (41, 'NV Chiến trường', '', '[\"Trình độ đạt cấp 67\",\"Đạt 1000 điểm chiến trường\",\"Báo cáo với Guriin\"]', '[-1, 1000, -1]', 67, '[]', '[]'),
-(42, 'NV Bất khả thi', '', '[\"Trình độ đạt cấp 70\",\"Tiêu diệt Nhất chân tộc Tinh Anh\",\"Tiêu diệt Thực hồn thảo Thủ Lĩnh\",\"Báo cáo với Guriin\"]', '[-1, 1000, 1000, -1]', 70, '[[-1,0],[129,1],[169,2],[-1,0]]', '[]');
+(42, 'NV Bất khả thi', '', '[\"Trình độ đạt cấp 69\",\"Tiêu diệt Nhất chân tộc Tinh Anh\",\"Tiêu diệt Thực hồn thảo Thủ Lĩnh\",\"Báo cáo với Guriin\"]', '[-1, 1000, 1000, -1]', 69, '[[-1,0],[129,1],[169,2],[-1,0]]', '[]');
 
 -- --------------------------------------------------------
 
