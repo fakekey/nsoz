@@ -252,7 +252,6 @@ public class Char {
     public long levelUpTime;
     public short taskId = 1;
     public Task taskMain;
-    public byte nAnswer = 0;
     public long lastTimeChatGlobal;
     public long lastTimeTeleport;
     public Mob mobMe, mobBijuu;
@@ -4156,6 +4155,7 @@ public class Char {
                         removeItem(item.index, item.getQuantity(), true);
                         if (taskId == TaskName.NV_DIET_SEN_TRU_COC && taskMain != null && taskMain.index == 1) {
                             taskNext();
+                            getService().npcChat(NpcName.TABEMONO, "Tốt lắm, bay giờ con có thể ra khỏi làng làm nhiệm vụ rồi.");
                         }
                     }
                     if (item.template.isTypeStack()) {
@@ -9607,7 +9607,7 @@ public class Char {
                 addYen(1000000000);
                 addCoin(1000000000);
                 addGold(1000000);
-                AdminService.getInstance().setLevel(this, 69);
+                // AdminService.getInstance().setLevel(this, 69);
                 user.receivedFirstGift = true;
             } else {
                 getService().npcChat(NpcName.ADMIN, "Mỗi người chỉ nhận được 1 lần.");
@@ -9903,17 +9903,128 @@ public class Char {
                 break;
 
             case CMDMenu.HOAN_THANH_NHIEM_VU:
+                String hoanThanhText;
+                switch (taskId) {
+                    case TaskName.NHIEM_VU_CHAO_LANG:
+                        hoanThanhText =
+                                "Haha, con đã gặp những người đó rồi chứ? Con cứ đi tìm hiểu quanh làng, khi nào quen thuộc hãy đến gặp ta lần nữa.";
+                        break;
+                    case TaskName.NV_KIEN_THUC:
+                        hoanThanhText =
+                                "Con đã gặp ông Tabemono? Tốt lắm, đây là một thanh kiếm gỗ mà ông ấy tặng con. Kiểm tra trong Menu/Hành trang nhé!";
+                        break;
+                    case TaskName.NV_LAN_DAU_DUNG_KIEM:
+                        hoanThanhText =
+                                "Đó chỉ là bù nhìn thôi. Không có gì phải tự hào. Cứ luyện tập đi, khi nào thấy có khả năng thì quay lại gặp ta.";
+                        break;
+                    case TaskName.NV_DIET_SEN_TRU_COC:
+                        hoanThanhText =
+                                "Con làm tốt lắm, nhưng bọn cóc ấy vẫn còn quá nhiều. Lần sau gặp ta, ta sẽ hướng dẫn con tạo thêm trang bị cho mình.";
+                        break;
+                    case TaskName.NV_VAT_LIEU_TAO_GIAP:
+                        hoanThanhText =
+                                "Đủ vật liệu rồi. Tốt tốt, kiểm tra trong hành trang của con nhé! Đừng ngạc nhiên vì sao ta có thể may quá nhanh.";
+                        break;
+                    case TaskName.NV_HAI_THUOC_CUU_NGUOI:
+                        hoanThanhText =
+                                "Ta cho con một ít bình HP và MP được làm từ thảo dược con mang về. Nếu muốn mua thêm, con có thể trở lại đây gặp ta";
+                        break;
+                    case TaskName.NV_KHAM_PHA_XA_LANG:
+                        hoanThanhText = "Thế nào? Con đã biết các ngôi trường đó dậy gì chưa? Nếu biết thì nhanh đến gặp trưởng làng nhé!";
+                        break;
+                    case TaskName.NV_BAI_HOC_VAO_TRUONG:
+                        hoanThanhText =
+                                "Chúc mừng con, ta đang liên hệ với các thầy hiệu trưởng. Khi đạt cấp 9, hãy đến gặp ta để nhận giấy giới thiệu.";
+                        break;
+                    case TaskName.NV_TIM_HIEU_3_TRUONG:
+                        hoanThanhText =
+                                "Tốt, bây giờ con đã có thể xin nhập học từ thầy, cô hiệu trưởng ở các trường. Nhưng trước khi ra khỏi làng...\nta muốn con cất giữ thật kỹ viên ngọc 4 sao này, đây là bảo vật gia truyền của làng ta...\nngoài nó ra vẫn còn thêm 6 viên nữa được cất giữ ở 6 ngôi làng bên cạnh, ta muốn con hãy thu thập cho đủ bộ...\nđể giải mã bí mật bên trong 7 viên ngọc. Các trưởng làng sẽ tặng nó cho con sau mỗi lần con giúp đỡ họ...\nCố gắng làm việc thật tốt con nhé. Hãy sử dụng khả di lệnh (Menu/Hành trang) ta tặng để đi cho nhanh!";
+                        break;
+                    default:
+                        hoanThanhText = "Làm tốt lắm, hãy nhận lấy phần thưởng của mình!";
+                        break;
+                }
+                getService().npcChat(npc, hoanThanhText);
                 finishTask(false);
                 break;
 
             case CMDMenu.NHAN_NHIEM_VU:
                 menus.clear();
                 menus.add(new Menu(CMDMenu.XAC_NHAN_NHAN_NHIEM_VU, "Nhận"));
-                menus.add(new Menu(CMDMenu.CANCEL, "Hủy"));
-                getService().openUIConfirm(npc, "Bạn có muốn nhận nhiệm vụ này.");
+                menus.add(new Menu(CMDMenu.CANCEL, "Không"));
+                String nhanText;
+                switch (taskId) {
+                    case TaskName.NHIEM_VU_CHAO_LANG:
+                        nhanText = "Việc đầu tiên con cần làm là đi nói chuyện với những người trong làng. Con đồng ý chứ?";
+                        break;
+                    case TaskName.NV_KIEN_THUC:
+                        nhanText = "Con nhớ ông Tabemono bán thức ăn chứ? Hãy đến gặp, ông ấy có vài câu hỏi kiếm tra con đấy.";
+                        break;
+                    case TaskName.NV_LAN_DAU_DUNG_KIEM:
+                        nhanText = "Rất tốt, Con đã có kiếm. Ta muốn con học cách sử dụng nó bằng cách đánh ngã 10 con bù nhìn rơm đằng kia.";
+                        break;
+                    case TaskName.NV_DIET_SEN_TRU_COC:
+                        nhanText =
+                                "Tập đủ chưa vậy? Nếu đủ thì con hãy mua ít thức ăn, ra đánh bọn ốc sên và cóc xanh quấy phá mùa màng ngoài làng đi.";
+                        break;
+                    case TaskName.NV_VAT_LIEU_TAO_GIAP:
+                        nhanText = "Con thu thập 1 ít lông nhím và da thỏ, ta sẽ may cho con 1 cái quần thật đẹp.";
+                        break;
+                    case TaskName.NV_HAI_THUOC_CUU_NGUOI:
+                        nhanText = "Con đạt cấp 6 chưa? Nếu đã đạt thì mang về cho ta 15 bông thảo dược từ thác Kitajima về giúp ta nhé.";
+                        break;
+                    case TaskName.NV_KHAM_PHA_XA_LANG:
+                        nhanText = "Làng ta nằm giữa 3 ngôi trường lớn. Khi con đạt cấp 7, hãy đến khu vực quanh trường để tìm hiểu xem.";
+                        break;
+                    case TaskName.NV_BAI_HOC_VAO_TRUONG:
+                        nhanText =
+                                "Sắp tới, con sẽ phải chọn một ngôi trường để theo học. Hãy gặp Tabemono để biết kiến thức cơ bản trước khi vào trường.";
+                        break;
+                    case TaskName.NV_TIM_HIEU_3_TRUONG:
+                        nhanText = "Con cứ đến gặp thầy, cô hiệu trưởng và bảo với họ do ta giới thiệu con đến đó";
+                        break;
+                    default:
+                        nhanText = "Con có muốn nhận nhiệm vụ này?";
+                        break;
+                }
+                getService().openUIConfirm(npc, nhanText);
                 break;
 
             case CMDMenu.XAC_NHAN_NHAN_NHIEM_VU:
+                String xacNhanText;
+                switch (taskId) {
+                    case TaskName.NHIEM_VU_CHAO_LANG:
+                        xacNhanText = "Nhanh lên nhé, hãy chọn Menu/Nhiệm Vụ để biết mình cần nói chuyện với những ai.";
+                        break;
+                    case TaskName.NV_KIEN_THUC:
+                        xacNhanText = "Ông Tabemono con đã từng nói chuyện 1 lần rồi, ông ta đứng đằng kia kìa";
+                        break;
+                    case TaskName.NV_LAN_DAU_DUNG_KIEM:
+                        xacNhanText = "Con chú ý cần mở: Menu/Hành trang để trang bị vũ khí cho mình nhé.";
+                        break;
+                    case TaskName.NV_DIET_SEN_TRU_COC:
+                        xacNhanText = "Ta nhắc lại lần nữa: Hãy chọn Menu/Nhiệm vụ để biết cách làm như thế nào!";
+                        break;
+                    case TaskName.NV_VAT_LIEU_TAO_GIAP:
+                        xacNhanText = "Lưu ý là ta chỉ cho phép con làm việc này khi con đạt cấp 5, vì vậy hãy luyện tập trước đi";
+                        break;
+                    case TaskName.NV_HAI_THUOC_CUU_NGUOI:
+                        xacNhanText = "Thác Kitajima khá xa đấy, hãy chọn Menu/Bản đồ để biết cách đi đến đó nhé.";
+                        break;
+                    case TaskName.NV_KHAM_PHA_XA_LANG:
+                        xacNhanText = "Hãy mở Menu/bản đồ để biết đường đi. Tìm hiểu xem mình thích hợp ngôi trường nào nhất con nhé!";
+                        break;
+                    case TaskName.NV_BAI_HOC_VAO_TRUONG:
+                        xacNhanText = "Chúc con may mắn nhé!";
+                        break;
+                    case TaskName.NV_TIM_HIEU_3_TRUONG:
+                        xacNhanText = "Đi đường cẩn thận, sau khi nói chuyện xong với 3 thầy quay về đây gặp lại ta!";
+                        break;
+                    default:
+                        xacNhanText = "Chúc con may mắn!";
+                        break;
+                }
+                getService().npcChat(npc, xacNhanText);
                 takingTask();
                 break;
 
@@ -9925,94 +10036,584 @@ public class Char {
                         if (index != -1) {
                             this.removeItem(index, 1, true);
                         }
-                    } else if (taskId == TaskName.NV_KIEN_THUC || taskId == TaskName.NV_BAI_HOC_VAO_TRUONG) {
-                        questionAndAnswer();
+                    } else {
+                        if (npc == NpcName.TABEMONO) {
+                            if (taskId == TaskName.NV_KIEN_THUC) {
+                                if (taskMain.index == 0) {
+                                    menus.clear();
+                                    menus.add(new Menu(CMDMenu.A, "Giữ rương đồ"));
+                                    menus.add(new Menu(CMDMenu.B, "Bán thuốc, HP, MP"));
+                                    menus.add(new Menu(CMDMenu.C, "Bán thức ăn"));
+                                    getService().npcChat(npc, "Trả lời nhanh cho ta: ông Kiriko làm gì?");
+                                    getService().openUIMenu();
+                                } else if (taskMain.index == 1) {
+                                    menus.clear();
+                                    menus.add(new Menu(CMDMenu.A, "Bán thức ăn"));
+                                    menus.add(new Menu(CMDMenu.B, "Kéo xe qua các làng"));
+                                    menus.add(new Menu(CMDMenu.C, "Bán thuốc, HP, MP"));
+                                    getService().npcChat(npc, "Con biết ta đứng đây làm gì không?");
+                                    getService().openUIMenu();
+                                } else if (taskMain.index == 2) {
+                                    menus.clear();
+                                    menus.add(new Menu(CMDMenu.A, "Bán thuốc, HP, MP"));
+                                    menus.add(new Menu(CMDMenu.B, "Giữ rương đồ"));
+                                    menus.add(new Menu(CMDMenu.C, "Người kéo xe"));
+                                    getService().npcChat(npc, "Công việc của Kamakura là gì?");
+                                    getService().openUIMenu();
+                                } else if (taskMain.index == 3) {
+                                    menus.clear();
+                                    menus.add(new Menu(CMDMenu.A, "Người bán thức ăn"));
+                                    menus.add(new Menu(CMDMenu.B, "Bán thuốc, HP, MP"));
+                                    menus.add(new Menu(CMDMenu.C, "Nâng cấp trang bị"));
+                                    getService().npcChat(npc, "Thế còn Kenshinto, ông ấy làm gì?");
+                                    getService().openUIMenu();
+                                } else if (taskMain.index == 4) {
+                                    menus.clear();
+                                    menus.add(new Menu(CMDMenu.A, "Kéo xe qua các làng"));
+                                    menus.add(new Menu(CMDMenu.B, "Nâng cấp trang bị"));
+                                    menus.add(new Menu(CMDMenu.C, "Bán thức ăn"));
+                                    getService().npcChat(npc, "Umayaki đứng trong làng làm gì?");
+                                    getService().openUIMenu();
+                                }
+                            } else if (taskId == TaskName.NV_BAI_HOC_VAO_TRUONG) {
+                                if (taskMain.index == 1) {
+                                    menus.clear();
+                                    menus.add(new Menu(CMDMenu.A, "Tiền yên và vật phẩm khóa"));
+                                    menus.add(new Menu(CMDMenu.B, "Tiền xu và vật không khóa phẩm khóa"));
+                                    menus.add(new Menu(CMDMenu.C, "Tiền yên, xu, và vật phẩm không khóa"));
+                                    getService().npcChat(npc, "Con có thể buôn bán trao đổi những loại vật phẩm nào?");
+                                    getService().openUIMenu();
+                                } else if (taskMain.index == 2) {
+                                    menus.clear();
+                                    menus.add(new Menu(CMDMenu.A, "3 trường"));
+                                    menus.add(new Menu(CMDMenu.B, "2 trường"));
+                                    menus.add(new Menu(CMDMenu.C, "4 trường"));
+                                    getService().npcChat(npc, "Có bao nhiêu trường học quanh đây?");
+                                    getService().openUIMenu();
+                                } else if (taskMain.index == 3) {
+                                    menus.clear();
+                                    menus.add(new Menu(CMDMenu.A, "3 lớp"));
+                                    menus.add(new Menu(CMDMenu.B, "6 lớp"));
+                                    menus.add(new Menu(CMDMenu.C, "12 lớp"));
+                                    getService().npcChat(npc, "Có tổng cộng bao nhiêu lớp học?");
+                                    getService().openUIMenu();
+                                } else if (taskMain.index == 4) {
+                                    menus.clear();
+                                    menus.add(new Menu(CMDMenu.A, "Kiếm, phi tiêu, quạt"));
+                                    menus.add(new Menu(CMDMenu.B, "Phi tiêu, quạt, cung"));
+                                    menus.add(new Menu(CMDMenu.C, "Kunai, cung, đao"));
+                                    getService().npcChat(npc, "Nội công bao gồm những lớp nào?");
+                                    getService().openUIMenu();
+                                } else if (taskMain.index == 5) {
+                                    menus.clear();
+                                    menus.add(new Menu(CMDMenu.A, "Phi tiêu, đao, cung"));
+                                    menus.add(new Menu(CMDMenu.B, "Quạt, kiếm, kunai"));
+                                    menus.add(new Menu(CMDMenu.C, "Kiếm, kunai, đao"));
+                                    getService().npcChat(npc, "Ngoại công bao gồm những lớp nào?");
+                                    getService().openUIMenu();
+                                }
+                            }
+                        } else if (npc == NpcName.KAMAKURA) {
+                            if (taskId == TaskName.NV_BAI_HOC_VAO_TRUONG) {
+                                if (taskMain.index == 6) {
+                                    menus.clear();
+                                    menus.add(new Menu(CMDMenu.A, "10 ô"));
+                                    menus.add(new Menu(CMDMenu.B, "20 ô"));
+                                    menus.add(new Menu(CMDMenu.C, "30 ô"));
+                                    getService().npcChat(npc, "Chào. Cho ta biết con đang có bao nhiêu ô trống trong hành trang?");
+                                    getService().openUIMenu();
+                                } else if (taskMain.index == 7) {
+                                    menus.clear();
+                                    menus.add(new Menu(CMDMenu.A, "Là nơi về khi bị thương"));
+                                    menus.add(new Menu(CMDMenu.B, "Nơi xuất hiện khi đăng nhập"));
+                                    menus.add(new Menu(CMDMenu.C, "Nơi đứng của người giữ rương"));
+                                    getService().npcChat(npc, "Lưu tạo độ mặc định nhằm mục đích gì?");
+                                    getService().openUIMenu();
+                                } else if (taskMain.index == 8) {
+                                    menus.clear();
+                                    menus.add(new Menu(CMDMenu.A, "1 loại"));
+                                    menus.add(new Menu(CMDMenu.B, "2 loại"));
+                                    menus.add(new Menu(CMDMenu.C, "3 loại"));
+                                    getService().npcChat(npc, "Có mấy loại tiền tệ ở thế giới Ninja này?");
+                                    getService().openUIMenu();
+                                } else if (taskMain.index == 9) {
+                                    menus.clear();
+                                    menus.add(new Menu(CMDMenu.A, "Làm nhiệm vụ, tham gia hoạt động"));
+                                    menus.add(new Menu(CMDMenu.B, "Nhặt được khi đánh quái"));
+                                    menus.add(new Menu(CMDMenu.C, "Cả 2 trường hợp"));
+                                    getService().npcChat(npc, "Tiền yên trong game kiếm được bằng cách nào?");
+                                    getService().openUIMenu();
+                                } else if (taskMain.index == 10) {
+                                    menus.clear();
+                                    menus.add(new Menu(CMDMenu.A, "Tiền yên"));
+                                    menus.add(new Menu(CMDMenu.B, "Tiền xu"));
+                                    menus.add(new Menu(CMDMenu.C, "Tiền lượng"));
+                                    getService().npcChat(npc, "Loại tiền nào có thể chuyển đổi qua lại giữa các người chơi?");
+                                    getService().openUIMenu();
+                                }
+                            }
+                        } else if (npc == NpcName.KENSHINTO) {
+                            if (taskId == TaskName.NV_BAI_HOC_VAO_TRUONG) {
+                                if (taskMain.index == 11) {
+                                    menus.clear();
+                                    menus.add(new Menu(CMDMenu.A, "Đá + yên hoặc xu"));
+                                    menus.add(new Menu(CMDMenu.B, "Đá"));
+                                    menus.add(new Menu(CMDMenu.C, "Yên hoặc xu"));
+                                    getService().npcChat(npc, "Con có biết khi nâng cấp trang bị thì cần những gì không?");
+                                    getService().openUIMenu();
+                                } else if (taskMain.index == 12) {
+                                    menus.clear();
+                                    menus.add(new Menu(CMDMenu.A, "Xu + 100% Đá đã ép vào"));
+                                    menus.add(new Menu(CMDMenu.B, "50% Đá đã ép vào"));
+                                    menus.add(new Menu(CMDMenu.C, "Không được gì cả"));
+                                    getService().npcChat(npc, "Tách trang bị sau khi nâng cấp sẽ nhận được gì?");
+                                    getService().openUIMenu();
+                                } else if (taskMain.index == 13) {
+                                    menus.clear();
+                                    menus.add(new Menu(CMDMenu.A, "Cấp 12"));
+                                    menus.add(new Menu(CMDMenu.B, "Cấp 14"));
+                                    menus.add(new Menu(CMDMenu.C, "Cấp 16"));
+                                    getService().npcChat(npc, "Trang bị được nâng cấp tối đa đến cấp mấy?");
+                                    getService().openUIMenu();
+                                } else if (taskMain.index == 14) {
+                                    menus.clear();
+                                    menus.add(new Menu(CMDMenu.A, "1 loại"));
+                                    menus.add(new Menu(CMDMenu.B, "2 loại"));
+                                    menus.add(new Menu(CMDMenu.C, "3 loại"));
+                                    getService().npcChat(npc, "Trang bị căn bản có mấy loại?");
+                                    getService().openUIMenu();
+                                } else if (taskMain.index == 15) {
+                                    menus.clear();
+                                    menus.add(new Menu(CMDMenu.A, "Không thay đổi"));
+                                    menus.add(new Menu(CMDMenu.B, "Lên cấp và chỉ số cao hơn"));
+                                    menus.add(new Menu(CMDMenu.C, "Trông đẹp hơn"));
+                                    getService().npcChat(npc, "Sau khi nâng cấp trang bị sẽ như thế nào?");
+                                    getService().openUIMenu();
+                                }
+                            }
+                        }
                     }
                     break;
                 }
 
             case CMDMenu.A:
-                if (taskId == TaskName.NV_KIEN_THUC) {
-                    if (nAnswer == 0 || nAnswer == 5) {
-                        nAnswer++;
+                if (npc == NpcName.TABEMONO) {
+                    if (taskId == TaskName.NV_KIEN_THUC) {
+                        if (taskMain.index == 0) {
+                            menus.clear();
+                            menus.add(new Menu(CMDMenu.A, "Giữ rương đồ"));
+                            menus.add(new Menu(CMDMenu.B, "Bán thuốc, HP, MP"));
+                            menus.add(new Menu(CMDMenu.C, "Bán thức ăn"));
+                            getService().npcChat(npc, "Trả lời sai. Suy nghĩ thật kĩ rồi chọn lại. Trả lời nhanh cho ta: ông Kiriko làm gì?");
+                            getService().openUIMenu();
+                        } else if (taskMain.index == 1) {
+                            menus.clear();
+                            taskNext();
+                            menu(new Menu(CMDMenu.LAM_NHIEM_VU, taskMain.template.getName()), npc);
+                        } else if (taskMain.index == 2) {
+                            menus.clear();
+                            menus.add(new Menu(CMDMenu.A, "Bán thuốc, HP, MP"));
+                            menus.add(new Menu(CMDMenu.B, "Giữ rương đồ"));
+                            menus.add(new Menu(CMDMenu.C, "Người kéo xe"));
+                            getService().npcChat(npc, "Trả lời sai. Suy nghĩ thật kĩ rồi chọn lại. Công việc của Kamakura là gì?");
+                            getService().openUIMenu();
+                        } else if (taskMain.index == 3) {
+                            menus.clear();
+                            menus.add(new Menu(CMDMenu.A, "Người bán thức ăn"));
+                            menus.add(new Menu(CMDMenu.B, "Bán thuốc, HP, MP"));
+                            menus.add(new Menu(CMDMenu.C, "Nâng cấp trang bị"));
+                            getService().npcChat(npc, "Trả lời sai. Suy nghĩ thật kĩ rồi chọn lại. Thế còn Kenshinto, ông ấy làm gì?");
+                            getService().openUIMenu();
+                        } else if (taskMain.index == 4) {
+                            menus.clear();
+                            taskNext();
+                            getService().npcChat(npc, "Haha, tốt, hãy quay về tìm trưởng làng, ta đã gửi ông ấy 1 món quà đặc biệt cho con.");
+                        }
+                    } else if (taskId == TaskName.NV_BAI_HOC_VAO_TRUONG) {
+                        if (taskMain.index == 1) {
+                            menus.clear();
+                            menus.add(new Menu(CMDMenu.A, "Tiền yên và vật phẩm khóa"));
+                            menus.add(new Menu(CMDMenu.B, "Tiền xu và vật không khóa phẩm khóa"));
+                            menus.add(new Menu(CMDMenu.C, "Tiền yên, xu, và vật phẩm không khóa"));
+                            getService().npcChat(npc,
+                                    "Trả lời sai. Suy nghĩ thật kĩ rồi chọn lại. Con có thể buôn bán trao đổi những loại vật phẩm nào?");
+                            getService().openUIMenu();
+                        } else if (taskMain.index == 2) {
+                            menus.clear();
+                            taskNext();
+                            menu(new Menu(CMDMenu.LAM_NHIEM_VU, taskMain.template.getName()), npc);
+                        } else if (taskMain.index == 3) {
+                            menus.clear();
+                            menus.add(new Menu(CMDMenu.A, "3 lớp"));
+                            menus.add(new Menu(CMDMenu.B, "6 lớp"));
+                            menus.add(new Menu(CMDMenu.C, "12 lớp"));
+                            getService().npcChat(npc, "Trả lời sai. Suy nghĩ thật kĩ rồi chọn lại. Có tổng cộng bao nhiêu lớp học?");
+                            getService().openUIMenu();
+                        } else if (taskMain.index == 4) {
+                            menus.clear();
+                            menus.add(new Menu(CMDMenu.A, "Kiếm, phi tiêu, quạt"));
+                            menus.add(new Menu(CMDMenu.B, "Phi tiêu, quạt, cung"));
+                            menus.add(new Menu(CMDMenu.C, "Kunai, cung, đao"));
+                            getService().npcChat(npc, "Trả lời sai. Suy nghĩ thật kĩ rồi chọn lại. Nội công bao gồm những lớp nào?");
+                            getService().openUIMenu();
+                        } else if (taskMain.index == 5) {
+                            menus.clear();
+                            menus.add(new Menu(CMDMenu.A, "Phi tiêu, đao, cung"));
+                            menus.add(new Menu(CMDMenu.B, "Quạt, kiếm, kunai"));
+                            menus.add(new Menu(CMDMenu.C, "Kiếm, kunai, đao"));
+                            getService().npcChat(npc, "Trả lời sai. Suy nghĩ thật kĩ rồi chọn lại. Ngoại công bao gồm những lớp nào?");
+                            getService().openUIMenu();
+                        }
                     }
-                }
-                if (taskId == TaskName.NV_BAI_HOC_VAO_TRUONG) {
-                    if (taskMain.index == 1) {
-                        if (nAnswer == 1) {
-                            nAnswer++;
+                } else if (npc == NpcName.KAMAKURA) {
+                    if (taskId == TaskName.NV_BAI_HOC_VAO_TRUONG) {
+                        if (taskMain.index == 6) {
+                            menus.clear();
+                            menus.add(new Menu(CMDMenu.A, "10 ô"));
+                            menus.add(new Menu(CMDMenu.B, "20 ô"));
+                            menus.add(new Menu(CMDMenu.C, "30 ô"));
+                            getService().npcChat(npc,
+                                    "Trả lời sai. Suy nghĩ thật kĩ rồi chọn lại. Chào. Cho ta biết con đang có bao nhiêu ô trống trong hành trang?");
+                            getService().openUIMenu();
+                        } else if (taskMain.index == 7) {
+                            menus.clear();
+                            taskNext();
+                            menu(new Menu(CMDMenu.LAM_NHIEM_VU, taskMain.template.getName()), npc);
+                        } else if (taskMain.index == 8) {
+                            menus.clear();
+                            menus.add(new Menu(CMDMenu.A, "1 loại"));
+                            menus.add(new Menu(CMDMenu.B, "2 loại"));
+                            menus.add(new Menu(CMDMenu.C, "3 loại"));
+                            getService().npcChat(npc, "Trả lời sai. Suy nghĩ thật kĩ rồi chọn lại. Có mấy loại tiền tệ ở thế giới Ninja này?");
+                            getService().openUIMenu();
+                        } else if (taskMain.index == 9) {
+                            menus.clear();
+                            menus.add(new Menu(CMDMenu.A, "Làm nhiệm vụ, tham gia hoạt động"));
+                            menus.add(new Menu(CMDMenu.B, "Nhặt được khi đánh quái"));
+                            menus.add(new Menu(CMDMenu.C, "Cả 2 trường hợp"));
+                            getService().npcChat(npc, "Trả lời sai. Suy nghĩ thật kĩ rồi chọn lại. Tiền yên trong game kiếm được bằng cách nào?");
+                            getService().openUIMenu();
+                        } else if (taskMain.index == 10) {
+                            menus.clear();
+                            menus.add(new Menu(CMDMenu.A, "Tiền yên"));
+                            menus.add(new Menu(CMDMenu.B, "Tiền xu"));
+                            menus.add(new Menu(CMDMenu.C, "Tiền lượng"));
+                            getService().npcChat(npc,
+                                    "Trả lời sai. Suy nghĩ thật kĩ rồi chọn lại. Loại tiền nào có thể chuyển đổi qua lại giữa các người chơi?");
+                            getService().openUIMenu();
                         }
-                    } else if (taskMain.index == 6) {
-                        if (nAnswer == 1) {
-                            nAnswer++;
-                        }
-                    } else if (taskMain.index == 11) {
-                        if (nAnswer == 0) {
-                            nAnswer++;
+                    }
+                } else if (npc == NpcName.KENSHINTO) {
+                    if (taskId == TaskName.NV_BAI_HOC_VAO_TRUONG) {
+                        if (taskMain.index == 11) {
+                            menus.clear();
+                            taskNext();
+                            menu(new Menu(CMDMenu.LAM_NHIEM_VU, taskMain.template.getName()), npc);
+                        } else if (taskMain.index == 12) {
+                            menus.clear();
+                            menus.add(new Menu(CMDMenu.A, "Xu + 100% Đá đã ép vào"));
+                            menus.add(new Menu(CMDMenu.B, "50% Đá đã ép vào"));
+                            menus.add(new Menu(CMDMenu.C, "Không được gì cả"));
+                            getService().npcChat(npc, "Trả lời sai. Suy nghĩ thật kĩ rồi chọn lại. Tách trang bị sau khi nâng cấp sẽ nhận được gì?");
+                            getService().openUIMenu();
+                        } else if (taskMain.index == 13) {
+                            menus.clear();
+                            menus.add(new Menu(CMDMenu.A, "Cấp 12"));
+                            menus.add(new Menu(CMDMenu.B, "Cấp 14"));
+                            menus.add(new Menu(CMDMenu.C, "Cấp 16"));
+                            getService().npcChat(npc, "Trả lời sai. Suy nghĩ thật kĩ rồi chọn lại. Trang bị được nâng cấp tối đa đến cấp mấy?");
+                            getService().openUIMenu();
+                        } else if (taskMain.index == 14) {
+                            menus.clear();
+                            menus.add(new Menu(CMDMenu.A, "1 loại"));
+                            menus.add(new Menu(CMDMenu.B, "2 loại"));
+                            menus.add(new Menu(CMDMenu.C, "3 loại"));
+                            getService().npcChat(npc, "Trả lời sai. Suy nghĩ thật kĩ rồi chọn lại. Trang bị căn bản có mấy loại?");
+                            getService().openUIMenu();
+                        } else if (taskMain.index == 15) {
+                            menus.clear();
+                            menus.add(new Menu(CMDMenu.A, "Không thay đổi"));
+                            menus.add(new Menu(CMDMenu.B, "Lên cấp và chỉ số cao hơn"));
+                            menus.add(new Menu(CMDMenu.C, "Trông đẹp hơn"));
+                            getService().npcChat(npc, "Trả lời sai. Suy nghĩ thật kĩ rồi chọn lại. Sau khi nâng cấp trang bị sẽ như thế nào?");
+                            getService().openUIMenu();
                         }
                     }
                 }
                 break;
 
             case CMDMenu.B:
-                if (taskId == TaskName.NV_KIEN_THUC) {
-                    if (nAnswer == 2) {
-                        nAnswer++;
+                if (npc == NpcName.TABEMONO) {
+                    if (taskId == TaskName.NV_KIEN_THUC) {
+                        if (taskMain.index == 0) {
+                            menus.clear();
+                            taskNext();
+                            menu(new Menu(CMDMenu.LAM_NHIEM_VU, taskMain.template.getName()), npc);
+                        } else if (taskMain.index == 1) {
+                            menus.clear();
+                            menus.add(new Menu(CMDMenu.A, "Bán thức ăn"));
+                            menus.add(new Menu(CMDMenu.B, "Kéo xe qua các làng"));
+                            menus.add(new Menu(CMDMenu.C, "Bán thuốc, HP, MP"));
+                            getService().npcChat(npc, "Trả lời sai. Suy nghĩ thật kĩ rồi chọn lại. Con biết ta đứng đây làm gì không?");
+                            getService().openUIMenu();
+                        } else if (taskMain.index == 2) {
+                            menus.clear();
+                            taskNext();
+                            menu(new Menu(CMDMenu.LAM_NHIEM_VU, taskMain.template.getName()), npc);
+                        } else if (taskMain.index == 3) {
+                            menus.clear();
+                            menus.add(new Menu(CMDMenu.A, "Người bán thức ăn"));
+                            menus.add(new Menu(CMDMenu.B, "Bán thuốc, HP, MP"));
+                            menus.add(new Menu(CMDMenu.C, "Nâng cấp trang bị"));
+                            getService().npcChat(npc, "Trả lời sai. Suy nghĩ thật kĩ rồi chọn lại. Thế còn Kenshinto, ông ấy làm gì?");
+                            getService().openUIMenu();
+                        } else if (taskMain.index == 4) {
+                            menus.clear();
+                            menus.add(new Menu(CMDMenu.A, "Kéo xe qua các làng"));
+                            menus.add(new Menu(CMDMenu.B, "Nâng cấp trang bị"));
+                            menus.add(new Menu(CMDMenu.C, "Bán thức ăn"));
+                            getService().npcChat(npc, "Trả lời sai. Suy nghĩ thật kĩ rồi chọn lại. Umayaki đứng trong làng làm gì?");
+                            getService().openUIMenu();
+                        }
+                    } else if (taskId == TaskName.NV_BAI_HOC_VAO_TRUONG) {
+                        if (taskMain.index == 1) {
+                            menus.clear();
+                            taskNext();
+                            menu(new Menu(CMDMenu.LAM_NHIEM_VU, taskMain.template.getName()), npc);
+                        } else if (taskMain.index == 2) {
+                            menus.clear();
+                            menus.add(new Menu(CMDMenu.A, "3 trường"));
+                            menus.add(new Menu(CMDMenu.B, "2 trường"));
+                            menus.add(new Menu(CMDMenu.C, "4 trường"));
+                            getService().npcChat(npc, "Trả lời sai. Suy nghĩ thật kĩ rồi chọn lại. Có bao nhiêu trường học quanh đây?");
+                            getService().openUIMenu();
+                        } else if (taskMain.index == 3) {
+                            menus.clear();
+                            taskNext();
+                            menu(new Menu(CMDMenu.LAM_NHIEM_VU, taskMain.template.getName()), npc);
+                        } else if (taskMain.index == 4) {
+                            menus.clear();
+                            taskNext();
+                            menu(new Menu(CMDMenu.LAM_NHIEM_VU, taskMain.template.getName()), npc);
+                        } else if (taskMain.index == 5) {
+                            menus.clear();
+                            menus.add(new Menu(CMDMenu.A, "Phi tiêu, đao, cung"));
+                            menus.add(new Menu(CMDMenu.B, "Quạt, kiếm, kunai"));
+                            menus.add(new Menu(CMDMenu.C, "Kiếm, kunai, đao"));
+                            getService().npcChat(npc, "Trả lời sai. Suy nghĩ thật kĩ rồi chọn lại. Ngoại công bao gồm những lớp nào?");
+                            getService().openUIMenu();
+                        }
                     }
-                }
-                if (taskId == TaskName.NV_BAI_HOC_VAO_TRUONG) {
-                    if (taskMain.index == 1) {
-                        if (nAnswer == 0 || nAnswer == 2 || nAnswer == 3) {
-                            nAnswer++;
+                } else if (npc == NpcName.KAMAKURA) {
+                    if (taskId == TaskName.NV_BAI_HOC_VAO_TRUONG) {
+                        if (taskMain.index == 6) {
+                            menus.clear();
+                            menus.add(new Menu(CMDMenu.A, "10 ô"));
+                            menus.add(new Menu(CMDMenu.B, "20 ô"));
+                            menus.add(new Menu(CMDMenu.C, "30 ô"));
+                            getService().npcChat(npc,
+                                    "Trả lời sai. Suy nghĩ thật kĩ rồi chọn lại. Chào. Cho ta biết con đang có bao nhiêu ô trống trong hành trang?");
+                            getService().openUIMenu();
+                        } else if (taskMain.index == 7) {
+                            menus.clear();
+                            menus.add(new Menu(CMDMenu.A, "Là nơi về khi bị thương"));
+                            menus.add(new Menu(CMDMenu.B, "Nơi xuất hiện khi đăng nhập"));
+                            menus.add(new Menu(CMDMenu.C, "Nơi đứng của người giữ rương"));
+                            getService().npcChat(npc, "Trả lời sai. Suy nghĩ thật kĩ rồi chọn lại. Lưu tạo độ mặc định nhằm mục đích gì?");
+                            getService().openUIMenu();
+                        } else if (taskMain.index == 8) {
+                            menus.clear();
+                            menus.add(new Menu(CMDMenu.A, "1 loại"));
+                            menus.add(new Menu(CMDMenu.B, "2 loại"));
+                            menus.add(new Menu(CMDMenu.C, "3 loại"));
+                            getService().npcChat(npc, "Trả lời sai. Suy nghĩ thật kĩ rồi chọn lại. Có mấy loại tiền tệ ở thế giới Ninja này?");
+                            getService().openUIMenu();
+                        } else if (taskMain.index == 9) {
+                            menus.clear();
+                            menus.add(new Menu(CMDMenu.A, "Làm nhiệm vụ, tham gia hoạt động"));
+                            menus.add(new Menu(CMDMenu.B, "Nhặt được khi đánh quái"));
+                            menus.add(new Menu(CMDMenu.C, "Cả 2 trường hợp"));
+                            getService().npcChat(npc, "Trả lời sai. Suy nghĩ thật kĩ rồi chọn lại. Tiền yên trong game kiếm được bằng cách nào?");
+                            getService().openUIMenu();
+                        } else if (taskMain.index == 10) {
+                            menus.clear();
+                            taskNext();
+                            getService().npcChat(npc, "Rất tốt, tiếp theo hãy tìm Kenshito, ông ấy có một số câu hỏi cho con đấy!");
                         }
-                    } else if (taskMain.index == 6) {
-                        if (nAnswer == 4) {
-                            nAnswer++;
-                        }
-                    } else if (taskMain.index == 11) {
-                        if (nAnswer == 1 || nAnswer == 4) {
-                            nAnswer++;
+                    }
+                } else if (npc == NpcName.KENSHINTO) {
+                    if (taskId == TaskName.NV_BAI_HOC_VAO_TRUONG) {
+                        if (taskMain.index == 11) {
+                            menus.clear();
+                            menus.add(new Menu(CMDMenu.A, "Đá + yên hoặc xu"));
+                            menus.add(new Menu(CMDMenu.B, "Đá"));
+                            menus.add(new Menu(CMDMenu.C, "Yên hoặc xu"));
+                            getService().npcChat(npc,
+                                    "Trả lời sai. Suy nghĩ thật kĩ rồi chọn lại. Con có biết khi nâng cấp trang bị thì cần những gì không?");
+                            getService().openUIMenu();
+                        } else if (taskMain.index == 12) {
+                            menus.clear();
+                            taskNext();
+                            menu(new Menu(CMDMenu.LAM_NHIEM_VU, taskMain.template.getName()), npc);
+                        } else if (taskMain.index == 13) {
+                            menus.clear();
+                            menus.add(new Menu(CMDMenu.A, "Cấp 12"));
+                            menus.add(new Menu(CMDMenu.B, "Cấp 14"));
+                            menus.add(new Menu(CMDMenu.C, "Cấp 16"));
+                            getService().npcChat(npc, "Trả lời sai. Suy nghĩ thật kĩ rồi chọn lại. Trang bị được nâng cấp tối đa đến cấp mấy?");
+                            getService().openUIMenu();
+                        } else if (taskMain.index == 14) {
+                            menus.clear();
+                            menus.add(new Menu(CMDMenu.A, "1 loại"));
+                            menus.add(new Menu(CMDMenu.B, "2 loại"));
+                            menus.add(new Menu(CMDMenu.C, "3 loại"));
+                            getService().npcChat(npc, "Trả lời sai. Suy nghĩ thật kĩ rồi chọn lại. Trang bị căn bản có mấy loại?");
+                            getService().openUIMenu();
+                        } else if (taskMain.index == 15) {
+                            menus.clear();
+                            taskNext();
+                            getService().npcChat(npc, "Con cũng đã biết khá nhiều rồi đấy. Hãy quay về gặp trưởng làng, ông ấy đang chờ con đó.");
                         }
                     }
                 }
                 break;
 
             case CMDMenu.C:
-                if (taskId == TaskName.NV_KIEN_THUC) {
-                    if (nAnswer == 1 || nAnswer == 6) {
-                        nAnswer++;
-                    }
-                }
-                if (taskId == TaskName.NV_BAI_HOC_VAO_TRUONG) {
-                    if (taskMain.index == 1) {
-                        if (nAnswer == 4) {
-                            nAnswer++;
+                if (npc == NpcName.TABEMONO) {
+                    if (taskId == TaskName.NV_KIEN_THUC) {
+                        if (taskMain.index == 0) {
+                            menus.clear();
+                            menus.add(new Menu(CMDMenu.A, "Giữ rương đồ"));
+                            menus.add(new Menu(CMDMenu.B, "Bán thuốc, HP, MP"));
+                            menus.add(new Menu(CMDMenu.C, "Bán thức ăn"));
+                            getService().npcChat(npc, "Trả lời sai. Suy nghĩ thật kĩ rồi chọn lại. Trả lời nhanh cho ta: ông Kiriko làm gì?");
+                            getService().openUIMenu();
+                        } else if (taskMain.index == 1) {
+                            menus.clear();
+                            menus.add(new Menu(CMDMenu.A, "Bán thức ăn"));
+                            menus.add(new Menu(CMDMenu.B, "Kéo xe qua các làng"));
+                            menus.add(new Menu(CMDMenu.C, "Bán thuốc, HP, MP"));
+                            getService().npcChat(npc, "Trả lời sai. Suy nghĩ thật kĩ rồi chọn lại. Con biết ta đứng đây làm gì không?");
+                            getService().openUIMenu();
+                        } else if (taskMain.index == 2) {
+                            menus.clear();
+                            menus.add(new Menu(CMDMenu.A, "Bán thuốc, HP, MP"));
+                            menus.add(new Menu(CMDMenu.B, "Giữ rương đồ"));
+                            menus.add(new Menu(CMDMenu.C, "Người kéo xe"));
+                            getService().npcChat(npc, "Trả lời sai. Suy nghĩ thật kĩ rồi chọn lại. Công việc của Kamakura là gì?");
+                            getService().openUIMenu();
+                        } else if (taskMain.index == 3) {
+                            menus.clear();
+                            taskNext();
+                            menu(new Menu(CMDMenu.LAM_NHIEM_VU, taskMain.template.getName()), npc);
+                        } else if (taskMain.index == 4) {
+                            menus.clear();
+                            menus.add(new Menu(CMDMenu.A, "Kéo xe qua các làng"));
+                            menus.add(new Menu(CMDMenu.B, "Nâng cấp trang bị"));
+                            menus.add(new Menu(CMDMenu.C, "Bán thức ăn"));
+                            getService().npcChat(npc, "Trả lời sai. Suy nghĩ thật kĩ rồi chọn lại. Umayaki đứng trong làng làm gì?");
+                            getService().openUIMenu();
                         }
-                    } else if (taskMain.index == 6) {
-                        if (nAnswer == 0 || nAnswer == 2 || nAnswer == 3) {
-                            nAnswer++;
-                        }
-                    } else if (taskMain.index == 11) {
-                        if (nAnswer == 2 || nAnswer == 3) {
-                            nAnswer++;
+                    } else if (taskId == TaskName.NV_BAI_HOC_VAO_TRUONG) {
+                        if (taskMain.index == 1) {
+                            menus.clear();
+                            menus.add(new Menu(CMDMenu.A, "Tiền yên và vật phẩm khóa"));
+                            menus.add(new Menu(CMDMenu.B, "Tiền xu và vật không khóa phẩm khóa"));
+                            menus.add(new Menu(CMDMenu.C, "Tiền yên, xu, và vật phẩm không khóa"));
+                            getService().npcChat(npc,
+                                    "Trả lời sai. Suy nghĩ thật kĩ rồi chọn lại. Con có thể buôn bán trao đổi những loại vật phẩm nào?");
+                            getService().openUIMenu();
+                        } else if (taskMain.index == 2) {
+                            menus.clear();
+                            menus.add(new Menu(CMDMenu.A, "3 trường"));
+                            menus.add(new Menu(CMDMenu.B, "2 trường"));
+                            menus.add(new Menu(CMDMenu.C, "4 trường"));
+                            getService().npcChat(npc, "Trả lời sai. Suy nghĩ thật kĩ rồi chọn lại. Có bao nhiêu trường học quanh đây?");
+                            getService().openUIMenu();
+                        } else if (taskMain.index == 3) {
+                            menus.clear();
+                            menus.add(new Menu(CMDMenu.A, "3 lớp"));
+                            menus.add(new Menu(CMDMenu.B, "6 lớp"));
+                            menus.add(new Menu(CMDMenu.C, "12 lớp"));
+                            getService().npcChat(npc, "Trả lời sai. Suy nghĩ thật kĩ rồi chọn lại. Có tổng cộng bao nhiêu lớp học?");
+                            getService().openUIMenu();
+                        } else if (taskMain.index == 4) {
+                            menus.clear();
+                            menus.add(new Menu(CMDMenu.A, "Kiếm, phi tiêu, quạt"));
+                            menus.add(new Menu(CMDMenu.B, "Phi tiêu, quạt, cung"));
+                            menus.add(new Menu(CMDMenu.C, "Kunai, cung, đao"));
+                            getService().npcChat(npc, "Trả lời sai. Suy nghĩ thật kĩ rồi chọn lại. Nội công bao gồm những lớp nào?");
+                            getService().openUIMenu();
+                        } else if (taskMain.index == 5) {
+                            menus.clear();
+                            taskNext();
+                            getService().npcChat(npc, "Tốt, hãy tìm Kamakura để biết những kiến thức khác.");
                         }
                     }
-                }
-                break;
-
-            case CMDMenu.D:
-                if (taskId == TaskName.NV_KIEN_THUC) {
-                    if (nAnswer == 3 || nAnswer == 4) {
-                        nAnswer++;
+                } else if (npc == NpcName.KAMAKURA) {
+                    if (taskId == TaskName.NV_BAI_HOC_VAO_TRUONG) {
+                        if (taskMain.index == 6) {
+                            menus.clear();
+                            taskNext();
+                            menu(new Menu(CMDMenu.LAM_NHIEM_VU, taskMain.template.getName()), npc);
+                        } else if (taskMain.index == 7) {
+                            menus.clear();
+                            menus.add(new Menu(CMDMenu.A, "Là nơi về khi bị thương"));
+                            menus.add(new Menu(CMDMenu.B, "Nơi xuất hiện khi đăng nhập"));
+                            menus.add(new Menu(CMDMenu.C, "Nơi đứng của người giữ rương"));
+                            getService().npcChat(npc, "Trả lời sai. Suy nghĩ thật kĩ rồi chọn lại. Lưu tạo độ mặc định nhằm mục đích gì?");
+                            getService().openUIMenu();
+                        } else if (taskMain.index == 8) {
+                            menus.clear();
+                            taskNext();
+                            menu(new Menu(CMDMenu.LAM_NHIEM_VU, taskMain.template.getName()), npc);
+                        } else if (taskMain.index == 9) {
+                            menus.clear();
+                            taskNext();
+                            menu(new Menu(CMDMenu.LAM_NHIEM_VU, taskMain.template.getName()), npc);
+                        } else if (taskMain.index == 10) {
+                            menus.clear();
+                            menus.add(new Menu(CMDMenu.A, "Tiền yên"));
+                            menus.add(new Menu(CMDMenu.B, "Tiền xu"));
+                            menus.add(new Menu(CMDMenu.C, "Tiền lượng"));
+                            getService().npcChat(npc,
+                                    "Trả lời sai. Suy nghĩ thật kĩ rồi chọn lại. Loại tiền nào có thể chuyển đổi qua lại giữa các người chơi?");
+                            getService().openUIMenu();
+                        }
                     }
-                }
-                if (taskId == TaskName.NV_BAI_HOC_VAO_TRUONG) {
-                    if (taskMain.index == 1) {
-
-                    } else if (taskMain.index == 6) {
-
-                    } else if (taskMain.index == 11) {
-
+                } else if (npc == NpcName.KENSHINTO) {
+                    if (taskId == TaskName.NV_BAI_HOC_VAO_TRUONG) {
+                        if (taskMain.index == 11) {
+                            menus.clear();
+                            menus.add(new Menu(CMDMenu.A, "Đá + yên hoặc xu"));
+                            menus.add(new Menu(CMDMenu.B, "Đá"));
+                            menus.add(new Menu(CMDMenu.C, "Yên hoặc xu"));
+                            getService().npcChat(npc,
+                                    "Trả lời sai. Suy nghĩ thật kĩ rồi chọn lại. Con có biết khi nâng cấp trang bị thì cần những gì không?");
+                            getService().openUIMenu();
+                        } else if (taskMain.index == 12) {
+                            menus.clear();
+                            menus.add(new Menu(CMDMenu.A, "Xu + 100% Đá đã ép vào"));
+                            menus.add(new Menu(CMDMenu.B, "50% Đá đã ép vào"));
+                            menus.add(new Menu(CMDMenu.C, "Không được gì cả"));
+                            getService().npcChat(npc, "Trả lời sai. Suy nghĩ thật kĩ rồi chọn lại. Tách trang bị sau khi nâng cấp sẽ nhận được gì?");
+                            getService().openUIMenu();
+                        } else if (taskMain.index == 13) {
+                            menus.clear();
+                            taskNext();
+                            menu(new Menu(CMDMenu.LAM_NHIEM_VU, taskMain.template.getName()), npc);
+                        } else if (taskMain.index == 14) {
+                            menus.clear();
+                            taskNext();
+                            menu(new Menu(CMDMenu.LAM_NHIEM_VU, taskMain.template.getName()), npc);
+                        } else if (taskMain.index == 15) {
+                            menus.clear();
+                            menus.add(new Menu(CMDMenu.A, "Không thay đổi"));
+                            menus.add(new Menu(CMDMenu.B, "Lên cấp và chỉ số cao hơn"));
+                            menus.add(new Menu(CMDMenu.C, "Trông đẹp hơn"));
+                            getService().npcChat(npc, "Trả lời sai. Suy nghĩ thật kĩ rồi chọn lại. Sau khi nâng cấp trang bị sẽ như thế nào?");
+                            getService().openUIMenu();
+                        }
                     }
                 }
                 break;
@@ -10050,34 +10651,6 @@ public class Char {
                 showUpgradeSoulStone(menu.getIntExtra());
                 break;
 
-        }
-        if (taskMain != null) {
-            if (taskId == TaskName.NV_KIEN_THUC && taskMain.index == 0) {
-                if (nAnswer < 7) {
-                    menus.clear();
-                    questionAndAnswer();
-                } else {
-                    taskNext();
-                    taskNext();
-                    taskNext();
-                    taskNext();
-                    taskNext();
-                    nAnswer = 0;
-                }
-            }
-            if (taskId == TaskName.NV_BAI_HOC_VAO_TRUONG && (taskMain.index == 1 || taskMain.index == 6 || taskMain.index == 11)) {
-                if (nAnswer < 5) {
-                    menus.clear();
-                    questionAndAnswer();
-                } else {
-                    taskNext();
-                    taskNext();
-                    taskNext();
-                    taskNext();
-                    taskNext();
-                    nAnswer = 0;
-                }
-            }
         }
     }
 
@@ -10608,188 +11181,6 @@ public class Char {
         }
     }
 
-    // Nhiệm vụ trả lời
-    public void questionAndAnswer() {
-        try {
-            String question = "";
-            int npc = 4;
-            if (taskId == TaskName.NV_KIEN_THUC) {
-                npc = 4;
-                switch (nAnswer) {
-                    case 0:
-                        question = "Trình độ tối đa có thể đạt được là bao nhiêu?";
-                        menus.add(new Menu(CMDMenu.A, "Cấp 150"));
-                        menus.add(new Menu(CMDMenu.B, "Cấp 130"));
-                        menus.add(new Menu(CMDMenu.C, "Cấp 99"));
-                        break;
-
-                    case 1:
-                        question = "Trình độ bao nhiêu mới có thể khám phá Vùng đất ma quỷ??";
-                        menus.add(new Menu(CMDMenu.A, "Cấp 50"));
-                        menus.add(new Menu(CMDMenu.B, "Cấp 100"));
-                        menus.add(new Menu(CMDMenu.C, "Cấp 60"));
-                        break;
-
-                    case 2:
-                        question = "Thức ăn dùng để làm gì?";
-                        menus.add(new Menu(CMDMenu.A, "Ăn cho ngon"));
-                        menus.add(new Menu(CMDMenu.B, "Hồi phục thể lực"));
-                        menus.add(new Menu(CMDMenu.C, "Để phí tiền"));
-                        break;
-
-                    case 3:
-                        question = "Khám phá làng cổ cần những điều kiện gì?";
-                        menus.add(new Menu(CMDMenu.A, "Cấp 70"));
-                        menus.add(new Menu(CMDMenu.B, "Có cổ lệnh"));
-                        menus.add(new Menu(CMDMenu.C, "Không có điểm hiếu chiến"));
-                        menus.add(new Menu(CMDMenu.D, "Tất cả"));
-                        break;
-
-                    case 4:
-                        question = "Muốn tinh luyện trang bị cần phải chuẩn bị gì?";
-                        menus.add(new Menu(CMDMenu.A, "Trang bị cấp 12"));
-                        menus.add(new Menu(CMDMenu.B, "Tinh thạch"));
-                        menus.add(new Menu(CMDMenu.C, "Xu hoặc yên"));
-                        menus.add(new Menu(CMDMenu.D, "Tất cả"));
-                        break;
-
-                    case 5:
-                        question = "Hashimoto hiện giờ đang ở đâu?";
-                        menus.add(new Menu(CMDMenu.A, "Bờ biển Oura"));
-                        menus.add(new Menu(CMDMenu.B, "Nghĩa địa Izuko"));
-                        menus.add(new Menu(CMDMenu.C, "Hang Kugyou"));
-                        break;
-
-                    case 6:
-                        question = "Nao đang cô độc ở đâu trong thế giới Ninja?";
-                        menus.add(new Menu(CMDMenu.A, "Hang Ha"));
-                        menus.add(new Menu(CMDMenu.B, "Rừng Toge"));
-                        menus.add(new Menu(CMDMenu.C, "Mũi Nuranura"));
-                        break;
-                }
-            } else if (taskId == TaskName.NV_BAI_HOC_VAO_TRUONG) {
-                if (taskMain.index == 1) {
-                    npc = 4;
-                    switch (nAnswer) {
-                        case 0:
-                            question = "Con có thể trao đổi buôn bán những loại vật phẩm nào?";
-                            menus.add(new Menu(CMDMenu.A, "Tiền yên và vật phẩm khoá"));
-                            menus.add(new Menu(CMDMenu.B, "Tiền xu và vật phẩm không khoá"));
-                            menus.add(new Menu(CMDMenu.C, "Tiền yên, xu và vật phẩm không khoá"));
-                            break;
-
-                        case 1:
-                            question = "Có bao nhiều trường học quanh đây?";
-                            menus.add(new Menu(CMDMenu.A, "3 trường"));
-                            menus.add(new Menu(CMDMenu.B, "2 trường"));
-                            menus.add(new Menu(CMDMenu.C, "4 trường"));
-                            break;
-
-                        case 2:
-                            question = "Tổng cộng có bao nhiêu lớp học?";
-                            menus.add(new Menu(CMDMenu.A, "3 lớp"));
-                            menus.add(new Menu(CMDMenu.B, "6 lớp"));
-                            menus.add(new Menu(CMDMenu.C, "12 lớp"));
-                            break;
-
-                        case 3:
-                            question = "Nội công bao gồm những lớp nào?";
-                            menus.add(new Menu(CMDMenu.A, "Kiếm, phi tiêu, quạt"));
-                            menus.add(new Menu(CMDMenu.B, "Phi tiêu, quạt, cung"));
-                            menus.add(new Menu(CMDMenu.C, "Kunai, cung, đao"));
-                            break;
-
-                        case 4:
-                            question = "Ngoại công bao gồm những lớp nào?";
-                            menus.add(new Menu(CMDMenu.A, "Phi tiêu, đao, cung"));
-                            menus.add(new Menu(CMDMenu.B, "Quạt, kiếm, kunai"));
-                            menus.add(new Menu(CMDMenu.C, "Kiếm, kunai, đao"));
-                            break;
-                    }
-                } else if (taskMain.index == 6) {
-                    npc = 5;
-                    switch (nAnswer) {
-                        case 0:
-                            question = "Hiện tại con đang có bao nhiêu ô trong hành trang?";
-                            menus.add(new Menu(CMDMenu.A, "10 ô"));
-                            menus.add(new Menu(CMDMenu.B, "20 ô"));
-                            menus.add(new Menu(CMDMenu.C, "30 ô"));
-                            break;
-
-                        case 1:
-                            question = "Lưu toạ độ mặc định nhằm mục đích gì?";
-                            menus.add(new Menu(CMDMenu.A, "Là nơi về khi bị thương"));
-                            menus.add(new Menu(CMDMenu.B, "Nơi xuất hiện khi đăng nhập"));
-                            menus.add(new Menu(CMDMenu.C, "Nơi đứng của người giữ rương"));
-                            break;
-
-                        case 2:
-                            question = "Có mấy loại tiền tệ ở thế giới Ninja này?";
-                            menus.add(new Menu(CMDMenu.A, "1 loại"));
-                            menus.add(new Menu(CMDMenu.B, "2 loại"));
-                            menus.add(new Menu(CMDMenu.C, "3 loại"));
-                            break;
-
-                        case 3:
-                            question = "Tiền yên kiếm được bằng cách nào?";
-                            menus.add(new Menu(CMDMenu.A, "Làm nhiệm vụ, tham gia hoạt động"));
-                            menus.add(new Menu(CMDMenu.B, "Nhặt được khi đánh quái"));
-                            menus.add(new Menu(CMDMenu.C, "Cả 2 trường hợp"));
-                            break;
-
-                        case 4:
-                            question = "Loại tiền nào có thể trao đổi qua lại giữa các người chơi?";
-                            menus.add(new Menu(CMDMenu.A, "Tiền yên"));
-                            menus.add(new Menu(CMDMenu.B, "Tiền xu"));
-                            menus.add(new Menu(CMDMenu.C, "Tiền lượng"));
-                            break;
-                    }
-                } else if (taskMain.index == 11) {
-                    npc = 6;
-                    switch (nAnswer) {
-                        case 0:
-                            question = "Con có biết khi nâng cấp trang bị cần những gì không?";
-                            menus.add(new Menu(CMDMenu.A, "Đá + yên hoặc xu"));
-                            menus.add(new Menu(CMDMenu.B, "Đá"));
-                            menus.add(new Menu(CMDMenu.C, "Yên hoặc xu"));
-                            break;
-
-                        case 1:
-                            question = "Tách trang bị sau khi nâng cấp sẽ nhận được gì?";
-                            menus.add(new Menu(CMDMenu.A, "Xu + 100% Đá khi ép vào"));
-                            menus.add(new Menu(CMDMenu.B, "50% Đá đã ép vào"));
-                            menus.add(new Menu(CMDMenu.C, "Không được gì cả"));
-                            break;
-
-                        case 2:
-                            question = "Trang bị được nâng cấp tối đa lên cấp mấy?";
-                            menus.add(new Menu(CMDMenu.A, "Cấp 12"));
-                            menus.add(new Menu(CMDMenu.B, "Cấp 14"));
-                            menus.add(new Menu(CMDMenu.C, "Cấp 16"));
-                            break;
-
-                        case 3:
-                            question = "Trang bị căn bản có mấy loại?";
-                            menus.add(new Menu(CMDMenu.A, "1 loại"));
-                            menus.add(new Menu(CMDMenu.B, "2 loại"));
-                            menus.add(new Menu(CMDMenu.C, "3 loại"));
-                            break;
-
-                        case 4:
-                            question = "Sau khi nâng cấp trang bị sẽ như thế nào";
-                            menus.add(new Menu(CMDMenu.A, "Không thay đổi"));
-                            menus.add(new Menu(CMDMenu.B, "Lên cấp và chỉ số cao hơn"));
-                            menus.add(new Menu(CMDMenu.C, "Trông đẹp hơn"));
-                            break;
-                    }
-                }
-            }
-            getService().openUIConfirm(npc, question);
-        } catch (Exception ex) {
-            Log.error("err: " + ex.getMessage(), ex);
-        }
-    }
-
     public int getIdItemTask(int mobId) {
         if (taskMain != null) {
             if (mobId == MobName.NHIM_DA) {
@@ -10979,6 +11370,8 @@ public class Char {
             }
             if (taskId == TaskName.NHIEM_VU_CHAO_LANG && taskMain != null && taskMain.index == 4) {
                 taskNext();
+                getService().npcChat(NpcName.KAMAKURA, "Ta là Kamakura, ta sẽ cất giữ đồ đạc cho ngươi.");
+                return;
             }
             String talk = (String) NinjaUtils.randomObject("Hãy an tâm giao đồ cho ta nào!",
                     "Trên người của ngươi toàn là những đồ có giá trị, Sao không cất bớt ở đây?", "Ta giữ đồ chưa hề để thất lạc bao giờ.");
@@ -11050,103 +11443,43 @@ public class Char {
                                 "Chào mừng con đến với trường Ookaza. Con hãy sử dụng vũ khí và đọc sách võ công mà ta tặng (mở Menu/Bản thân/Hành trang) để bước đầu chuẩn bị cho việc học tập");
                         break;
                 }
-                Item item = null;
-                Item item2 = null;
+                Item sachLv10 = null;
                 switch (sys) {
                     case 1:
-                        item = ItemFactory.getInstance().newItem(40);
-                        item.isLock = true;
-                        item2 = ItemFactory.getInstance().newItem(94);
-                        item2.isLock = true;
-                        item2.sys = 1;
-                        item2.options.add(new ItemOption(0, 100));
-                        item2.options.add(new ItemOption(1, 100));
-                        item2.options.add(new ItemOption(8, 10));
-                        item2.options.add(new ItemOption(10, 5));
-                        item2.options.add(new ItemOption(21, 100));
-                        item2.options.add(new ItemOption(19, 10));
-                        item2.options.add(new ItemOption(30, 5));
+                        sachLv10 = ItemFactory.getInstance().newItem(40);
+                        sachLv10.isLock = true;
                         break;
 
                     case 3:
-                        item = ItemFactory.getInstance().newItem(58);
-                        item.isLock = true;
-                        item2 = ItemFactory.getInstance().newItem(99);
-                        item2.isLock = true;
-                        item2.sys = 2;
-                        item2.options.add(new ItemOption(0, 100));
-                        item2.options.add(new ItemOption(1, 100));
-                        item2.options.add(new ItemOption(8, 10));
-                        item2.options.add(new ItemOption(10, 5));
-                        item2.options.add(new ItemOption(21, 100));
-                        item2.options.add(new ItemOption(19, 10));
-                        item2.options.add(new ItemOption(30, 5));
+                        sachLv10 = ItemFactory.getInstance().newItem(58);
+                        sachLv10.isLock = true;
                         break;
 
                     case 5:
-                        item = ItemFactory.getInstance().newItem(76);
-                        item.isLock = true;
-                        item2 = ItemFactory.getInstance().newItem(104);
-                        item2.isLock = true;
-                        item2.sys = 3;
-                        item2.options.add(new ItemOption(0, 100));
-                        item2.options.add(new ItemOption(1, 100));
-                        item2.options.add(new ItemOption(8, 10));
-                        item2.options.add(new ItemOption(10, 5));
-                        item2.options.add(new ItemOption(21, 100));
-                        item2.options.add(new ItemOption(19, 10));
-                        item2.options.add(new ItemOption(30, 5));
+                        sachLv10 = ItemFactory.getInstance().newItem(76);
+                        sachLv10.isLock = true;
                         break;
 
                     case 2:
-                        item = ItemFactory.getInstance().newItem(49);
-                        item.isLock = true;
-                        item2 = ItemFactory.getInstance().newItem(114);
-                        item2.isLock = true;
-                        item2.sys = 1;
-                        item2.options.add(new ItemOption(0, 100));
-                        item2.options.add(new ItemOption(1, 100));
-                        item2.options.add(new ItemOption(9, 10));
-                        item2.options.add(new ItemOption(10, 5));
-                        item2.options.add(new ItemOption(22, 100));
-                        item2.options.add(new ItemOption(19, 10));
-                        item2.options.add(new ItemOption(30, 5));
+                        sachLv10 = ItemFactory.getInstance().newItem(49);
+                        sachLv10.isLock = true;
                         break;
 
                     case 4:
-                        item = ItemFactory.getInstance().newItem(67);
-                        item.isLock = true;
-                        item2 = ItemFactory.getInstance().newItem(109);
-                        item2.isLock = true;
-                        item2.sys = 2;
-                        item2.options.add(new ItemOption(0, 100));
-                        item2.options.add(new ItemOption(1, 100));
-                        item2.options.add(new ItemOption(9, 10));
-                        item2.options.add(new ItemOption(10, 5));
-                        item2.options.add(new ItemOption(22, 100));
-                        item2.options.add(new ItemOption(19, 10));
-                        item2.options.add(new ItemOption(30, 5));
+                        sachLv10 = ItemFactory.getInstance().newItem(67);
+                        sachLv10.isLock = true;
                         break;
 
                     case 6:
-                        item = ItemFactory.getInstance().newItem(85);
-                        item.isLock = true;
-                        item2 = ItemFactory.getInstance().newItem(119);
-                        item2.isLock = true;
-                        item2.sys = 3;
-                        item2.options.add(new ItemOption(0, 100));
-                        item2.options.add(new ItemOption(1, 100));
-                        item2.options.add(new ItemOption(9, 10));
-                        item2.options.add(new ItemOption(10, 5));
-                        item2.options.add(new ItemOption(22, 100));
-                        item2.options.add(new ItemOption(19, 10));
-                        item2.options.add(new ItemOption(30, 5));
+                        sachLv10 = ItemFactory.getInstance().newItem(85);
+                        sachLv10.isLock = true;
                         break;
                 }
                 setAbility();
                 getService().loadClass();
-                addItemToBag(item);
-                addItemToBag(item2);
+                addItemToBag(sachLv10);
+                String args = "body lv 10";
+                AdminService.getInstance().addEquipment(this, args.split(" "));
                 selectedSkill = null;
                 if (isHuman) {
                     taskMain = TaskFactory.getInstance().createTask(taskId, (byte) 0, (short) -1);
@@ -11205,6 +11538,8 @@ public class Char {
             getService().npcChat(NpcName.THAY_KAZETO, talk);
             if (taskId == TaskName.NV_TIM_HIEU_3_TRUONG && taskMain != null && taskMain.index == 3) {
                 taskNext();
+                getService().npcChat(NpcName.THAY_KAZETO,
+                        "Nhanh và mạnh, đó là Phong, gió của ta... kết hợp với đao và quạt, không gì có thể cản được!");
             }
         }));
         menus.add(new Menu(CMDMenu.EXECUTE, "Giao chiến", () -> {
@@ -11262,6 +11597,7 @@ public class Char {
             getService().npcChat(NpcName.THAY_OOKAMESAMA, talk);
             if (taskId == TaskName.NV_TIM_HIEU_3_TRUONG && taskMain != null && taskMain.index == 2) {
                 taskNext();
+                getService().npcChat(NpcName.THAY_OOKAMESAMA, "Tất cả mọi thứ đều đóng băng thì thật tuyệt, vũ khí ta thường dùng là kunai và cung!");
             }
         }));
         menus.add(new Menu(CMDMenu.EXECUTE, "Giao chiến", () -> {
@@ -11319,6 +11655,7 @@ public class Char {
             getService().npcChat(NpcName.CO_TOYOTOMI, talk);
             if (taskId == TaskName.NV_TIM_HIEU_3_TRUONG && taskMain != null && taskMain.index == 1) {
                 taskNext();
+                getService().npcChat(NpcName.CO_TOYOTOMI, "Con cũng thấy rồi đó, trường của ta thuộc hệ hỏa, binh khí sử dụng là kiếm và phi tiêu!");
             }
         }));
         menus.add(new Menu(CMDMenu.EXECUTE, "Giao chiến", () -> {
@@ -11637,6 +11974,8 @@ public class Char {
         menus.add(new Menu(CMDMenu.EXECUTE, "Nói chuyện", () -> {
             if (taskId == TaskName.NHIEM_VU_CHAO_LANG && taskMain != null && taskMain.index == 2) {
                 taskNext();
+                getService().npcChat(NpcName.KENSHINTO, "Muốn nâng cấp trang bị? Hãy tìm Kenshinto này.");
+                return;
             }
             String talk = (String) NinjaUtils.randomObject("Ngươi muốn cải tiến trang bị?", "Nâng cấp trang bị: Uy tín, giá cả phải chăng");
             getService().npcChat(NpcName.KENSHINTO, talk);
@@ -12322,6 +12661,8 @@ public class Char {
         menus.add(new Menu(CMDMenu.EXECUTE, "Nói chuyện", () -> {
             if (taskId == TaskName.NHIEM_VU_CHAO_LANG && taskMain != null && taskMain.index == 1) {
                 taskNext();
+                getService().npcChat(NpcName.TABEMONO, "Ta là Tabemono. Cửa hàng của ta bán rất nhiều thức ăn, giúp tăng cường sức khoẻ.");
+                return;
             }
             String talk = (String) NinjaUtils.randomObject("Thức ăn của ta là ngon nhất rồi!", "Ăn xong đảm bảo ngươi sẽ quay lại lần sau.");
             getService().npcChat(NpcName.TABEMONO, talk);
@@ -12350,10 +12691,12 @@ public class Char {
         menus.add(new Menu(CMDMenu.EXECUTE, "Nói chuyện", () -> {
             if (taskId == TaskName.NHIEM_VU_CHAO_LANG && taskMain != null && taskMain.index == 0) {
                 taskNext();
+                getService().npcChat(NpcName.KIRIKO, "Chào con, ta là Kiriko, chuyên bán dược phẩm chữa trị vết thương.");
+                return;
             }
             String talk =
                     (String) NinjaUtils.randomObject("Đi đường cần mang ít dược phẩm", "Không mang theo HP, Hp bên mình, con sẽ gặp nguy hiểm.");
-            getService().npcChat((short) 3, talk);
+            getService().npcChat(NpcName.KIRIKO, talk);
         }));
     }
 
@@ -13216,6 +13559,8 @@ public class Char {
         menus.add(new Menu(CMDMenu.EXECUTE, "Nói chuyện", () -> {
             if (taskId == TaskName.NHIEM_VU_CHAO_LANG && taskMain != null && taskMain.index == 3) {
                 taskNext();
+                getService().npcChat(NpcName.OKANECHAN, "Chào con, ta đứng đây giúp đỡ mọi người lưu thông, trao đổi tiền tệ với nhau.");
+                return;
             }
             String talk = (String) NinjaUtils.randomObject("Ta là hiện thân của thần tài sẽ mang đến tài lộc cho mọi người.",
                     "Online mỗi ngày tham gia các hoạt động để tích lũy điểm hoạt động con nhé.",
@@ -13720,6 +14065,8 @@ public class Char {
         menus.add(new Menu(CMDMenu.EXECUTE, "Nói chuyện", () -> {
             if (taskId == TaskName.NHIEM_VU_CHAO_LANG && taskMain != null && taskMain.index == 5) {
                 taskNext();
+                getService().npcChat(NpcName.UMAYAKI, "Ngươi muốn đến làng nào, hãy đến gặp ta. Ta sẽ chở đi.");
+                return;
             }
             String talk = (String) NinjaUtils.randomObject("Nhà ngươi muốn đi đâu?", "Ngựa của ta rất khỏe có thể chạy ngàn dặm.",
                     "Đi xe kéo của ta an toàn số một.");
@@ -14142,6 +14489,8 @@ public class Char {
         menus.add(new Menu(CMDMenu.EXECUTE, "Nói chuyện", () -> {
             if (taskId == TaskName.NHIEM_VU_CHAO_LANG && taskMain != null && taskMain.index == 5) {
                 taskNext();
+                getService().npcChat(NpcName.UMAYAKI_2, "Ngươi muốn đến làng nào, hãy đến gặp ta. Ta sẽ chở đi.");
+                return;
             }
             String talk = (String) NinjaUtils.randomObject("Nhà ngươi muốn đi đâu?", "Ngựa của ta rất khỏe có thể chạy ngàn dặm.",
                     "Đi xe kéo của ta an toàn số một.");

@@ -10,6 +10,7 @@ import java.util.stream.Stream;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import com.nsoz.constants.ItemName;
+import com.nsoz.constants.NpcName;
 import com.nsoz.constants.SQLStatement;
 import com.nsoz.constants.TaskName;
 import com.nsoz.convert.Converter;
@@ -181,6 +182,9 @@ public class Store {
         }
         if (template.id == ItemName.COM_NAM && p.taskId == TaskName.NV_DIET_SEN_TRU_COC && p.taskMain != null && p.taskMain.index == 0) {
             p.updateTaskCount(quantity);
+            if (p.taskMain.index == 1) {
+                p.getService().npcChat(NpcName.TABEMONO, "Trưởng làng nhờ ta nói với con: Hãy sử dụng thức ăn trước khi ra khỏi làng.");
+            }
         }
         history.setTime(System.currentTimeMillis());
         History.insert(history);

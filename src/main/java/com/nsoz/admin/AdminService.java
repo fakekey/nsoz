@@ -64,7 +64,7 @@ public class AdminService {
                     }
                 }
             }
-            if (level <= 10) {
+            if (level < 10) {
                 p.serverMessage("Hãy nhập level lớn hơn 10.");
                 return;
             }
