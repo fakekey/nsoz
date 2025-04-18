@@ -152,18 +152,23 @@ public class AbilityFromEquip implements AbilityStrategy {
             case 2: // Tiêu
                 owner.damage +=
                         selectedSkillOptions[SkillOptionName.HOA_CONG_NOI_ADD_POINT] + owner.options[ItemOptionName.HOA_CONG_NOI_ADD_POINT_TYPE_2];
+                owner.damage += owner.optionsSupportSkill[SkillOptionName.HOA_CONG_NOI_ADD_POINT];
                 break;
             case 3: // Kunai
                 owner.damage += selectedSkillOptions[SkillOptionName.BANG_SAT_NGOAI_ADD_POINT]
                         + owner.options[ItemOptionName.BANG_SAT_NGOAI_ADD_POINT_TYPE_2];
+                owner.damage += owner.optionsSupportSkill[SkillOptionName.BANG_SAT_NGOAI_ADD_POINT];
                 break;
             case 4: // Cung
                 owner.damage +=
                         selectedSkillOptions[SkillOptionName.BANG_SAT_NOI_ADD_POINT] + owner.options[ItemOptionName.BANG_SAT_NOI_ADD_POINT_TYPE_2];
+                owner.damage += owner.optionsSupportSkill[SkillOptionName.BANG_SAT_NOI_ADD_POINT];
+                owner.damage += potentialDmg * owner.optionsSupportSkill[SkillOptionName.TAN_CONG_NOI_ADD_POINT_PERCENT] / 100;
                 break;
             case 5: // Đao
                 owner.damage += selectedSkillOptions[SkillOptionName.PHONG_LOI_NGOAI_ADD_POINT]
                         + owner.options[ItemOptionName.PHONG_LOI_NGOAI_ADD_POINT_TYPE_2];
+                owner.damage += owner.optionsSupportSkill[SkillOptionName.PHONG_LOI_NGOAI_ADD_POINT];
                 break;
             case 6: // Quạt
                 owner.damage +=
