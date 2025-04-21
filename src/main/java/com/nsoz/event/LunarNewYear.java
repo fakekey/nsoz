@@ -57,7 +57,7 @@ public class LunarNewYear extends Event {
 
     public LunarNewYear() {
         setId(Event.LUNAR_NEW_YEAR);
-        endTime.set(2024, 2, 29, 23, 59, 59);
+        endTime.set(2025, 12, 31, 23, 59, 59);
 
         itemsThrownFromMonsters.add(5, ItemName.NEP);
         itemsThrownFromMonsters.add(3, ItemName.LA_DONG);
@@ -124,8 +124,8 @@ public class LunarNewYear extends Event {
         LocalDateTime localNow = LocalDateTime.now();
         ZoneId currentZone = ZoneId.of("Asia/Ho_Chi_Minh");
         ZonedDateTime zonedNow = ZonedDateTime.of(localNow, currentZone);
-        start = zonedNow.withMonth(2).withDayOfMonth(1).withHour(0).withMinute(0).withSecond(0);
-        end = zonedNow.withMonth(2).withDayOfMonth(28).withHour(23).withMinute(59).withSecond(59);
+        start = zonedNow.withHour(0).withMinute(0).withSecond(0);
+        end = zonedNow.withHour(23).withMinute(59).withSecond(59);
         if (zonedNow.isAfter(start) && zonedNow.isBefore(end)) {
             // start = zonedNow.plusMinutes(5); // thời gian khởi động server
             start = zonedNow.withHour(21).withMinute(0).withSecond(0);

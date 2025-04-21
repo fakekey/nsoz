@@ -5816,7 +5816,7 @@ public class Char {
     private HashMap<Integer, Boolean> checkMissAtkMonster(ArrayList<Mob> mobs, int skillTemplateId) {
         HashMap<Integer, Boolean> missMap = new HashMap<>();
         for (Mob mob : mobs) {
-            int miss = NinjaUtils.nextInt(mob.level + 10);
+            int miss = NinjaUtils.nextInt(mob.level + 100);
             int exactly = NinjaUtils.nextInt(this.exactly + 100);
             boolean isMiss = miss > exactly;
             if (skillTemplateId == SkillName.CHIEU_HIHEBUN || skillTemplateId == SkillName.CHIEU_HINOTAMA
@@ -5832,9 +5832,9 @@ public class Char {
     private HashMap<Integer, Boolean> checkMissAtkPlayer(ArrayList<Char> chars) {
         HashMap<Integer, Boolean> missMap = new HashMap<>();
         for (Char pl : chars) {
-            int randMiss = NinjaUtils.nextInt(pl.miss + 100);
-            int randExactly = NinjaUtils.nextInt(this.exactly + 100);
-            boolean isMiss = randMiss > randExactly;
+            int miss = NinjaUtils.nextInt(pl.miss + 100);
+            int exactly = NinjaUtils.nextInt(this.exactly + 100);
+            boolean isMiss = miss > exactly;
             if (pl.isMiss) {
                 isMiss = true;
             }
@@ -9074,7 +9074,7 @@ public class Char {
                 clan.setMainName(this.name);
                 clan.setAlert("");
                 clan.setLevel((byte) 1);
-                clan.setCoin(0);
+                clan.setCoin(1000000);
                 clan.setItemLevel((byte) 0);
                 clan.setExp(0);
                 clan.setRegDate(new Date());
@@ -9940,6 +9940,21 @@ public class Char {
                         hoanThanhText =
                                 "Tốt, bây giờ con đã có thể xin nhập học từ thầy, cô hiệu trưởng ở các trường. Nhưng trước khi ra khỏi làng...\nta muốn con cất giữ thật kỹ viên ngọc 4 sao này, đây là bảo vật gia truyền của làng ta...\nngoài nó ra vẫn còn thêm 6 viên nữa được cất giữ ở 6 ngôi làng bên cạnh, ta muốn con hãy thu thập cho đủ bộ...\nđể giải mã bí mật bên trong 7 viên ngọc. Các trưởng làng sẽ tặng nó cho con sau mỗi lần con giúp đỡ họ...\nCố gắng làm việc thật tốt con nhé. Hãy sử dụng khả di lệnh (Menu/Hành trang) ta tặng để đi cho nhanh!";
                         break;
+                    case TaskName.NV_BAI_HOC_DAU_TIEN:
+                        hoanThanhText = "Ngoài sự mong đợi của ta, con làm khá lắm, chúc mừng con!";
+                        break;
+                    case TaskName.NV_BAN_HUU_TAM_GIAO:
+                        hoanThanhText = "Thế nào rồi, con đã có thêm nhiều bạn bè!";
+                        break;
+                    case TaskName.NV_NANG_CAP_TRANG_BI:
+                        hoanThanhText = "Tốt lắm, nhìn con đã có nhiều sự thay đổi!";
+                        break;
+                    case TaskName.NV_THACH_DAU:
+                        hoanThanhText = "Khá lắm, các thầy cô đều đánh giá rất cao về khả năng của con!";
+                        break;
+                    case TaskName.NV_THU_THAP_NGUYEN_LIEU:
+                        hoanThanhText = "Cảm ơn con nhé, ta có món quà nhỏ dành cho con!";
+                        break;
                     default:
                         hoanThanhText = "Làm tốt lắm, hãy nhận lấy phần thưởng của mình!";
                         break;
@@ -9983,6 +9998,25 @@ public class Char {
                     case TaskName.NV_TIM_HIEU_3_TRUONG:
                         nhanText = "Con cứ đến gặp thầy, cô hiệu trưởng và bảo với họ do ta giới thiệu con đến đó";
                         break;
+                    case TaskName.NV_BAI_HOC_DAU_TIEN:
+                        nhanText =
+                                "Bài học đầu tiên của con, hãy đi tiêu diệt 50 con rùa vàng, 30 con nhện đốm, 20 con quỷ một mắt rồi quay về đây gặp ta!";
+                        break;
+                    case TaskName.NV_BAN_HUU_TAM_GIAO:
+                        nhanText = "Rất nhiều bạn bè đang ở xung quanh, con hãy mau đi làm quen với họ.";
+                        break;
+                    case TaskName.NV_NANG_CAP_TRANG_BI:
+                        nhanText = "Con sẽ có cơ hội nhặt được những món trang bị trên người được rớt ra từ quái vật.";
+                        break;
+                    case TaskName.NV_THACH_DAU:
+                        nhanText = "Lần này ta muốn con gặp thầy cô hiệu trưởng của các trường để xem trình dộ võ công của họ như thế nào.";
+                        break;
+                    case TaskName.NV_THU_THAP_NGUYEN_LIEU:
+                        nhanText = "Con hãy đi tìm cho ta một ít nguyên liệu.";
+                        break;
+                    case TaskName.NV_TRUYEN_TAI_TIN_TUC:
+                        nhanText = "Công việc đưa thư cần phải dũng cảm, nhanh nhẹn, không ngại gian khó!";
+                        break;
                     default:
                         nhanText = "Con có muốn nhận nhiệm vụ này?";
                         break;
@@ -10020,6 +10054,24 @@ public class Char {
                     case TaskName.NV_TIM_HIEU_3_TRUONG:
                         xacNhanText = "Đi đường cẩn thận, sau khi nói chuyện xong với 3 thầy quay về đây gặp lại ta!";
                         break;
+                    case TaskName.NV_BAI_HOC_DAU_TIEN:
+                        xacNhanText = "Hãy mở Menu/Nhiệm vụ để xem tiến độ nhiệm vụ con nhé!";
+                        break;
+                    case TaskName.NV_BAN_HUU_TAM_GIAO:
+                        xacNhanText = "Có thêm 1 người bạn còn hơn là thêm 1 kẻ thù con nhé.";
+                        break;
+                    case TaskName.NV_NANG_CAP_TRANG_BI:
+                        xacNhanText = "Đi đường gặp được nhiều may mắn con nhé.";
+                        break;
+                    case TaskName.NV_THACH_DAU:
+                        xacNhanText = "Hãy cố gắng phòng thủ cho thật tốt nhé.";
+                        break;
+                    case TaskName.NV_THU_THAP_NGUYEN_LIEU:
+                        xacNhanText = "Đi đường cẩn thận con nhé.";
+                        break;
+                    case TaskName.NV_TRUYEN_TAI_TIN_TUC:
+                        xacNhanText = "Con hãy giúp ta chuyển những bức thư này đến Hashimoto, Fujiwara và Nao giùm ta nhé!";
+                        break;
                     default:
                         xacNhanText = "Chúc con may mắn!";
                         break;
@@ -10032,6 +10084,7 @@ public class Char {
                 if (taskMain != null) {
                     if (npc == 14 || npc == 15 || npc == 16) {
                         taskNext();
+                        getService().npcChat(npc, "Cảm ơn con nhé!");
                         int index = getIndexItemByIdInBag(214);
                         if (index != -1) {
                             this.removeItem(index, 1, true);
@@ -11758,6 +11811,15 @@ public class Char {
             menus.add(new Menu(CMDMenu.TRAO_LINH_VAT, "Trao linh vật"));
         }
         if (zone.tilemap.isNhaThiDau()) {
+            String winStr = "Khá";
+            if (npcTemplateId == NpcName.THAY_OOKAMESAMA) {
+                winStr = "Khá lắm, ta đã đánh giá sai về khả năng của con.";
+            } else if (npcTemplateId == NpcName.THAY_KAZETO) {
+                winStr = "Xin chúc mừng, con đã vượt qua được thử thách này.";
+            } else if (npcTemplateId == NpcName.CO_TOYOTOMI) {
+                winStr = "Núi cao còn có núi cao hơn. Con hãy cố gắng luyện tập nhé!";
+            }
+            getService().npcChat(npcTemplateId, winStr);
             menus.add(new Menu(CMDMenu.EXECUTE, "Rời khỏi nơi này", () -> {
                 short[] xy = NinjaUtils.getXY(mapBeforeEnterPB);
                 setXY(xy[0], xy[1]);
@@ -12183,10 +12245,17 @@ public class Char {
                                 Item newItem = ItemFactory.getInstance().newItem(item2.id);
                                 newItem.isLock = true;
                                 for (ItemOption option : item2.options) {
-                                    if (option.optionTemplate.id == 85) {
+                                    if (option.optionTemplate.id == 85 || option.optionTemplate.id == 59) {
                                         option.param++;
                                     } else {
                                         option.param += option.param / 10;
+                                    }
+                                    if (option.optionTemplate.id == 59) {
+                                        for (int i = 0; i < newItem.options.size(); i++) {
+                                            if (newItem.options.get(i).optionTemplate.id == 59) {
+                                                newItem.options.remove(i);
+                                            }
+                                        }
                                     }
                                     newItem.options.add(option);
                                 }
@@ -12631,7 +12700,7 @@ public class Char {
                     }
                     for (int i = start; i < rankAt - 1; i++) {
                         Ranking bot = rankingList.get(i);
-                        bot.setStt(bot.isFighting() ? "đang đấu" : "có thể thách đấu");
+                        bot.setStt(bot.isFighting() ? "đang thi đấu" : "có thể thách đấu");
                         list.add(bot);
                     }
                     getService().doShowRankedListUI(list);
@@ -13810,9 +13879,9 @@ public class Char {
                 viewBattleSummary();
             }));
         } else {
-            menus.add(new Menu(CMDMenu.EXECUTE, "Trang chủ", () -> {
-                getService().openWeb("Trang chủ", "Hủy", "https://nsolhd.xyz", "Bạn muốn truy cập trang chủ?");
-            }));
+            // menus.add(new Menu(CMDMenu.EXECUTE, "Trang chủ", () -> {
+            // getService().openWeb("Trang chủ", "Hủy", "https://nsolhd.xyz", "Bạn muốn truy cập trang chủ?");
+            // }));
             menus.add(new Menu(CMDMenu.EXECUTE, "NV mỗi ngày", () -> {
                 menus.clear();
                 menus.add(new Menu(CMDMenu.EXECUTE, "Nhận", () -> {

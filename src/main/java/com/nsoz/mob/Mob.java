@@ -903,7 +903,7 @@ public class Mob {
         }
         monster.mobLock.lock();
         try {
-            int miss = NinjaUtils.nextInt(monster.level + 10);
+            int miss = NinjaUtils.nextInt(monster.level + 100);
             int exactly = NinjaUtils.nextInt(owner.exactly + 100);
             boolean isMiss = miss > exactly;
 
