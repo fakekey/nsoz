@@ -996,7 +996,7 @@ public class Mob {
         }
         pl.charLock.lock();
         try {
-            int exactly = NinjaUtils.nextInt(((this.level > 0 ? this.level : 1) * 10) + 100);
+            int exactly = NinjaUtils.nextInt(((this.level > 0 ? this.level : 1) * 10) + (pl.miss * 20 / 100) + 100);
             int miss = NinjaUtils.nextInt(pl.miss + 100);
             boolean isMiss = miss > exactly;
             if (pl.isMiss) {

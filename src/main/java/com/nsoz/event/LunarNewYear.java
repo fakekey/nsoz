@@ -36,6 +36,7 @@ import com.nsoz.model.Menu;
 import com.nsoz.npc.Npc;
 import com.nsoz.npc.NpcFactory;
 import com.nsoz.option.ItemOption;
+import com.nsoz.server.Events;
 import com.nsoz.server.GlobalService;
 import com.nsoz.store.ItemStore;
 import com.nsoz.store.StoreManager;
@@ -340,6 +341,10 @@ public class LunarNewYear extends Event {
                 }
             }));
             p.getService().showInputDialog();
+        }));
+
+        p.menus.add(new Menu(CMDMenu.EXECUTE, "Đổi mặt nạ hổ", () -> {
+            Events.matNaHo(p);
         }));
 
         p.menus.add(new Menu(CMDMenu.EXECUTE, "Áo dài", () -> {

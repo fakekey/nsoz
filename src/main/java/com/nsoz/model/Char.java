@@ -5905,6 +5905,11 @@ public class Char {
             } else if (skillTemplateId == SkillName.CHIEU_MAGUMANDARI) {
                 Mob mob = mobs.get(0);
                 if (isMeCanAtkMonster(mob)) {
+                    if (mob.isBoss || mob.levelBoss != 0) {
+                        serverMessage("Đối phương quá mạnh bạn không thể thi triển thuật này!");
+                        return;
+                    }
+
                     SkillOption[] option = selectedSkill.options;
                     Effect eff = new Effect(0, option[0].param * 1000, 0);
                     mob.effects.put(eff.template.type, eff);
